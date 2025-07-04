@@ -1,0 +1,52 @@
+t_days:
+  desc:
+    en: "Number of days above or below a threshold temperature"
+    fr: "Nombre de jours au-dessus ou en-dessous d'un seuil de température"
+  items:
+    - TN_DAYS_ABOVE
+    - TN_DAYS_BELOW
+    - TX_DAYS_ABOVE
+    - TX_DAYS_BELOW
+    - TG_DAYS_ABOVE
+    - TG_DAYS_BELOW
+t_stats:
+  desc:
+    "en": "Temperature statistics"
+    "fr": "Statistiques de température"
+  items:
+    - TN_MEAN
+    - TN_MAX
+    - TN_MIN
+    - TG_MEAN
+    - TG_MAX
+    - TG_MIN
+    - TX_MEAN
+    - TX_MAX
+    - TX_MIN
+degree_days:
+  desc:
+    "en" : "Degree days"
+    "fr" : "Degrés-jours"
+  items:
+    - HEATING_DEGREE_DAYS
+    - COOLING_DEGREE_DAYS
+    - FREEZING_DEGREE_DAYS
+    - THAWING_DEGREE_DAYS
+precip:
+  desc:
+    "en": "Precipitation"
+    "fr": "Précipitation"
+  items:
+    - IDF
+    - WET_PRCPTOT
+    - SOLIDPRCPTOT
+    - LIQUIDPRCPTOT
+    - MAX_N_DAY_PRECIPITATION_AMOUNT
+    - WETDAYS
+    - DRY_DAYS
+sea_level:
+  desc:
+    "en": "Sea level"
+    "fr": "Niveau de la mer"
+  items:
+    - WL_POT

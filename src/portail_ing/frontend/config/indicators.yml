@@ -1,0 +1,119 @@
+# Config for climate indicators offered by application
+TN_DAYS_ABOVE: &tt
+  args:
+    thresh:
+      default_units: degC
+      vmin: -30
+      vmax: 40
+      label:
+        fr: "Seuil (°C)"
+      doc:
+        fr: "Seuil de température"
+TN_DAYS_BELOW: *tt
+TX_DAYS_ABOVE: *tt
+TX_DAYS_BELOW: *tt
+TG_DAYS_BELOW: *tt
+TG_DAYS_ABOVE: *tt
+TN_MEAN:
+TN_MAX:
+TN_MIN:
+TG_MEAN:
+TG_MAX:
+TG_MIN:
+TX_MEAN:
+TX_MAX:
+TX_MIN:
+HEATING_DEGREE_DAYS: &dd
+  args:
+    thresh:
+      default_units: degC
+      vmin: 10
+      vmax: 30
+      label:
+        fr: "Seuil (°C)"
+      doc:
+        fr: "Seuil de température"
+COOLING_DEGREE_DAYS: *dd
+FREEZING_DEGREE_DAYS: *dd
+THAWING_DEGREE_DAYS: *dd
+WET_PRCPTOT:
+  args:
+    thresh:
+      default_units: mm/d
+      vmin: 0
+      vmax: 150
+      label:
+        fr: "Seuil (mm/d)"
+      doc:
+        fr: "Seuil de précipitation"
+SOLIDPRCPTOT: &sp
+  args:
+    thresh:
+      default_units: degC
+      vmin: -5
+      vmax: 5
+      label:
+        fr: "Seuil (°C)"
+      doc:
+        fr: "Seuil de température différentiant les précipitations solides et liquides"
+LIQUIDPRCPTOT: *sp
+MAX_N_DAY_PRECIPITATION_AMOUNT:
+  args:
+    window:
+      default_units:
+      vmin: 0
+      vmax: 10
+      label:
+        fr: "# jours"
+      doc:
+        fr: "Nombre de jours"
+WETDAYS:
+  args:
+    thresh:
+      default_units: mm/d
+      vmin: 0
+      vmax: 10
+      label:
+        fr: "Seuil (mm/d)"
+      doc:
+        fr: "Seuil de précipitation pour considérer un jour comme humide"
+DRY_DAYS:
+  args:
+    thresh:
+      default_units: mm/d
+      vmin: 0
+      vmax: 10
+      label:
+        fr: "Seuil (mm/d)"
+      doc:
+        fr: "Seuil de précipitation pour considérer un jour comme sec"
+IDF:
+  obs_process: compute-indicators-idf-obs
+  sim_process: compute-indicators-idf-sim
+  args:
+    duration:
+      choices: ["1h", "2h", "6h", "12h", "24h"]
+      label:
+        fr: "Durée"
+      doc:
+        fr: "Durée de la pluie"
+WL_POT:
+  obs_process: compute-indicators-wl-obs
+  sim_process: compute-indicators-wl-sim
+
+
+
+
+#DLYFRZTHW:
+#  thresh_tasmin:
+#    default_units: degC
+#    vmin: -10
+#    vmax: 0
+#    label_fr: "Seuil (°C)"
+#    doc_fr: "Seuil de température"
+#  thresh_tasmax:
+#    default_units: degC
+#    vmin: 0
+#    vmax: 10
+#    label_fr: "Seuil (°C)"
+#    doc_fr: "Seuil de température"

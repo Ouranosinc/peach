@@ -1,0 +1,124 @@
+application:
+
+title:
+  fr: "Aléas climatiques - PROTOTYPE"
+  en: "Climate Hazards - PROTOTYPE"
+sidebar_title:
+  fr: "Étapes & instructions"
+  en: "Steps & instructions"
+dash_title:
+  fr: "Panneau de contrôle"
+  en: "Control panel"
+
+steps:
+  station_select:
+    name:
+      en: "Station selection"
+      fr: "Sélection de la station"
+    description:
+      en:  "Choose stations close to the site of interest for the different variables needed to calculate the desired indicators."
+      fr: "Choisir des stations proche du site d'intérêt pour les différentes variables nécessaires au calcul des indicateurs souhaités."
+    header:
+      en: "Station map"
+      fr: "Carte des stations"
+    help:
+      en: "For each variable:
+
+             1. Pick a station from the station markers on the map or from the table below."
+      fr: "Pour chaque variable:
+
+             1. Choisir une station dans le tableau ou cliquer sur un marqueur de station sur la carte."
+    param_class: "Station"
+    view_class: "StationViewer"
+    view_config: "station_select.yml"
+  indicator_select:
+    name:
+      en: "Indicator computation"
+      fr: "Calcul des indicateurs"
+    description:
+      en: "Choose, parametrize and compute the climate indicators."
+      fr: "Choisir, paramétrer et calculer les indicateurs climatiques."
+    header:
+      en: "Indicators"
+      fr: "Indicateurs"
+    help:
+      en: "1. Click on a category to display the list of available indicators.
+
+           2. Click on the `Add` button to include this indicator in the analysis. The `Add` button is enabled only when all input variables required for its computation have a corresponding station selected.
+
+           3. For each selected indicator, set argument values. You may add the same indicator multiple times to calculate it with different thresholds or seasons, or remove indicators from the list by clicking on the `Remove` button.
+
+           4. Once all indicators have been parameterized, click on the `Compute` button to launch the computations, whose completion are indicated with progress bars."
+      fr: "1. Cliquer sur une catégorie pour afficher la liste des indicateurs disponibles.
+
+           2. Cliquer sur le bouton `Ajouter` pour inclure cet indicateur dans l'analyse de risque. Le bouton `Ajouter` est activé uniquement lorsque toutes les variables d'entrée requises pour son calcul ont une station correspondante sélectionnée.
+
+           3. Pour chaque indicateur sélectionné, définir les valeurs des arguments. Vous pouvez ajouter le même indicateur plusieurs fois pour le calculer avec différents seuils ou saisons, ou le supprimer de la liste en cliquant sur le bouton `Supprimer`.
+
+           4. Une fois que tous les indicateurs ont été paramétrés, cliquer sur le bouton `Calculer` pour lancer les calculs, dont l'avancement est indiqué avec des barres de progression. "
+    view_config: "indicator_select.yml"
+  ref_period_select:
+    name:
+      en: "Reference period selection"
+      fr: "Choix de la période de référence"
+    description:
+      en: "Choose the period of at least 30 years that will serve as a basis for comparison for future changes."
+      fr: "Choisir la période d'un minimum de 30 ans qui servira de base de comparaison pour les changements futurs."
+    header:
+      en: "Reference period"
+      fr: "Période de référence"
+    help:
+      en: "1. Select the reference period for the risk analysis.
+
+           2. For each indicator, review the statistical distribution chosen to describe its occurrence.
+
+
+           The default distribution is selected based on the Bayesian Information Criterion (BIC), but you may change it to another distribution from the dropdown menu."
+      fr: "1. Sélectionner la période de référence pour l'analyse de risque.
+
+           2. Pour chaque indicateur, revoir la distribution statistique choisie pour décrire son occurrence.
+
+
+           La distribution par défaut est sélectionnée en fonction du Critère d'Information Bayésien (BIC), mais vous pouvez la changer pour une autre distribution dans le menu déroulant."
+  fut_period_select:
+    name:
+      en: "Future period selection"
+      fr: "Choix de la période future"
+    description:
+      en: "Choose the period for which you want to calculate the indicators."
+      fr: "Choisir la période pour laquelle vous souhaitez calculer les indicateurs."
+    header:
+      en: "Future period"
+      fr: "Période future"
+    help:
+      en: "1. Select the future period for the risk analysis.
+
+
+           The statistical distribution is tied to the distribution picked for the reference period."
+      fr: "1. Sélectionner la période future pour l'analyse de risque.
+
+
+           La distribution statistique est celle choisie pour la période de référence."
+  hazard_threshold_select:
+     name:
+        en: "Climate thresholds selection"
+        fr: "Choix des seuils climatiques"
+     description:
+        en: "Choose for each indicator the threshold values or the return times from which damage will occur."
+        fr: "Choisir pour chaque indicateur les valeurs seuils ou les temps de retour à partir duquel des dommages seront causés par l'aléa climatique."
+     help:
+       en: "For each indicator:
+
+            1. Select thresholds of interest for the risk analysis. Those thresholds can either be set by their value (X), or by their return period (T) over the reference period.
+
+
+            Click on the `+` button to add another threshold for the same indicator, and conversely click on the `-` button to remove a threshold."
+       fr: "Pour chaque indicateur:
+
+            1. Sélectionner les seuils d'intérêt pour l'analyse de risque. Ces seuils peuvent être définis soit par leur valeur (X), soit par leur temps de retour (T) sur la période de référence.
+
+
+            Cliquer sur le bouton `+` pour ajouter un autre seuil pour le même indicateur, et inversement cliquer sur le bouton `-` pour supprimer un seuil."
+     header:
+        en: "Climate thresholds"
+        fr: "Seuils climatiques"

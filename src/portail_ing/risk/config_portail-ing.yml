@@ -1,0 +1,136 @@
+project:
+    name: portail-ing; risk workflow
+    version: 1.0.0
+    description: Run engineer portail with xscen tools
+    id: ping
+
+logging:
+    formatters:
+        default:
+            format: '%(asctime)s %(levelname)-8s %(name)-15s %(message)s'
+            datefmt: '%Y-%m-%d %H:%M:%S'
+    handlers:
+        console:
+            class : logging.StreamHandler
+            formatter: default
+            level : INFO
+        file:
+            class: logging.FileHandler
+            formatter: default
+            level : DEBUG
+    loggers:
+        risk_calc:
+            propagate: False
+            level: INFO
+            handlers: [file, console]
+
+xclim:
+  check_missing: pct
+  missing_options:
+    pct:
+      tolerance: 0.1
+  data_validation: log
+  metadata_locales:
+    - fr
+
+search_cat:
+  AHCCD:
+    type: station-obs
+    source: AHCCD
+  sim:
+    type: simulation
+    processing_level: biasadjusted  #switch to cleaned when done
+    require_all_on:
+      - variable
+
+units:
+  tasmax: degC
+  tasmin: degC
+  tas: degC
+  pr: mm d-1
+
+to_ds:
+  zarr_kwargs:
+    decode_timedelta: False
+
+extract_data:
+  xr_open_kwargs:
+    decode_timedelta: False
+  xr_combine_kwargs:
+    combine: override
+
+
+
+dict_ks:
+  - 'source'
+  - 'experiment'
+  - 'member'
+
+matrix:
+  option1:
+    french:
+      - Indice
+      - Temps de retour (ans)
+      - Valeur observée associé au temps de retour (VALIDATION)
+      - Valeur historique associé au temps de retour (VALIDATION)
+      - Valeur historique associé au temps de retour (1981-2010)
+      - Probabilité d'occurence future (FUTURE)
+    english:
+      - Indicator
+      - Return period (years)
+      - Observed Value for Return Period (VALIDATION)
+      - Historical Value for Return Period (VALIDATION)
+      - Historical value for Return Period (1981-2010)
+      - Future Occurence Probability during (FUTURE)
+  option2:
+    french:
+      - Indice
+      - Temps de retour (ans)
+      - Valeur observée associé au temps de retour (VALIDATION)
+      - Valeur historique associé au temps de retour (VALIDATION)
+      - Valeur historique associé au temps de retour (1981-2010)
+      - Valeur future associé au temps de retour (FUTURE)
+    english:
+      - Indicator
+      - Return period (years)
+      - Observed Value for Return Period (VALIDATION)
+      - Historical Value for Return Period (VALIDATION)
+      - Historical value for Return Period (1981-2010)
+      - Future value for Return Period (FUTURE)
+
+
+search_catref:
+  allow_resampling: True
+  allow_conversion: True
+
+search_catsim_station:
+  allow_resampling: True
+  match_hist_and_fut: True
+
+distributions:
+  ls_dists:
+    - 'dweibull'
+    - 'expon'
+    - 'norm'
+    - 'lognorm'
+    - 'gamma'
+    - 'beta'
+    - 'fisk'
+    - 'gumbel_l'
+  measure: AIC
+
+weights:
+  experiment:
+    ssp126: 1
+    ssp245: 1
+    ssp370: 1
+    ssp585: 1
+
+
+errors:
+  french:
+    miss_sta : "La station X n'est pas disponbile"
+    miss_var: "Les variables requises pour calculer un des indicateur demandé ne sont pas disponibles à la station X"
+  english:
+    miss_sta: "The station X is not available"
+    miss_var: "Not all variables required to calculate indicators are available at station X"

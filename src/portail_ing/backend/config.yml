@@ -1,0 +1,180 @@
+# =================================================================
+#
+# Authors: Tom Kralidis <tomkralidis@gmail.com>
+#
+# Copyright (c) 2020 Tom Kralidis
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following
+# conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+# =================================================================
+
+server:
+    #handled by gunicorn:
+    bind:
+        host: ${PYGEOAPI_HOST}
+        port: ${PYGEOAPI_PORT}
+    url: ${PYGEOAPI_BASE_URL}
+    api_rules:
+        api_version: 0.1.0
+        scrict_slashes: false
+        version_header: X-API-Version
+        url_prefix: ${PYGEOAPI_PREFIX}
+    mimetype: application/json; charset=UTF-8
+    encoding: utf-8
+    gzip: true
+    languages:
+        # First language is the default language
+        - fr-CA
+        - en-US
+    # cors: true
+    pretty_print: true
+    limit: 10
+    # templates:
+      # path: /path/to/Jinja2/templates
+      # static: /path/to/static/folder # css/js/img
+    map:
+        url: https://tile.openstreetmap.org/{z}/{x}/{y}.png
+        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+    manager:
+        name: TinyDB
+        connection: /tmp/pygeoapi-process-manager.db
+        output_dir: /tmp/
+    # ogc_schemas_location: /opt/schemas.opengis.net
+
+logging:
+    level: INFO
+    #logfile: pygeoapi.log
+
+metadata:
+    identification:
+        title:
+            en: Engineering portal computational backend
+            fr: Services de calcul du portail d'ingénierie
+        description:
+            en: Climate indicator computations
+            fr: Calculs d'indicateurs climatiques
+        keywords:
+            en:
+                - climate
+                - hazards
+                - api
+            fr:
+                - climat
+                - aléas
+                - api
+        keywords_type: theme
+        terms_of_service: https://creativecommons.org/licenses/by/4.0/
+        url: https://example.org
+    license:
+        name: CC-BY 4.0 license
+        url: https://creativecommons.org/licenses/by/4.0/
+    provider:
+        name: Ouranos
+        url: https://ouranos.ca
+    contact:
+        name: Bourdeau-Goulet, Sarah-Claude
+        position: Specialist, Climate science and climate services
+        address: 550 rue Sherbrooke Ouest
+        city: Montréal
+        stateorprovince: QC
+        postalcode: H3A 1B9
+        country: Canada
+        email: pavics@ouranos.ca
+        role: pointOfContact
+        phone: +1-514-282-6464
+        fax: C'mon
+        instructions: Please email us
+        url: pavics.ouranos.ca
+        hours: 9-5
+
+
+resources:
+#    obs:
+#        type: collection
+#        title: AHCCD
+#        description: Adjusted and Homogenized Canadian Climate Data
+#        keywords:
+#            - observations
+#            - weather
+#        links:
+#            - type: text/html
+#              rel: canonical
+#              title: information
+#              href: https://www.canada.ca/en/environment-climate-change/services/climate-change/canadian-centre-climate-services/indicators-observations/adjusted-homogenized-canadian-climate-data.html
+#              hreflang: en-US
+#        linked-data:
+#            context:
+#                - datetime: https://schema.org/DateTime
+#                - vocab: https://example.com/vocab#
+#                  stn_id: "vocab:stn_id"
+#                  value: "vocab:value"
+#        extents:
+#            spatial:
+#                bbox: [-141,42,-52,84]
+#                crs: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+#            temporal:
+#                begin: 1900-10-01T00:00:00
+#                end: 2012-12-31T00:00:00
+#        providers:
+#            - type: edr
+#              name: xarray-edr
+#              data: data/AHCCD_1.0/day/pr/pr_day_CAN_GovCan_AHCCD_1.0_1966-2000.zarr
+#              x_field: lon
+#              y_field: lat
+#              time_field: time
+#              format:
+#                name: zarr
+#                mimetype: application/zip
+
+    compute-indicators-obs:
+        type: process
+        processor:
+            name: portail_ing.backend.compute_indicators.ComputeIndicatorsProcessorOBS
+    compute-indicators-sim:
+        type: process
+        processor:
+            name: portail_ing.backend.compute_indicators.ComputeIndicatorsProcessorSIM
+    compute-indicators-wl-obs:
+        type: process
+        processor:
+            name: portail_ing.backend.compute_indicators.ComputeWaterLevelProcessorOBS
+    compute-indicators-wl-sim:
+        type: process
+        processor:
+            name: portail_ing.backend.compute_indicators.ComputeWaterLevelProcessorSIM
+    compute-indicators-idf-obs:
+        type: process
+        processor:
+            name: portail_ing.backend.compute_indicators.ComputeIDFProcessorOBS
+    compute-indicators-idf-sim:
+        type: process
+        processor:
+            name: portail_ing.backend.compute_indicators.ComputeIDFProcessorSIM
+    compute-hazard-thresholds:
+        type: process
+        processor:
+            name: portail_ing.backend.compute_hazardthreshold.ComputeHazardThreshold
+
+    echo:
+        type: process
+        processor:
+            name: portail_ing.backend.echo.EchoProcessor
