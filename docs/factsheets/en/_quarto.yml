@@ -1,0 +1,55 @@
+project:
+  type: book
+
+
+glossary:
+  path: glossary.yml
+  popup: hover
+  show: true
+
+
+book:
+  title: "Fact sheets"
+  language: "en"
+  page-footer:
+    left: |
+      Written by Alain Mailhot, Samuel Bolduc and Guillaume Talbot. Translation by Margaret Sankey.
+
+  chapters:
+    - index.md
+    - part: "A – Statistical concepts on extremes"
+      chapters:
+        - A1.md
+        - A2.md
+        - A3.md
+        - A4.md
+        - A5.md
+        - A6.md
+        - A7.md
+        - A8.md
+
+    - part: "B – The climate change adaptation process"
+      chapters:
+        - B1.md
+        - B2.md
+        - B3.md
+        - B4.md
+        - B5.md
+        - B6.md
+
+    - part: "C – River and urban hydrology and climate change"
+      chapters:
+        - C1.md
+        - C2.md
+        - C3.md
+        - references.md
+
+format:
+  html:
+    theme:
+      - cosmo
+      - custom.scss
+    toc: true
+    bibliography: references.bib
+    author-meta: "Alain Mailhot, Samuel Bolduc and Guillaume Talbot"
+    number-depth: 1

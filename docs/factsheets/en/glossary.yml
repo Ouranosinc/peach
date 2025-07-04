@@ -1,0 +1,66 @@
+# Convert the following content to the format used in the glossary.yml file.
+
+
+Adaptive capacity: |
+    The ability of a system or organization to anticipate, protect itself from, resist, adjust to, or recover from the impacts of climate change, or to benefit from its opportunities. Thus defined, adaptive capacity is a key part of any medium- and long-term planning.
+
+Climate index: |
+    A value that defines and characterizes a hazard. Thus, the “heat wave” hazard can be defined by the following index: the annual number of events in which the temperature is above 30°C for 3 consecutive days. Similarly, the “extreme rain” hazard can be defined as an event in which more than 50 mm of rain falls in one hour or less.
+
+Climate projection: |
+    A simulation, based on climate models, of the response of the Earth’s climate system to a future scenario of greenhouse gas and aerosol emissions or concentrations and land-use changes.
+
+Climate threshold: |
+    The threshold beyond which a system becomes exposed to a hazard and is likely to suffer malfunctions, capacity overruns or impacts of various kinds. For infrastructure, the climate threshold can correspond to the value of the climate indicator beyond which its capacity will be exceeded. In public health, this may be a threshold like the average temperature over a number of days at which public health officials believe that the morbidity rate becomes a cause for concern. Several climate thresholds can be considered in certain cases in order to better represent the progressive gradation of consequences and risks depending on the magnitude of the hazard.
+
+Consequence (or impact): |
+    Refers to the effects of hazards, particularly climate hazards, on natural and human systems. Impacts generally refer to the effects of climate change on people’s lives, livelihoods, health, ecosystems, economic, social and cultural heritage, services, and infrastructure, which are a function of the sensitivity and the adaptive capacity of the exposed systems.
+
+Emission scenario: |
+    A plausible future situation in terms of greenhouse gas and aerosol emissions based on different assumptions in terms of socio-economic and demographic development and technological advances.
+
+Exposure: |
+    The state of a system or a component of a system (people, livelihoods, species or ecosystems, functions, environmental resources or services, infrastructure elements or economic, social or cultural systems or assets) that may be affected by a hazard.
+
+Hazard: |
+    Natural or human-induced phenomena that may cause damage or loss of property, infrastructure, livelihoods, service provision, ecosystems and environmental resources or may result in loss of human life, injury, or other health impacts. The term *climate hazard* is also used and refers more precisely to hazards likely to be impacted by climate change. This term also includes natural hazards influenced by the climate, such as the presence of allergenic pollens or disease vectors. A hazard can occur suddenly (e.g. torrential rains) or more gradually (e.g. thawing of permafrost).
+
+Heat wave: |
+    A period of time when the temperature exceeds certain thresholds that are considered critical and which can have impacts and be harmful to the health of populations. The definition of a heat wave used in Ouranos and MELCCFP (2024) is the annual number of events in which the daily maximum temperature is above 30°C for 3 or more consecutive days.
+
+Impact: |
+    See *Consequence*.
+
+Likelihood: |
+    In the context of climate change, likelihood refers to the chances of a hazard occurring. It can be expressed qualitatively or quantitatively depending on the information available. In a more quantitative context, likelihood is defined as the probability of occurrence of a given hazard. It can be expressed in the form of an annual probability of occurrence or in the form of a return period. The term “recurrence” is also used. Thus, an event with a 50-year return period is said to recur once every 50 years.
+
+Mitigation: |
+    A set of measures to limit climate change and global warming, which mainly consists of measures for reducing greenhouse gas emissions and increasing the capture of atmospheric carbon.
+
+Radiative forcing: |
+    The change in the net radiative flux of the Earth’s atmosphere (expressed in W/m²) resulting from variations in greenhouse gas concentrations, volcanic aerosols or the intensity of solar radiation.
+
+Reference period: |
+    A past period used as a basis for comparison to evaluate future climate change. It is recommended to use periods at 30 years long, e.g. 1990-2019. The choice of reference period may be dictated by the availability of historical data.
+
+Return period: |
+    The average number of years between two consecutive occurrences of an event of amplitude equal to or greater than a given value. If p is the annual probability of occurrence of a hazard, then 1/p is the return period. Thus, a hazard with p = 0.01 corresponds to a hazard with a return period of 100 years.
+
+Risk: |
+    In the context of climate change, risk describes the potential impacts of climate change on a system exposed to one or more climate hazards. It can also arise from human responses to climate change, such as adaptation measures, in particular. In the context of a risk analysis, the risk (R) is based on the likelihood (L) of a hazard as well as its consequences (C), or R=L*C.
+
+Sensitivity: |
+    The extent to which a system is influenced, positively or negatively, by climate variability or climate change. Effects may be direct (e.g. changes in agricultural yields as a result of a change in temperature variability) or indirect (e.g. damage caused by an increase in the frequency of coastal flooding due to sea level rise).
+
+Shared Socio-economic Pathway (SSP): |
+    These future emission and radiative forcing scenarios are based on various assumptions about future changes in the socio-economic conditions and other climate-related factors. The most commonly used SSPs are SSP1-2.6, SSP2-4.5, SSP3-7.0 and SSP5-8.5. SSP5-8.5 corresponds to 8.5 W/m² of radiative forcing in 2100. Radiative forcing, and therefore the impacts of climate change, gradually increase from SSP1-2.6 (low emissions) to SSP5-8.5 (high emissions).
+
+System: |
+    Refers to an entity, such as a region, a community, a household, an economic sector, a commercial activity, a population, an ecosystem, a type of infrastructure, etc., that is likely to be impacted by one or more climate hazards depending on its level of exposure, its sensitivity and its adaptive capacity.
+
+Time horizon: |
+    Future periods considered within an adaptation and climate risk evaluation process. The following time horizons are recommended: 2011-2040 for short-term, 2041-2070 for medium-term and 2071-2100 for long-term.
+
+Vulnerability: |
+    The propensity or predisposition of a system to be negatively affected. It depends on the sensitivity of the system exposed to the climate hazards and its capacity or inability to adapt to climate change.
+

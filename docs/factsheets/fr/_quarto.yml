@@ -1,0 +1,64 @@
+project:
+  type: book
+  
+    
+# Need to install extension to have this working
+# quarto install extension debruine/quarto-glossary
+glossary:
+  path: glossary.yml
+  popup: hover
+  show: true
+
+lang: fr
+language: 
+  fr:
+    crossref-tbl-title: Tableau
+
+
+
+book:
+  title: "Fiches techniques"
+  
+  page-footer:
+    left: |
+      Rédigé par Alain Mailhot, Samuel Bolduc et Guillaume Talbot.
+
+  chapters:
+    - index.md
+    - part: "A – Concepts statistiques sur les extrêmes"
+      chapters:
+        - A1.md
+        - A2.md
+        - A3.md
+        - A4.md
+        - A5.md
+        - A6.md
+        - A7.md
+        - A8.md
+
+    - part: "B – Le processus d'adaptation aux changements climatiques"
+      chapters:
+        - B1.md
+        - B2.md
+        - B3.md
+        - B4.md
+        - B5.md
+        - B6.md
+
+    - part: "C – Hydrologie fluviale et urbaine et changements climatiques"
+      chapters:
+        - C1.md
+        - C2.md
+        - C3.md
+        - references.md
+
+format:
+  html:
+    theme:
+      - cosmo
+      - custom.scss
+    toc: true
+    bibliography: references.bib
+    author-meta: "Alain Mailhot, Samuel Bolduc et Guillaume Talbot"
+    number-depth: 1 
+    

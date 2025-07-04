@@ -1,0 +1,41 @@
+/*-- scss:defaults --*/
+
+// General table styles
+.table td {
+    text-align: left;
+}
+
+// Risk matrix specific styles (keeping center alignment)
+.risk-matrix th, .risk-matrix td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+    vertical-align: middle;
+}
+.risk-matrix .header th {
+            background-color: #f2f2f2;
+        }
+.risk-matrix .extreme {
+    background-color: #ff0000;
+    color: white;
+}
+.risk-matrix .major {
+    background-color: #ffa500;
+}
+.risk-matrix .moderate {
+    background-color: #ffff00;
+}
+.risk-matrix .minor {
+    background-color: #32cd32;
+    color: white;
+}
+.risk-matrix .negligible {
+    background-color: #90ee90;
+}
+
+.rotate-text {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    padding: 10px 0;
+    text-align: center;
+}
