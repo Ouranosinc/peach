@@ -1,0 +1,292 @@
+[build-system]
+requires = ["flit_core >=3.8,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "portail_ing"
+authors = [
+  {name = "Sarah-Claude Bourdeau-Goulet", email = "bourdeau-goulet.sarah-claude@ouranos.ca"},
+  {name = "David Huard", email = "huard.david@ouranos.ca"},
+  {name = "Gabriel Rondeau-Genesse", email = "rondeau-Genesse.Gabriel@ouranos.ca"},
+  {name = "Sarah Gammon", email = "gammon.sarah@ouranos.ca"}
+]
+maintainers = [
+  {name = "Trevor James Smith", email = "smith.trevorj@ouranos.ca"}
+]
+readme = {file = "README.rst", content-type = "text/x-rst"}
+requires-python = ">=3.9,<3.12"
+keywords = ["portail_ing"]
+license = {file = "LICENSE"}
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: Implementation :: CPython"
+]
+dynamic = ["description", "version"]
+dependencies = [
+  "xarray<2025.3.0",
+  "xclim",
+  "pyyaml",
+  "zarr",
+  "dask",
+  "lmoments3",
+  "numpy",
+  "numcodecs<=0.15.1", # Zarr < 3 is not compatible with latest numcodecs
+  "scipy",
+  "pandas",
+  "pyextremes",
+  "pygeoapi",
+  "xscen",
+  "statsmodels",
+  "copulae",
+  "openturns>=1.24",
+  "flexparser<0.4",
+  "s3fs"
+]
+
+[project.optional-dependencies]
+app = [
+  "bokeh",
+  "panel",
+  "holoviews",
+  "hvplot",
+  "ipywidgets",
+  "ipyleaflet",
+  "param",
+  "ipykernel",
+  "jupyter_client",
+  "notebook"
+]
+pre = [
+  "xesmf",
+  "netCDF4",
+  "geopy",
+  "h5py"
+]
+dev = [
+  # Dev tools and testing
+  "pip",
+  "bump-my-version",
+  "watchdog",
+  "flake8",
+  "flake8-alphabetize",
+  "flake8-rst-docstrings",
+  "flit",
+  "tox",
+  "coverage",
+  "coveralls",
+  "pytest",
+  "pytest-cov",
+  "black",
+  "blackdoc",
+  "isort",
+  "ruff",
+  "pre-commit"
+]
+docs = [
+  # Documentation and examples
+  "figanos",
+  "sphinx",
+  "sphinx-codeautolink",
+  "sphinx-copybutton",
+  "sphinx-intl",
+  "sphinx-rtd-theme >=1.0",
+  "nbsphinx",
+  "pandoc",
+  "ipython",
+  "ipykernel",
+  "jupyter_client",
+  "myst-nb"
+]
+
+[project.urls]
+# "Homepage" = "https://portail_ing.readthedocs.io/"
+# "Changelog" = "https://portail_ing.readthedocs.io/en/stable/history.html"
+# "About Ouranos" = "https://www.ouranos.ca/en/"
+"Source" = "https://github.com/sarahclaude/portail_ing"
+"Issue tracker" = "https://github.com/sarahclaude/portail_ing/issues"
+
+[tool]
+
+[tool.black]
+target-version = [
+  "py312"
+]
+
+[tool.bumpversion]
+current_version = "0.1.0"
+commit = true
+commit_args = "--no-verify"
+tag = false
+tag_name = "v{new_version}"
+allow_dirty = false
+parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)(\\-(?P<release>[a-z]+)(\\.(?P<build>\\d+)))?"
+serialize = [
+  "{major}.{minor}.{patch}-{release}.{build}",
+  "{major}.{minor}.{patch}"
+]
+
+[[tool.bumpversion.files]]
+filename = "src/portail_ing/backend/config.yml"
+search = "api_version: {current_version}"
+replace = "api_version: {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "portail_ing/__init__.py"
+search = "__version__ = \"{current_version}\""
+replace = "__version__ = \"{new_version}\""
+
+[[tool.bumpversion.files]]
+filename = "tests/test_portail_ing.py"
+search = "__version__ = \"{current_version}\""
+replace = "__version__ = \"{new_version}\""
+
+[[tool.bumpversion.files]]
+filename = ".cruft.json"
+search = "\"version\": \"{current_version}\""
+replace = "\"version\": \"{new_version}\""
+
+[tool.bumpversion.parts.build]
+independent = false
+
+[tool.bumpversion.parts.release]
+optional_value = "release"
+values = [
+  "dev",
+  "release"
+]
+
+[tool.coverage.run]
+relative_files = true
+include = ["portail_ing/*"]
+omit = ["tests/*.py"]
+
+[tool.flit.sdist]
+include = [
+  ".zenodo.json",
+  "AUTHORS.rst",
+  "CHANGES.rst",
+  "CONTRIBUTING.rst",
+  "LICENSE",
+  "Makefile",
+  "README.rst",
+  "environment-dev.yml",
+  "environment-docs.yml",
+  "docs/_static/_images/*.gif",
+  "docs/_static/_images/*.jpg",
+  "docs/_static/_images/*.png",
+  "docs/_static/_images/*.rst",
+  "docs/Makefile",
+  "docs/conf.py",
+  "docs/make.bat",
+  "tests/*.py",
+  "tox.ini",
+  "src/portail_ing",
+  "src/portail_ing/data/*.json",
+  "src/portail_ing/data/*.nc",
+  "src/portail_ing/data/ssp_likelihoods/*.nc",
+  "src/portail_ing/frontend/*.ipynb",
+  "src/portail_ing/frontend/data/*.csv",
+  "src/portail_ing/risk/*.yml",
+  "panel_pipeline/*.csv",
+  "panel_pipeline/*.ipynb",
+  "panel_pipeline/*.yml",
+  "pre_workflow/*.csv",
+  "pre_workflow/*.ipynb",
+  "pre_workflow/*.json",
+  "pre_workflow/*.py",
+  "pre_workflow/*.yml"
+]
+exclude = [
+  "*.py[co]",
+  "__pycache__",
+  ".coveralls.yml",
+  ".cruft.json",
+  ".editorconfig",
+  ".flake8",
+  ".gitignore",
+  ".pre-commit-config.yaml",
+  ".readthedocs.yml",
+  ".yamllint.yaml",
+  "docs/_*",
+  "docs/apidoc/modules.rst",
+  "docs/apidoc/portail_ing*.rst",
+  "docs/locales"
+]
+
+[tool.isort]
+profile = "black"
+py_version = 311
+
+[tool.mypy]
+python_version = 3.11
+show_error_codes = true
+warn_return_any = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = []
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = [
+  "--verbose",
+  "--color=yes"
+]
+filterwarnings = ["ignore::UserWarning"]
+testpaths = "tests"
+
+[tool.ruff]
+src = ["portail_ing"]
+line-length = 150
+target-version = "py38"
+exclude = [
+  ".eggs",
+  ".git",
+  "build",
+  "docs",
+  "pre_workflow"
+]
+
+[tool.ruff.format]
+line-ending = "auto"
+
+[tool.ruff.lint]
+ignore = [
+  "E501", # ignore "line too long" as we all have big screens
+  "W505", # same
+  "E731" # ignore "do not assign lambda" as we all love lambdas
+]
+# Do not select documentation lint. This ain't a public package.
+select = [
+  "C9",
+  "E",
+  "F",
+  "W"
+]
+
+[tool.ruff.lint.flake8-bandit]
+check-typed-exception = true
+
+[tool.ruff.lint.isort]
+known-first-party = ["portail_ing"]
+case-sensitive = true
+detect-same-package = false
+lines-after-imports = 1
+no-lines-before = ["future", "standard-library"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.lint.per-file-ignores]
+"portail_ing/**/__init__.py" = ["F401", "F403"]
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 180
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"

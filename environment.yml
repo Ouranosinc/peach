@@ -1,0 +1,25 @@
+channels:
+  - https://conda.anaconda.org/conda-forge
+dependencies:
+  - python>=3.9,<3.12
+  - pip=24.0
+  - flit=3.9
+
+  # data science
+  - copulae
+  - lmoments3
+  - numpy>=2.0
+  - numcodecs<=0.15.1
+  - openturns>=1.24
+  - pandas
+  - pyextremes
+  - scipy
+  - xarray<2025.3.0
+  - xclim
+  - xscen>=0.10.1
+  - zarr<3
+  # parameters
+  - param
+  # other:
+  - yaml
+  - s3fs

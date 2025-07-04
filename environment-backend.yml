@@ -1,0 +1,8 @@
+channels:
+  - https://conda.anaconda.org/conda-forge
+dependencies:
+  - starlette
+  - aiofiles
+  - gunicorn
+  - uvicorn[standard] # required for starlette
+  - filelock

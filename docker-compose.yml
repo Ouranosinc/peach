@@ -1,0 +1,114 @@
+secrets:
+  minio_creds:
+    file: ${CREDENTIALS_FILE:-read-only-creds.json}
+
+services:
+  build-docs:
+    build:
+      context: ./docs/factsheets
+    volumes:
+      - documentation:/output:rw
+      - ./docs/factsheets:/input:ro
+    # keep open for future `docker exec` to (re)-build commands:
+    stdin_open: true
+    tty: true
+
+  full: &full
+    profiles: ["build"]
+    build: &full_build
+      context: .
+      args: &full_args
+        # Two mamba environments, one for the backend and one for the frontend.
+        # Set to false to use a unified environment for both.
+        MULTIMAMBA: 1
+        NEW_MAMBA_USER: ${MY_USERNAME:-root}
+        NEW_MAMBA_USER_ID: ${MY_UID:-0}
+        NEW_MAMBA_USER_GID: ${MY_GID:-0}
+        PYGEOAPI_SOURCE: ${PYGEOAPI_SOURCE:-pip}
+        # Change these to your needs.
+        MAMBA_ENV_BACKEND_FILE: environment-backend-full.yml
+        MAMBA_ENV_FRONTEND_FILE: environment-frontend-full.yml
+    volumes:
+      - ./src:/app/src:rw
+    user: ${MY_USERNAME:-root}
+    environment: &full_env
+      WORKSPACE: ${WORKSPACE_DOCKER:-/app/workspace}
+      WORKERS: ${WORKERS:-9}
+      USE_LOCAL_CACHE: ${USE_LOCAL_CACHE:-1}
+
+  frontend: &frontend
+    <<: *full # extend the above
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    volumes:
+      - ./src:/app/src:rw
+      - ${WORKSPACE:-./workspace}:${WORKSPACE_DOCKER:-/app/workspace}:ro
+      - documentation:/app/documentation:ro
+    environment: &frontend_env
+      <<: *full_env
+      SERVICE: frontend # Service in run.sh: frontend or backend
+      # Mamba environment name: frontend or backend
+      ENV_NAME: frontend
+      PORT_EXTERNAL: ${FRONTEND_PORT:-8080}
+      PORT_INTERNAL: 80
+      # approx number of concurrent users
+      PANEL_WORKERS: 9
+      # approx number of concurrent tasks
+      PANEL_THREADS: 5
+      # URL to the backend:
+      BACKEND_URL: http://backend/api
+      FRONTEND_DATA_DIR: /app/src/portail_ing/frontend/data
+      FRONTEND_CONFIG_DIR: /app/src/portail_ing/frontend/config
+      PANEL_ARGS: " --static-dirs docs=/app/documentation"
+    depends_on: ["backend", "build-docs"]
+
+  frontend-dev:
+    <<: *frontend # extend the above
+    profiles: ["dev"]
+    environment:
+      <<: *frontend_env
+      # Auto-reload apps during development:
+      RELOAD: 1
+      # Auto-reload only works for 1 process at a time:
+      PANEL_WORKERS: 1
+      PANEL_ARGS: "--log-level debug --static-dirs docs=/app/documentation"
+      PANEL_ADMIN_LOG_LEVEL: DEBUG
+      BACKEND_URL: http://backend-dev/api
+    depends_on: ["backend-dev", "build-docs"]
+
+  backend: &backend
+    <<: *full # extend the above
+    environment: &backend_env
+      <<: *full_env
+      SERVICE: backend
+      ENV_NAME: backend
+      PORT_EXTERNAL: ${BACKEND_PORT:-8081}
+      OBS_PATTERN: ${OBS_PATTERN}
+      SIM_PATTERN: ${SIM_PATTERN}
+      OBS_IDF_PATTERN: ${OBS_IDF_PATTERN}
+      OBS_WL_PATTERN: ${OBS_WL_PATTERN}
+      SIM_WL_PATTERN: ${SIM_WL_PATTERN}
+      DASK_SCHEDULER: threads
+      DASK_NUM_WORKERS: 6
+      BUCKET_URL: ${BUCKET_URL}
+      BUCKET_NAME: ${BUCKET_NAME}
+      BUCKET_CREDENTIALS_FILE: /run/secrets/minio_creds
+      PYGEOAPI_BASE_URL: ""
+      PYGEOAPI_PREFIX: api
+    secrets:
+      - minio_creds
+    volumes:
+      - ${WORKSPACE:-./workspace}:${WORKSPACE_DOCKER:-/app/workspace}:rw
+      - ./src:/app/src:rw
+    ports:
+      - "${BACKEND_PORT:-8081}:80"
+
+  backend-dev:
+    <<: *backend # extend the above
+    profiles: ["dev"]
+    environment:
+      <<: *backend_env
+      RELOAD: 1
+
+volumes:
+  documentation:

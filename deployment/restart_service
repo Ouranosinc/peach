@@ -1,0 +1,38 @@
+#!/bin/sh -x
+# Restart appropriate service depending on files changed.
+#
+# Handle all services from this same repo.
+#
+# This script should only be used to restart containers, do not use it to
+# modify files, files it touches will have wrong permissions.
+
+
+# Restart matching container only if files under "src/" or "run.sh" change or on
+# first clone when GIT_PREVIOUS_COMMIT_HASH is emtpy.
+# If depends on other specific files in the repo, update the grep line.
+
+if [ -n "`echo "$GIT_CHANGED_FILES" | grep -e docs/factsheets/ -e src/ -e run.sh`" ] \
+    || [ -z "$GIT_PREVIOUS_COMMIT_HASH" ]; then
+    # Container name from "pavics_panel_ouranos_deploy" repo.
+    CONTAINER_NAME_TO_RESTART="portail-ing-frontend"
+    if [ -n "`docker ps --format '{{.Names}}' | grep "$CONTAINER_NAME_TO_RESTART"`" ]; then
+        # if image is running, check if need to rebuild docs:
+        if ([ -n "`echo "$GIT_CHANGED_FILES" | grep -e docs/factsheets/`" ] \
+            || [ -z "$GIT_PREVIOUS_COMMIT_HASH" ]) \
+            && [ -n "`docker ps --format '{{.Names}}' | grep "portail-ing-build-docs"`" ]; then
+            docker exec portail-ing-build-docs bash "/quarto-run/build.sh"
+        fi
+        docker restart "$CONTAINER_NAME_TO_RESTART"
+    fi
+    
+fi
+
+# backend does not need docs:
+if [ -n "`echo "$GIT_CHANGED_FILES" | grep -e src/ -e run.sh`" ] \
+    || [ -z "$GIT_PREVIOUS_COMMIT_HASH" ]; then
+    # Container name from "pavics_panel_ouranos_deploy" repo.
+    CONTAINER_NAME_TO_RESTART="portail-ing-backend"
+    if [ -n "`docker ps --format '{{.Names}}' | grep "$CONTAINER_NAME_TO_RESTART"`" ]; then
+        docker restart "$CONTAINER_NAME_TO_RESTART"
+    fi
+fi

@@ -1,0 +1,11 @@
+channels:
+  - https://conda.anaconda.org/conda-forge
+  - bokeh
+dependencies:
+  - jupyter
+  - watchfiles # for autoreloading
+  # frontend
+  - ipyleaflet
+  - ipywidgets_bokeh
+  - hvplot
+  - panel >= 1.5.5
