@@ -1,5 +1,5 @@
 """
-Joint probability parameters classes for the portail_ing frontend.
+Joint probability parameters classes for the peach frontend.
 
 Note that the 'dist' naming was kept from parent classes, but here it refers to copula families,
 not scipy univariate distributions.
@@ -15,8 +15,8 @@ import xclim as xc
 from lmoments3.distr import gpa
 from xclim.core.formatting import update_history
 
-from portail_ing.frontend.cbcl_utils import define_q, matching_events, wl_norm
-from portail_ing.frontend.copula import (
+from peach.frontend.cbcl_utils import define_q, matching_events, wl_norm
+from peach.frontend.copula import (
     check_param,
     copulae_copula,
     optim_options,
@@ -25,16 +25,16 @@ from portail_ing.frontend.copula import (
     ot_copula,
     pobs,
 )
-from portail_ing.frontend.parameters import IndicatorDA, IndicatorObsDA, scen_weights
-from portail_ing.frontend.wl_parameters import (
+from peach.frontend.parameters import IndicatorDA, IndicatorObsDA, scen_weights
+from peach.frontend.wl_parameters import (
     IndicatorObsWL,
     IndicatorSimWL,
     add_trend,
     scale_pareto,
 )
-from portail_ing.risk import bootstrap
-from portail_ing.risk.priors import model_weights_from_sherwood
-from portail_ing.risk.xmixture import XMixtureDistribution
+from peach.risk import bootstrap
+from peach.risk.priors import model_weights_from_sherwood
+from peach.risk.xmixture import XMixtureDistribution
 
 copulas = ["gaussian", "student", "clayton", "frank", "gumbel", "indep"]
 scipy_dists = ["norm", "t", "gamma", "genextreme", "lognorm", "uniform"]

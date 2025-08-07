@@ -57,8 +57,8 @@ services:
       PANEL_THREADS: 5
       # URL to the backend:
       BACKEND_URL: http://backend/api
-      FRONTEND_DATA_DIR: /app/src/portail_ing/frontend/data
-      FRONTEND_CONFIG_DIR: /app/src/portail_ing/frontend/config
+      FRONTEND_DATA_DIR: /app/src/peach/frontend/data
+      FRONTEND_CONFIG_DIR: /app/src/peach/frontend/config
       PANEL_ARGS: " --static-dirs docs=/app/documentation"
     depends_on: ["backend", "build-docs"]
 

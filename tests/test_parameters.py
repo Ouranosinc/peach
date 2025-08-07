@@ -1,5 +1,5 @@
 # ruff: noqa: D103
-"""Tests for portail_ing.src.parameters."""
+"""Tests for peach.src.parameters."""
 import os
 import time
 
@@ -9,8 +9,8 @@ import pytest
 import requests
 import xarray as xr
 
-import portail_ing.frontend as fe
-import portail_ing.frontend.parameters as p
+import peach.frontend as fe
+import peach.frontend.parameters as p
 
 
 def test_IndexingIndicatorArguments():

@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=portail_ing
+set SPHINXPROJ=peach
 
 if "%1" == "" goto help
 

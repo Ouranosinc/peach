@@ -2,9 +2,9 @@
 
 import panel as pn
 
-import portail_ing.frontend.parameters as parameters
-import portail_ing.frontend.views as views
-from portail_ing.common import config
+import peach.frontend.parameters as parameters
+import peach.frontend.views as views
+from peach.common import config
 
 pn.extension(
     "terminal",
@@ -113,7 +113,7 @@ import panel as pn
 
 pn.extension('tabulator', 'terminal', "ipywidgets", sizing_mode="stretch_width", console_output='disable', notifications=True)
 
-from portail_ing.frontend import gui_serve, parameters, views
+from peach.frontend import gui_serve, parameters, views
 
 reload(parameters)
 reload(views)

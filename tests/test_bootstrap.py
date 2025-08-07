@@ -1,7 +1,7 @@
 import numpy as np
 import xarray as xr
 
-from portail_ing.risk.bootstrap import from_quantile, resample
+from peach.risk.bootstrap import from_quantile, resample
 
 
 def test_resample():

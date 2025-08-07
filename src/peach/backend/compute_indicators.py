@@ -18,10 +18,10 @@ import xclim
 from filelock import FileLock, Timeout
 from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 
-from portail_ing.common import config
+from peach.common import config
 
 # Load water level and IDF indicators into xclim registry
-from portail_ing.risk import idf, wl  # noqa: F401
+from peach.risk import idf, wl  # noqa: F401
 
 # Dask config set in docker-compose.yml
 xclim.set_options(metadata_locales=["fr"])

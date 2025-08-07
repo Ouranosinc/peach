@@ -6,14 +6,14 @@ import xarray as xr
 import xclim as xc
 from scipy.stats import norm
 
-from portail_ing.frontend.parameters import Analysis, HazardMatrix
-from portail_ing.frontend.wl_parameters import (
+from peach.frontend.parameters import Analysis, HazardMatrix
+from peach.frontend.wl_parameters import (
     IndicatorObsWL,
     IndicatorRefWL,
     IndicatorSimWL,
     scale_pareto,
 )
-from portail_ing.risk import bootstrap
+from peach.risk import bootstrap
 
 
 @pytest.mark.skipif(

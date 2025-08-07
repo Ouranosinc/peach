@@ -38,7 +38,7 @@ clean-build: ## remove build artifacts
 	find . -name '*.egg' -exec rm -f {} +
 
 clean-docs: ## remove docs artifacts
-	rm -f docs/apidoc/portail_ing*.rst
+	rm -f docs/apidoc/peach*.rst
 	rm -f docs/apidoc/modules.rst
 	rm -fr docs/locales/fr/LC_MESSAGES/*.mo
 	$(MAKE) -C docs clean
@@ -59,13 +59,13 @@ clean-envs: ## remove merged envs
 	rm -f environment-backend-full.yml environment-frontend-full.yml environment-full.yml environment-dev-full.yml
 
 lint/flake8: ## check style with flake8
-	ruff portail_ing tests
-	flake8 --config=.flake8 portail_ing tests
+	ruff peach tests
+	flake8 --config=.flake8 peach tests
 
 lint/black: ## check style with black
-	black --check portail_ing tests
-	blackdoc --check portail_ing docs
-	isort --check portail_ing tests
+	black --check peach tests
+	blackdoc --check peach docs
+	isort --check peach tests
 
 lint: lint/flake8 lint/black ## check style
 
@@ -76,7 +76,7 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source portail_ing -m pytest
+	coverage run --source peach -m pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
@@ -85,7 +85,7 @@ initialize-translations: clean-docs ## initialize translations, ignoring autodoc
 	sphinx-intl update -p docs/_build/gettext -d docs/locales -l fr
 
 autodoc: clean-docs ## create sphinx-apidoc files:
-	sphinx-apidoc -o docs/apidoc --private --module-first src/portail_ing
+	sphinx-apidoc -o docs/apidoc --private --module-first src/peach
 
 linkcheck: autodoc ## run checks over all external links found throughout the documentation
 	$(MAKE) -C docs linkcheck

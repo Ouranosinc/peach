@@ -6,16 +6,16 @@ import param
 import xarray as xr
 import xclim as xc
 
-from portail_ing.common import config
-from portail_ing.common.logger import get_logger
-from portail_ing.frontend.parameters import (
+from peach.common import config
+from peach.common.logger import get_logger
+from peach.frontend.parameters import (
     TYPE_MAP,
     VARIABLE_MAPPING,
     IndicatorDA,
     IndicatorRefDA,
     IndicatorSimDA,
 )
-from portail_ing.risk.priors import members
+from peach.risk.priors import members
 
 logger = get_logger(__name__)
 

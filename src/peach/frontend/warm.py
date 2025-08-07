@@ -2,7 +2,7 @@
 
 import panel as pn
 
-from portail_ing.common.logger import get_logger
+from peach.common.logger import get_logger
 
 logger = get_logger("app")
 logger.info("Loading warm.py")
@@ -10,7 +10,7 @@ logger.info("Loading warm.py")
 import xclim  # noqa: F401, E402
 import xscen  # noqa: F401, E402
 
-from portail_ing.common import config as conf  # noqa: E402
+from peach.common import config as conf  # noqa: E402
 
 pn.extension(
     "terminal",

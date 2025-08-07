@@ -37,7 +37,7 @@ elif [ "${SERVICE}" = "frontend" ]; then
         PANEL_WORKERS=1
     fi
     my_function () {
-        SETUP_SCRIPT="src/portail_ing/frontend/warm.py"
+        SETUP_SCRIPT="src/peach/frontend/warm.py"
 
         python -m panel serve ${PANEL_FILES} \
             --warm \

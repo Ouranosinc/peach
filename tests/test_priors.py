@@ -1,6 +1,6 @@
 import numpy as np
 
-from portail_ing.risk.priors import (
+from peach.risk.priors import (
     members,
     model_weights_from_sherwood,
     scenario_weights_from_iams,

@@ -2,11 +2,11 @@ import numpy as np
 import xarray as xr
 import xclim as xc
 
-from portail_ing.risk import xmixture
+from peach.risk import xmixture
 
 
 def test_weighted_indicators(synthetic_dataset_fut):
-    from portail_ing.risk.priors import weights
+    from peach.risk.priors import weights
 
     ds = synthetic_dataset_fut
     dims = ("source_id", "experiment_id")

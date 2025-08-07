@@ -128,7 +128,7 @@ wl_pot = Generic(
 )
 
 translation = {
-    "portail_ing.risk.wl.WL_MAX": {
+    "peach.risk.wl.WL_MAX": {
         "long_name": "Niveau d'eau horaire maximal",
         "description": "Niveau d'eau maximal horaire",
         "abstract": "Niveau d'eau horaire maximal",

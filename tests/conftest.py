@@ -3,11 +3,11 @@ from pathlib import Path
 import pytest
 import yaml
 
-from portail_ing import test_utils as tu
-from portail_ing.common import config as ping_config
+from peach import test_utils as tu
+from peach.common import config as ping_config
 
 ROOT = Path(__file__).parent.parent
-CONFIG = ROOT / "src" / "portail_ing" / "frontend" / "config"
+CONFIG = ROOT / "src" / "peach" / "frontend" / "config"
 
 
 @pytest.fixture
@@ -72,7 +72,7 @@ def synthetic_ewl_ds_lea():
 
 @pytest.fixture(scope="session")
 def idf_obs(tmp_workspace):
-    from portail_ing.backend.compute_indicators import ComputeIDFProcessorOBS
+    from peach.backend.compute_indicators import ComputeIDFProcessorOBS
 
     # Make IDF Obs
     p = ComputeIDFProcessorOBS({"name": "Test-IDF-Obs"})
@@ -91,7 +91,7 @@ def idf_obs(tmp_workspace):
 
 @pytest.fixture(scope="session")
 def idf_sim(tmp_workspace):
-    from portail_ing.backend.compute_indicators import ComputeIDFProcessorSIM
+    from peach.backend.compute_indicators import ComputeIDFProcessorSIM
 
     # Make IDF Obs
     p = ComputeIDFProcessorSIM({"name": "Test-IDF-Sim"})
@@ -108,7 +108,7 @@ def idf_sim(tmp_workspace):
 
 @pytest.fixture(scope="session")
 def wl_pot_obs(tmp_workspace):
-    from portail_ing.backend.compute_indicators import ComputeWaterLevelProcessorOBS
+    from peach.backend.compute_indicators import ComputeWaterLevelProcessorOBS
 
     # Make IDF Obs
     p = ComputeWaterLevelProcessorOBS({"name": "Test-WL-Obs"})
@@ -125,7 +125,7 @@ def wl_pot_obs(tmp_workspace):
 
 @pytest.fixture(scope="session")
 def wl_pot_sim(tmp_workspace):
-    from portail_ing.backend.compute_indicators import ComputeWaterLevelProcessorSIM
+    from peach.backend.compute_indicators import ComputeWaterLevelProcessorSIM
 
     # Make IDF Obs
     p = ComputeWaterLevelProcessorSIM({"name": "Test-WL-Sim"})
@@ -161,7 +161,7 @@ def tas_sim(tmp_path_factory):
 
 @pytest.fixture(scope="session")
 def hdd_series(tmp_workspace, tas_obs, tas_sim):
-    from portail_ing.backend.compute_indicators import (
+    from peach.backend.compute_indicators import (
         ComputeIndicatorsProcessorOBS,
         ComputeIndicatorsProcessorSIM,
     )

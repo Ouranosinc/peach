@@ -7,10 +7,10 @@ import time
 import xclim
 from pygeoapi.process.base import BaseProcessor
 
-from portail_ing.common import config
+from peach.common import config
 
 # TODO move params to common
-from portail_ing.frontend import parameters as params
+from peach.frontend import parameters as params
 
 # Load water level and IDF indicators into xclim registry
 

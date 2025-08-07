@@ -3,12 +3,12 @@ import os
 import pytest
 import xarray as xr
 
-from portail_ing.frontend.idf_parameters import (
+from peach.frontend.idf_parameters import (
     IndicatorObsIDF,
     IndicatorRefIDF,
     IndicatorSimIDF,
 )
-from portail_ing.frontend.parameters import Analysis, HazardMatrix
+from peach.frontend.parameters import Analysis, HazardMatrix
 
 
 @pytest.mark.skipif(

@@ -6,7 +6,7 @@ To use the portail-ing risk analysis in a project:
 
 .. code:: python
 
-    from portail_ing import risk
+    from peach import risk
 
 The main functions currently available are:
 
