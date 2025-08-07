@@ -9,7 +9,7 @@ Installation
 
     .. code-block:: console
 
-        $ python -m pip install portail_ing
+        $ python -m pip install peach
 
     This is the preferred method to install portail-ing, as it will always install the most recent stable release.
 

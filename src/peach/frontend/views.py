@@ -48,8 +48,8 @@ from ipyleaflet import (
 from ipywidgets import HTML, Button, FloatText, HBox, IntSlider, Layout, VBox
 from panel.viewable import Viewable
 
-from portail_ing.common import config as global_config
-from portail_ing.common.logger import get_logger
+from peach.common import config as global_config
+from peach.common.logger import get_logger
 
 from . import parameters as p
 
@@ -1815,13 +1815,13 @@ class Application(pn.viewable.Viewer):
         target.active = [event.new]
 
     def to_dict(self, mode="results"):
-        import portail_ing
+        import peach
 
         if mode == "results":
             meta = {
                 "date": dt.datetime.now().isoformat(),
                 "locale": self.global_.locale,
-                "version": portail_ing.__version__,
+                "version": peach.__version__,
                 "contact": "Sarah-Claude Bourdeau-Goulet <bourdeau-goulet.sarah-claude@ouranos.ca>",
                 "reference": "TODO",
                 "license": "CC-BY-4.0",

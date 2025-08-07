@@ -153,15 +153,15 @@ Tips
 
 To run a subset of tests::
 
-    $ pytest tests.test_portail_ing
+    $ pytest tests.test_peach
 
 To run specific code style checks::
 
-    $ black --check portail_ing tests
-    $ isort --check portail_ing tests
-    $ blackdoc --check portail_ing docs
-    $ ruff portail_ing tests
-    $ flake8 portail_ing tests
+    $ black --check peach tests
+    $ isort --check peach tests
+    $ blackdoc --check peach docs
+    $ ruff peach tests
+    $ flake8 peach tests
 
 To get ``black``, ``isort``, ``blackdoc``, ``ruff``, and ``flake8`` (with plugins ``flake8-alphabetize`` and ``flake8-rst-docstrings``) simply install them with `pip` (or `conda`) into your environment.
 

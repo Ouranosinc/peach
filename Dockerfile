@@ -121,7 +121,7 @@ COPY --chown=${MAMBA_USER}:${MAMBA_USER} pyproject.toml *.rst LICENSE /app/
 #RUN pip install ${PIP_ARGS} .
 
 ### Panel Args: ###
-ENV PANEL_FILES=/app/src/portail_ing/frontend/gui_serve.py
+ENV PANEL_FILES=/app/src/peach/frontend/gui_serve.py
 ENV PANEL_ARGS=""
 ENV PANEL_WORKERS="${PANEL_WORKERS:-5}"
 ENV PANEL_THREADS="${PANEL_THREADS:-5}"
@@ -134,7 +134,7 @@ ENV WORKSPACE="/workspace"
 
 # PyGeoAPI Environment Variables:
 # Config files:
-ENV PYGEOAPI_CONFIG=/app/src/portail_ing/backend/config.yml PYGEOAPI_OPENAPI=/app/open_api.yaml
+ENV PYGEOAPI_CONFIG=/app/src/peach/backend/config.yml PYGEOAPI_OPENAPI=/app/open_api.yaml
 # URL (for internal links)
 ENV PYGEOAPI_BASE_URL="localhost:${PORT_EXTERNAL}"
 ENV PYGEOAPI_HOST=0.0.0.0 PYGEOAPI_PORT=${PORT_INTERNAL}
@@ -146,7 +146,7 @@ ENV WORKERS="${WORKERS:-9}"
 ENV GUNICORN_ARGS="--max-requests 60 --graceful-timeout 100"
 
 # pygeoapi.flask_app:APP
-ENV GUNICORN="gunicorn  pygeoapi.starlette_app:APP -k uvicorn.workers.UvicornH11Worker -c /app/src/portail_ing/backend/gunicorn.conf.py -w ${WORKERS} -b ${PYGEOAPI_HOST}:${PYGEOAPI_PORT} ${GUNICORN_ARGS}"
+ENV GUNICORN="gunicorn  pygeoapi.starlette_app:APP -k uvicorn.workers.UvicornH11Worker -c /app/src/peach/backend/gunicorn.conf.py -w ${WORKERS} -b ${PYGEOAPI_HOST}:${PYGEOAPI_PORT} ${GUNICORN_ARGS}"
 
 COPY --chown=${MAMBA_USER}:${MAMBA_USER} run.sh /app/
 CMD bash -c ./run.sh

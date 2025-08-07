@@ -201,7 +201,7 @@ def save_idf_regions(path):
 
     from scipy.spatial import KDTree
 
-    from portail_ing import frontend
+    from peach import frontend
 
     # Read region data from Guillaume Talbot
     ds = xr.open_dataset(path)
@@ -216,7 +216,7 @@ def save_idf_regions(path):
     sv_path = (
         Path(__file__).parent.parent
         / "src"
-        / "portail_ing"
+        / "peach"
         / "frontend"
         / "data"
         / "stations_variables.csv"

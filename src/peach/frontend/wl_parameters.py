@@ -12,16 +12,16 @@ import xarray as xr
 import xclim as xc
 from lmoments3.distr import gpa
 
-from portail_ing.common import config
-from portail_ing.frontend.cbcl_utils import wl_norm
-from portail_ing.frontend.parameters import (
+from peach.common import config
+from peach.frontend.cbcl_utils import wl_norm
+from peach.frontend.parameters import (
     TYPE_MAP,
     VARIABLE_MAPPING,
     IndicatorDA,
     scen_weights,
 )
-from portail_ing.risk import bootstrap
-from portail_ing.risk.xmixture import XMixtureDistribution
+from peach.risk import bootstrap
+from peach.risk.xmixture import XMixtureDistribution
 
 """
 # Design considerations

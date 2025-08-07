@@ -47,15 +47,15 @@ from shapely.geometry import Point
 from xclim.core.formatting import update_history
 from xclim.core.units import units as xu
 
-from portail_ing.common import config as global_config
-from portail_ing.common.logger import get_logger
-from portail_ing.common.request import AsyncJob, JobState, check_backend
-from portail_ing.risk.priors import (
+from peach.common import config as global_config
+from peach.common.logger import get_logger
+from peach.common.request import AsyncJob, JobState, check_backend
+from peach.risk.priors import (
     members,
     model_weights_from_sherwood,
     scenario_weights_from_iams,
 )
-from portail_ing.risk.xmixture import XMixtureDistribution
+from peach.risk.xmixture import XMixtureDistribution
 
 
 def ddict():
@@ -1964,7 +1964,7 @@ class IndicatorObsDA(IndicatorDA):
     def _ll(self, params, sample) -> xr.DataArray:
         """Return the log-likelihood of the distribution."""
         # TODO: Replace by dist_method to shrink code base ?
-        from portail_ing.risk.mixture import parametric_logpdf as logpdf
+        from peach.risk.mixture import parametric_logpdf as logpdf
 
         return logpdf(params, v=sample).sum(dim="logpdf")
 
@@ -2251,6 +2251,7 @@ class IndicatorRefDA(IndicatorSimDA):
     @property
     def period(self):
         return self.obs.period
+
 
     @staticmethod
     def ks(obs, ref, level=0.05, rdim="tr") -> xr.DataArray:

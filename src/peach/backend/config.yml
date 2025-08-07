@@ -148,33 +148,33 @@ resources:
     compute-indicators-obs:
         type: process
         processor:
-            name: portail_ing.backend.compute_indicators.ComputeIndicatorsProcessorOBS
+            name: peach.backend.compute_indicators.ComputeIndicatorsProcessorOBS
     compute-indicators-sim:
         type: process
         processor:
-            name: portail_ing.backend.compute_indicators.ComputeIndicatorsProcessorSIM
+            name: peach.backend.compute_indicators.ComputeIndicatorsProcessorSIM
     compute-indicators-wl-obs:
         type: process
         processor:
-            name: portail_ing.backend.compute_indicators.ComputeWaterLevelProcessorOBS
+            name: peach.backend.compute_indicators.ComputeWaterLevelProcessorOBS
     compute-indicators-wl-sim:
         type: process
         processor:
-            name: portail_ing.backend.compute_indicators.ComputeWaterLevelProcessorSIM
+            name: peach.backend.compute_indicators.ComputeWaterLevelProcessorSIM
     compute-indicators-idf-obs:
         type: process
         processor:
-            name: portail_ing.backend.compute_indicators.ComputeIDFProcessorOBS
+            name: peach.backend.compute_indicators.ComputeIDFProcessorOBS
     compute-indicators-idf-sim:
         type: process
         processor:
-            name: portail_ing.backend.compute_indicators.ComputeIDFProcessorSIM
+            name: peach.backend.compute_indicators.ComputeIDFProcessorSIM
     compute-hazard-thresholds:
         type: process
         processor:
-            name: portail_ing.backend.compute_hazardthreshold.ComputeHazardThreshold
+            name: peach.backend.compute_hazardthreshold.ComputeHazardThreshold
 
     echo:
         type: process
         processor:
-            name: portail_ing.backend.echo.EchoProcessor
+            name: peach.backend.echo.EchoProcessor

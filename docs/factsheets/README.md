@@ -7,7 +7,7 @@ To render factsheets in HTML,
 
 To serve them in the Panel app, what I've been able to do so far is hackish...
 
-1. Create `assets` directory in `src/portail_ing/frontend/`
+1. Create `assets` directory in `src/peach/frontend/`
 2. Within `assets`, create symlinks to the HTML build directories of Quarto
    ```bash
    fr -> docs/factsheets/fr/_book/

@@ -11,8 +11,8 @@ import xarray as xr
 
 pytest.importorskip("copulae")
 
-from portail_ing.frontend.cbcl_utils import define_q, matching_events  # noqa: E402
-from portail_ing.frontend.copula import ot_marginal  # noqa: E402
+from peach.frontend.cbcl_utils import define_q, matching_events  # noqa: E402
+from peach.frontend.copula import ot_marginal  # noqa: E402
 
 
 def test_define_q():

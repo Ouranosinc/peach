@@ -5,7 +5,7 @@ import xarray as xr
 
 # This is just testing the import. The backend computations are included in some of the pytest fixtures.
 
-
+@pytest.mark.online
 @pytest.mark.skipif(
     os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
 )
@@ -20,15 +20,13 @@ def test_translation(idf_obs, idf_sim):
     assert "description_fr" in da.attrs
 
 
-@pytest.mark.skipif(
-    os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
-)
 def test_hdd(hdd_series):
     obs, sim = hdd_series
     da = xr.open_dataarray(obs, engine="zarr")
     assert da.attrs["id"] == "HEATING_DEGREE_DAYS"
 
 
+@pytest.mark.online
 @pytest.mark.skipif(
     os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
 )

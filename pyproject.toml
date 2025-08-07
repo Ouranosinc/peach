@@ -3,7 +3,7 @@ requires = ["flit_core >=3.8,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "portail_ing"
+name = "peach"
 authors = [
   {name = "Sarah-Claude Bourdeau-Goulet", email = "bourdeau-goulet.sarah-claude@ouranos.ca"},
   {name = "David Huard", email = "huard.david@ouranos.ca"},
@@ -15,7 +15,7 @@ maintainers = [
 ]
 readme = {file = "README.rst", content-type = "text/x-rst"}
 requires-python = ">=3.9,<3.12"
-keywords = ["portail_ing"]
+keywords = ["peach"]
 license = {file = "LICENSE"}
 classifiers = [
   "Development Status :: 2 - Pre-Alpha",
@@ -104,11 +104,11 @@ docs = [
 ]
 
 [project.urls]
-# "Homepage" = "https://portail_ing.readthedocs.io/"
-# "Changelog" = "https://portail_ing.readthedocs.io/en/stable/history.html"
+# "Homepage" = "https://peach.readthedocs.io/"
+# "Changelog" = "https://peach.readthedocs.io/en/stable/history.html"
 # "About Ouranos" = "https://www.ouranos.ca/en/"
-"Source" = "https://github.com/sarahclaude/portail_ing"
-"Issue tracker" = "https://github.com/sarahclaude/portail_ing/issues"
+"Source" = "https://github.com/sarahclaude/peach"
+"Issue tracker" = "https://github.com/sarahclaude/peach/issues"
 
 [tool]
 
@@ -131,17 +131,17 @@ serialize = [
 ]
 
 [[tool.bumpversion.files]]
-filename = "src/portail_ing/backend/config.yml"
+filename = "src/peach/backend/config.yml"
 search = "api_version: {current_version}"
 replace = "api_version: {new_version}"
 
 [[tool.bumpversion.files]]
-filename = "portail_ing/__init__.py"
+filename = "peach/__init__.py"
 search = "__version__ = \"{current_version}\""
 replace = "__version__ = \"{new_version}\""
 
 [[tool.bumpversion.files]]
-filename = "tests/test_portail_ing.py"
+filename = "tests/test_peach.py"
 search = "__version__ = \"{current_version}\""
 replace = "__version__ = \"{new_version}\""
 
@@ -162,7 +162,7 @@ values = [
 
 [tool.coverage.run]
 relative_files = true
-include = ["portail_ing/*"]
+include = ["peach/*"]
 omit = ["tests/*.py"]
 
 [tool.flit.sdist]
@@ -185,13 +185,13 @@ include = [
   "docs/make.bat",
   "tests/*.py",
   "tox.ini",
-  "src/portail_ing",
-  "src/portail_ing/data/*.json",
-  "src/portail_ing/data/*.nc",
-  "src/portail_ing/data/ssp_likelihoods/*.nc",
-  "src/portail_ing/frontend/*.ipynb",
-  "src/portail_ing/frontend/data/*.csv",
-  "src/portail_ing/risk/*.yml",
+  "src/peach",
+  "src/peach/data/*.json",
+  "src/peach/data/*.nc",
+  "src/peach/data/ssp_likelihoods/*.nc",
+  "src/peach/frontend/*.ipynb",
+  "src/peach/frontend/data/*.csv",
+  "src/peach/risk/*.yml",
   "panel_pipeline/*.csv",
   "panel_pipeline/*.ipynb",
   "panel_pipeline/*.yml",
@@ -214,7 +214,7 @@ exclude = [
   ".yamllint.yaml",
   "docs/_*",
   "docs/apidoc/modules.rst",
-  "docs/apidoc/portail_ing*.rst",
+  "docs/apidoc/peach*.rst",
   "docs/locales"
 ]
 
@@ -239,9 +239,13 @@ addopts = [
 ]
 filterwarnings = ["ignore::UserWarning"]
 testpaths = "tests"
-
+markers = [
+  "online: marks tests that require an internet connection",
+  "backend: markes tests that require a local backend server running",
+  ]
+  
 [tool.ruff]
-src = ["portail_ing"]
+src = ["peach"]
 line-length = 150
 target-version = "py38"
 exclude = [
@@ -273,7 +277,7 @@ select = [
 check-typed-exception = true
 
 [tool.ruff.lint.isort]
-known-first-party = ["portail_ing"]
+known-first-party = ["peach"]
 case-sensitive = true
 detect-same-package = false
 lines-after-imports = 1
@@ -283,7 +287,7 @@ no-lines-before = ["future", "standard-library"]
 max-complexity = 15
 
 [tool.ruff.lint.per-file-ignores]
-"portail_ing/**/__init__.py" = ["F401", "F403"]
+"peach/**/__init__.py" = ["F401", "F403"]
 
 [tool.ruff.lint.pycodestyle]
 max-doc-length = 180

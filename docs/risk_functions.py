@@ -1,19 +1,19 @@
 from xclim.core.formatting import update_history
-from portail_ing.risk.mixture import parametric_logpdf as logpdf
+from peach.risk.mixture import parametric_logpdf as logpdf
 import xarray as xr
 import numpy as np
 from scipy import stats
 import xclim as xc
 import pandas as pd
-from portail_ing.risk.priors import (
+from peach.risk.priors import (
     members,
     model_weights_from_sherwood,
     scenario_weights_from_iams,
 )
-from portail_ing.risk.xmixture import XMixtureDistribution
-from portail_ing.frontend.parameters import pievc
+from peach.risk.xmixture import XMixtureDistribution
+from peach.frontend.parameters import pievc
 
-# This code is based on the portail_ing.front.parameters without GUI parts 
+# This code is based on the peach.front.parameters without GUI parts 
 
 class metrics_da:
     

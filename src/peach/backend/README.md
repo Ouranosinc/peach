@@ -17,14 +17,14 @@ The API is automatically documented at `http://localhost:8071/openapi?f=html`.
   - If `status` is "successful", the job is done or failed.
   - If `status` is "failed", then try again. Most likely, the worker was terminated (because it reached it's max request number) while computing.
 4. Call `http://localhost:8071/jobs/<job id>/results?f=json` to get the results in json.
-  - If the `id` is "links", then `value` is an absolute path for the zarr from inside the backend's container. At the time of writing this, the top folder `workspace` corresponds to folder `workspace` in the source folder, so `Path('portail-ing/') / value[1:]` should give the proper path.
+  - If the `id` is "links", then `value` is an absolute path for the zarr from inside the backend's container. At the time of writing this, the top folder `workspace` corresponds to folder `workspace` in the source folder, so `Path('peach/') / value[1:]` should give the proper path.
 
 ## Configuration
 
 See config.yml for configuration options. https://docs.pygeoapi.io/en/stable/index.html
 
 ## Installation
-In env with `portail_ing`:
+In env with `peach`:
 ```bash
 pip install 'pydantic<2'
 pip install pygeoapi

@@ -4,7 +4,7 @@ import xclim as xc
 
 pytest.importorskip("copulae")
 
-from portail_ing.frontend.jp_parameters import (  # noqa: E402
+from peach.frontend.jp_parameters import (  # noqa: E402
     IndicatorObsJP,
     IndicatorObsPRCOND,
     IndicatorObsPRPOT,
@@ -14,11 +14,11 @@ from portail_ing.frontend.jp_parameters import (  # noqa: E402
     IndicatorSimPRPOT,
     IndicatorSimWLCOND,
 )
-from portail_ing.frontend.wl_parameters import (  # noqa: E402
+from peach.frontend.wl_parameters import (  # noqa: E402
     IndicatorObsWL,
     IndicatorSimWL,
 )
-from portail_ing.risk.xmixture import XMixtureDistribution  # noqa: E402
+from peach.risk.xmixture import XMixtureDistribution  # noqa: E402
 
 
 @pytest.mark.parametrize("synthetic_jp_ds", ["pr_wlcond"], indirect=True)

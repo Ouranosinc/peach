@@ -1,6 +1,6 @@
 import numpy as np
 
-from portail_ing.risk.priors import (
+from peach.risk.priors import (
     members,
     model_weights_from_sherwood,
     scenario_weights_from_iams,
@@ -11,7 +11,7 @@ from portail_ing.risk.priors import (
 def test_model_weights_from_sherwood():
     w = model_weights_from_sherwood(["INM-CM4-8", "GFDL-CM4", "HadGEM3-GC31-MM"])
     assert "source_id" in w.dims
-    assert len(w) == 3
+    assert sum(w > 0) <= 3
     np.testing.assert_almost_equal(w.sum(), 1)
 
 

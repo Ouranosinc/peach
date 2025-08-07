@@ -11,7 +11,7 @@ import yaml
 import warnings
 
 SERVICE = os.environ.get("SERVICE")
-# LOCAL DIR is the root of the python source (src/portail_ing/)
+# LOCAL DIR is the root of the python source (src/peach/)
 LOCAL_DIR = Path(__file__).parent.parent.resolve()
 CONFIG_DIR = Path(
     os.environ.get("FRONTEND_CONFIG_DIR", LOCAL_DIR / "frontend" / "config")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Tests for `portail_ing` package."""
+"""Tests for `peach` package."""
 
 import pathlib
 import pkgutil
@@ -10,7 +10,7 @@ import pytest
 import xarray as xr
 from scipy import stats
 
-from portail_ing.risk import base
+from peach.risk import base
 
 @pytest.fixture
 def response():
@@ -30,7 +30,7 @@ def test_content(response):
 
 def test_package_metadata():
     """Test the package metadata."""
-    project = pkgutil.get_loader("portail_ing").get_filename()
+    project = pkgutil.get_loader("peach").get_filename()
 
     metadata = pathlib.Path(project).resolve().parent.joinpath("__init__.py")
 

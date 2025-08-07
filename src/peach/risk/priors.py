@@ -223,7 +223,7 @@ def scenario_weights_from_iams(weights=None):
     out = da.weighted(weights).mean("source")
 
     # Likelihoods are estimated every 10 years. Interpolate at yearly frequency to avoid jumps.
-    t = xr.cftime_range("2015", "2101", freq="YE").to_datetimeindex(time_unit="us")
+    t = xr.date_range("2015", "2101", freq="YE", use_cftime=True).to_datetimeindex(time_unit="us")
     return out.interp(time=t)
 
 

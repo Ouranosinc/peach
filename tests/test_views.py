@@ -3,8 +3,8 @@ import os
 import pandas as pd
 import pytest
 
-import portail_ing.frontend.parameters as p
-import portail_ing.frontend.views as v
+import peach.frontend.parameters as p
+import peach.frontend.views as v
 
 # For now these tests are just smoke tests
 # TODO: Save the plots and compare them to reference images
@@ -33,6 +33,7 @@ def test_station_and_indicator_list_viewer(station_data, config):
     ).__panel__()
 
 
+@pytest.mark.online
 @pytest.mark.skipif(
     os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
 )
@@ -65,8 +66,8 @@ def test_analysis_WL_viewer(synthetic_ewl_ds, station_data):
     wl, wl_pot, sl, stn_thresh = synthetic_ewl_ds
 
     # import xarray as xr
-    # wl_pot = xr.open_dataset("src/portail_ing/risk/cbcl_workflow/test_data/00490_wl_pot.nc").wl_pot
-    # sl = xr.open_dataset("src/portail_ing/risk/cbcl_workflow/test_data/00490_sl.nc").sl_delta
+    # wl_pot = xr.open_dataset("src/peach/risk/cbcl_workflow/test_data/00490_wl_pot.nc").wl_pot
+    # sl = xr.open_dataset("src/peach/risk/cbcl_workflow/test_data/00490_sl.nc").sl_delta
     #
     # wl_pot.attrs["long_name"] = "relative sea level"
     # wl_pot = wl_pot.rename(time_ref='time')
