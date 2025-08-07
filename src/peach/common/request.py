@@ -1,5 +1,5 @@
 # Request
-# A simple class to handle requesting to the async backend of portail-ing
+# A simple class to handle requesting to the async backend of peach
 import logging
 import time
 from enum import IntEnum

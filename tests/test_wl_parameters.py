@@ -16,6 +16,7 @@ from peach.frontend.wl_parameters import (
 from peach.risk import bootstrap
 
 
+@pytest.mark.online
 @pytest.mark.skipif(
     os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
 )

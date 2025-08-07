@@ -2252,12 +2252,6 @@ class IndicatorRefDA(IndicatorSimDA):
     def period(self):
         return self.obs.period
 
-    @param.depends("data", watch=True, on_init=True)
-    def _update_ts(self):
-        """Set the time series to be displayed."""
-        # For the reference period, select only one SSP, since before 2015 they are all identical. 
-        # After 2015 we could have multiple simulations, but this seems to be more complicated than it's worth.
-        self.ts = self.data.isel(experiment_id=0)
 
     @staticmethod
     def ks(obs, ref, level=0.05, rdim="tr") -> xr.DataArray:

@@ -239,7 +239,11 @@ addopts = [
 ]
 filterwarnings = ["ignore::UserWarning"]
 testpaths = "tests"
-
+markers = [
+  "online: marks tests that require an internet connection",
+  "backend: markes tests that require a local backend server running",
+  ]
+  
 [tool.ruff]
 src = ["peach"]
 line-length = 150

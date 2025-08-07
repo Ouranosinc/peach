@@ -142,6 +142,7 @@ def test_IndicatorList():
     assert "thresh" in indl.selected[uuid_2].args.param
 
 
+@pytest.mark.backend
 def test_IndicatorList_compute():
     try:
         requests.get("http://localhost:8081/api/openapi")
@@ -180,6 +181,7 @@ def test_analysis_hdd(hdd_series, station_data):
     assert a.param.ref_period.label == "Période de référence"
 
 
+@pytest.mark.online
 @pytest.mark.skipif(
     os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
 )

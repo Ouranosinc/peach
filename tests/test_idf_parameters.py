@@ -11,6 +11,7 @@ from peach.frontend.idf_parameters import (
 from peach.frontend.parameters import Analysis, HazardMatrix
 
 
+@pytest.mark.online
 @pytest.mark.skipif(
     os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
 )

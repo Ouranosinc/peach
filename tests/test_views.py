@@ -33,6 +33,7 @@ def test_station_and_indicator_list_viewer(station_data, config):
     ).__panel__()
 
 
+@pytest.mark.online
 @pytest.mark.skipif(
     os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
 )

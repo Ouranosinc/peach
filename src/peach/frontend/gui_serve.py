@@ -108,7 +108,7 @@ app.servable()
 import os
 from importlib import reload
 import warnings
-os.environ["WORKSPACE"] = "/home/david/src/portail-ing/workspace"
+os.environ["WORKSPACE"] = "/home/david/src/peach/workspace"
 import panel as pn
 
 pn.extension('tabulator', 'terminal', "ipywidgets", sizing_mode="stretch_width", console_output='disable', notifications=True)
