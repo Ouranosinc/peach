@@ -385,7 +385,7 @@ class IndicatorSimPRPOT(IndicatorDA):
         # Model weights
         model_w = model_weights_from_sherwood(
             self.dparams.source_id.values, method="L2Var", lambda_=0.5
-        )
+        ).sel(source_id=self.dparams.source_id)
 
         # Combined weights
         w = scen_w * sample_w * model_w
