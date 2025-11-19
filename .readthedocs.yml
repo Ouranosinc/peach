@@ -1,0 +1,34 @@
+# .readthedocs.yml
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+version: 2
+
+sphinx:
+  configuration: docs/conf.py
+  # fail_on_warning might generate hard to fix error, in this case it can be
+  # disabled but this also means those errors will fail silently, choose wisely.
+  fail_on_warning: true
+
+formats:
+  - pdf
+
+build:
+  os: "ubuntu-24.04"
+  tools:
+    python: "mambaforge-23.11"
+  jobs:
+    pre_build:
+      - sphinx-apidoc -o docs/apidoc --private --module-first src/figanos
+      # - sphinx-build -M gettext docs docs/_build
+
+conda:
+  # not sure which environment to use here, choosing environment.yml so docs with examples works (but not working for dev)
+  environment: environment-dev.yml
+
+python:
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs

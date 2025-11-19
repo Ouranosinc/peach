@@ -1,9 +1,9 @@
 .. |zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.17187211.svg
    :target: https://doi.org/10.5281/zenodo.17187211
 
-===========================================================
-PEACH - Probabilistic Ensemble Analysis of Climate Hazards
-===========================================================
+===================================================================
+PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v0.1.0
+===================================================================
  
 +----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
 | Versions                   | |pypi| |versions|                                                                                                                 |
@@ -17,10 +17,10 @@ PEACH - Probabilistic Ensemble Analysis of Climate Hazards
 | Development Status         | |status| |build| |coveralls|                                                                                                      |
 +----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
 
-Tool to calculate climate hazard likelihood. 
 
-* Free software: Apache Software License 2.0
-* Documentation: https://portail-ing.readthedocs.io.
+
+PEACH is an online calculations services and python package that offers calculation for climate hazard likelihood. 
+Peach can be used to deploy calculation services and graphical interface or as traditional python package to estimate climate hazard likelihood.
 
 Features
 --------
