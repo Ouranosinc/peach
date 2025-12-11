@@ -23,3 +23,4 @@ dependencies:
   # other:
   - yaml
   - s3fs
+  - sphinx
