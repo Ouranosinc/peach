@@ -83,8 +83,7 @@ locales = {"Français": "fr", "English": "en"}
 
 
 # Allowed scipy distributions
-# TODO: Update
-scipy_dists = ["norm", "t", "gamma", "genextreme", "lognorm", "uniform"]
+scipy_dists = ["norm", "t", "gamma", "genextreme", "lognorm", "uniform", "weibull_min", "expon"]
 
 # Load the scenario weights as a function of time
 scen_weights = scenario_weights_from_iams()
@@ -1994,7 +1993,7 @@ class IndicatorObsDA(IndicatorDA):
 
         BIC = log(n) k - 2 log(L)
         """
-        return self._bic(self.dist, self.period)
+        return self._bic(self.dist, (None, None))
 
     def _aic(self, dist, period) -> xr.DataArray:
         sample = self._sample(period)
@@ -2018,7 +2017,7 @@ class IndicatorObsDA(IndicatorDA):
 
         AIC = 2 k - 2 log(L)
         """
-        return self._aic(self.dist, self.period)
+        return self._aic(self.dist, (None, None))
 
     @param.depends("period", "metric", watch=True)
     def _update_metrics(self) -> xr.DataArray:
