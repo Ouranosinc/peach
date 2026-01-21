@@ -5,13 +5,13 @@ Installation
 ..
     Stable release
     --------------
-    To install portail-ing, run this command in your terminal:
+    To install peach, run this command in your terminal:
 
     .. code-block:: console
 
         $ python -m pip install peach
 
-    This is the preferred method to install portail-ing, as it will always install the most recent stable release.
+    This is the preferred method to install peach, as it will always install the most recent stable release.
 
     If you don't have `pip`_ installed, this `Python installation guide`_ can guide
     you through the process.
@@ -23,19 +23,19 @@ Installation
 From sources
 ------------
 
-The sources for portail-ing can be downloaded from the `Github repo`_.
+The sources for peach can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git@github.com:Ouranosinc/portail-ing.git
+    $ git clone git@github.com:Ouranosinc/peach.git
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/Ouranosinc/portail-ing/tarball/main
+    $ curl -OJL https://github.com/Ouranosinc/peach/tarball/main
 
 Once you have a copy of the source, you can install it with:
 
@@ -51,5 +51,5 @@ However, some dependencies might be harder to install using pip. It is recommend
     $ conda activate risk_eng
     $ pip install -e .
 
-.. _Github repo: https://github.com/Ouranosinc/portail-ing
-.. _tarball: https://github.com/Ouranosinc/portail-ing/tarball/main
+.. _Github repo: https://github.com/Ouranosinc/peach
+.. _tarball: https://github.com/Ouranosinc/peach/tarball/main
