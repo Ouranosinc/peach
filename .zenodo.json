@@ -1,5 +1,5 @@
 {
-  "title": "portail-ing",
+  "title": "peach",
   "creators": [
     {
       "name": "Bourdeau-Goulet, Sarah-Claude",
@@ -28,7 +28,10 @@
     }
   ],
   "keywords": [
-    "portail-ing"
+    "probabilistic",
+    "climate",
+    "hazards",
+    "risk matrix"
   ],
   "license": "Apache-2.0",
   "language": "eng",
