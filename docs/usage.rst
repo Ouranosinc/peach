@@ -2,7 +2,7 @@
 Usage
 =====
 
-To use the portail-ing risk analysis in a project:
+To use the peach risk analysis in a project:
 
 .. code:: python
 

@@ -16,7 +16,7 @@ Cette collection de notebooks propose des exemples d'utilisation des outils dév
 
 ## Services de calculs offerts
 
-Dans le cadre du projet, différents [services de calculs](https://pavics.ouranos.ca/portail-ing-backend/) ont été développés. Ces services sont accessibles publiquement et gratuitement via le standard [OGC API Processes](https://ogcapi.ogc.org/processes/):
+Dans le cadre du projet, différents [services de calculs](https://pavics.ouranos.ca/peach-backend/) ont été développés. Ces services sont accessibles publiquement et gratuitement via le standard [OGC API Processes](https://ogcapi.ogc.org/processes/):
 
 ``compute-indicators-obs``
 : Calcule un indicateur climatique sur une série d'observations climatiques provenant d'une station météorologique donnée. Retourne un lien vers les résultats en format zarr.
