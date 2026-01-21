@@ -14,7 +14,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/Ouranoinc/portial-ing/issues.
+Report bugs at https://github.com/Ouranoinc/peach/issues.
 
 If you are reporting a bug, please include:
 
@@ -35,12 +35,12 @@ Look through the GitHub issues for features. Anything tagged with "enhancement" 
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-portial-ing could always use more documentation, whether as part of the official portail-ing docs, in docstrings, or even on the web in blog posts, articles, and such.
+PEACH could always use more documentation, whether as part of the official PEACH docs, in docstrings, or even on the web in blog posts, articles, and such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/Ouranosinc/portial-ing/issues.
+The best way to send feedback is to file an issue at https://github.com/Ouranosinc/peach/issues.
 
 If you are proposing a feature:
 
@@ -67,20 +67,20 @@ Get Started!
 
     Alternatively, you can use the `mamba <https://mamba.readthedocs.io/en/latest/index.html>`_ package manager, which is a drop-in replacement for ``conda``. If you are already using `mamba`, replace the following commands with ``mamba`` instead of ``conda``.
 
-Ready to contribute? Here's how to set up ``portail-ing`` for local development.
+Ready to contribute? Here's how to set up ``peach`` for local development.
 
-#. Fork the ``portail-ing`` repo on GitHub.
+#. Fork the ``peach`` repo on GitHub.
 #. Clone your fork locally::
 
-    $ git clone git@github.com:your_name_here/portail-ing.git
+    $ git clone git@github.com:your_name_here/peach.git
 
 #. Install your local copy into a development environment. You can create a new Anaconda development environment with::
 
     $ conda env create -f environment-dev.yml
-    $ conda activate portail-ing
+    $ conda activate peach
     $ flit install --symlink
 
-  This installs ``portail-ing`` in an "editable" state, meaning that changes to the code are immediately seen by the environment.
+  This installs ``peach`` in an "editable" state, meaning that changes to the code are immediately seen by the environment.
 
 #. To ensure a consistent coding style, install the ``pre-commit`` hooks to your local clone::
 
@@ -132,17 +132,17 @@ Ready to contribute? Here's how to set up ``portail-ing`` for local development.
 #. Once your Pull Request has been accepted and merged to the ``main`` branch, several automated workflows will be triggered:
 
     - The ``bump-version.yml`` workflow will automatically bump the patch version when pull requests are pushed to the ``main`` branch on GitHub. **It is not recommended to manually bump the version in your branch when merging (non-release) pull requests (this will cause the version to be bumped twice).**
-    - `ReadTheDocs` will automatically build the documentation and publish it to the `latest` branch of `portail-ing}` documentation website.
+    - `ReadTheDocs` will automatically build the documentation and publish it to the `latest` branch of `peach` documentation website.
     - If your branch is not a fork (ie: you are a maintainer), your branch will be automatically deleted.
 
-  You will have contributed your first changes to ``portail-ing``!
+  You will have contributed your first changes to ``peach``!
 
 Pull Request Guidelines
 -----------------------
 
 Before you submit a pull request, check that it meets these guidelines:
 
-#. The pull request should include tests and should aim to provide `code coverage <https://en.wikipedia.org/wiki/Code_coverage>`_ for all new lines of code. You can use the ``--cov-report html --cov portail-ing`` flags during the call to ``pytest`` to generate an HTML report and analyse the current test coverage.
+#. The pull request should include tests and should aim to provide `code coverage <https://en.wikipedia.org/wiki/Code_coverage>`_ for all new lines of code. You can use the ``--cov-report html --cov peach`` flags during the call to ``pytest`` to generate an HTML report and analyse the current test coverage.
 
 #. If the pull request adds functionality, the docs should also be updated. Put your new functionality into a function with a docstring, and add the feature to the list in ``README.rst``.
 
@@ -172,7 +172,7 @@ A reminder for the **maintainers** on how to deploy. This section is only releva
 
 .. warning::
 
-    It is important to be aware that any changes to files found within the ``portail-ing`` folder (with the exception of ``portail-ing/__init__.py``) will trigger the ``bump-version.yml`` workflow. Be careful not to commit changes to files in this folder when preparing a new release.
+    It is important to be aware that any changes to files found within the ``peach`` folder (with the exception of ``peach/__init__.py``) will trigger the ``bump-version.yml`` workflow. Be careful not to commit changes to files in this folder when preparing a new release.
 
 #. Create a new branch from `main` (e.g. `release-0.2.0`).
 #. Update the `CHANGES.rst` file to change the `Unreleased` section to the current date.
@@ -215,7 +215,7 @@ From the command line on your Linux distribution, simply run the following from 
     # To upload to PyPI
     $ python -m flit publish dist/*
 
-The new version based off of the version checked out will now be available via `pip` (`$ pip install portail-ing`).
+The new version based off of the version checked out will now be available via `pip` (`$ pip install peach`).
 
 Releasing on conda-forge
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -230,13 +230,13 @@ Before preparing an initial release on conda-forge, we *strongly* suggest consul
 In order to create a new conda build recipe, to be used when proposing packages to the conda-forge repository, we strongly suggest using the ``grayskull`` tool::
 
     $ python -m pip install grayskull
-    $ grayskull pypi portail-ing
+    $ grayskull pypi peach
 
 For more information on ``grayskull``, please see the following link: https://github.com/conda/grayskull
 
 Before updating the main conda-forge recipe, we echo the conda-forge documentation and *strongly* suggest performing the following checks:
  * Ensure that dependencies and dependency versions correspond with those of the tagged version, with open or pinned versions for the `host` requirements.
- * If possible, configure tests within the conda-forge build CI (e.g. `imports: portail-ing`, `commands: pytest portail-ing}`).
+ * If possible, configure tests within the conda-forge build CI (e.g. `imports: peach`, `commands: pytest peach}`).
 
 Subsequent releases
 ^^^^^^^^^^^^^^^^^^^
@@ -257,7 +257,7 @@ With `docker` installed and running, begin by pulling the image::
 
     $ sudo docker pull quay.io/pypa/manylinux_2_24_x86_64
 
-From the portail-ing source folder we can enter into the docker container, providing access to the `portail-ing` source files by linking them to the running image::
+From the `peach` source folder we can enter into the docker container, providing access to the `peach` source files by linking them to the running image::
 
     $ sudo docker run --rm -ti -v $(pwd):/portail-ing -w /portail-ing quay.io/pypa/manylinux_2_24_x86_64 bash
 
@@ -265,7 +265,7 @@ Finally, to build the wheel, we run it against the provided Python3.9 binary::
 
     $ /opt/python/cp39-cp39m/bin/python -m build --sdist --wheel
 
-This will then place two files in `portail-ing/dist/` ("portail-ing-1.2.3-py3-none-any.whl" and "portail-ing-1.2.3.tar.gz").
+This will then place two files in `peach/dist/` ("peach-1.2.3-py3-none-any.whl" and "peach-1.2.3.tar.gz").
 We can now leave our docker container (`$ exit`) and continue with uploading the files to PyPI::
 
     $ twine upload dist/*
