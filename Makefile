@@ -133,7 +133,7 @@ endif
 	docker compose build frontend-dev backend-dev build-docs
 
 run-images:
-	echo "Starting portail-ing servers"
+	echo "Starting PEACH servers"
 	docker compose up -d  build-docs frontend-dev backend-dev
 
 follow-logs:

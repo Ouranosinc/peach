@@ -259,7 +259,7 @@ With `docker` installed and running, begin by pulling the image::
 
 From the `peach` source folder we can enter into the docker container, providing access to the `peach` source files by linking them to the running image::
 
-    $ sudo docker run --rm -ti -v $(pwd):/portail-ing -w /portail-ing quay.io/pypa/manylinux_2_24_x86_64 bash
+    $ sudo docker run --rm -ti -v $(pwd):/peach -w /peach quay.io/pypa/manylinux_2_24_x86_64 bash
 
 Finally, to build the wheel, we run it against the provided Python3.9 binary::
 

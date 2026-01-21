@@ -132,12 +132,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-
-# CBCL exclusions
-src/portail_ing/risk/cbcl_workflow/*.log
-src/portail_ing/risk/cbcl_workflow/__pycache__
-src/portail_ing/risk/cbcl_workflow/tests_nogit/
-src/portail_ing/risk/cbcl_workflow/ss/
-
 # JetBrains
 .idea/
