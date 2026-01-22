@@ -19,7 +19,7 @@
 #
 import os
 import sys
-import datetime
+import datetime as dt
 sys.path.insert(0, os.path.abspath('..'))
 
 import peach  # noqa: F401
@@ -42,7 +42,7 @@ extensions = [
     'sphinx_copybutton',
     "myst_nb"
 ]
-
+myst_enable_extensions = ["colon_fence", "deflist", "fieldlist"]
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
 nbsphinx_execute = "always"
@@ -77,7 +77,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'peach'
-copyright = f"2022-{datetime.now().year}, Ouranos Inc. David Huard"
+copyright = f"2022-{dt.datetime.now().year}, Ouranos Inc. David Huard"
 author = "David Huard"
 
 # The version info for the project you're documenting, acts as replacement
