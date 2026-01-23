@@ -41,16 +41,9 @@ authors
 :hidden:
 :maxdepth: 1
 
-notebooks/introduction
 usage
+notebooks/introduction
 notebooks/metho_figures
 notebooks/Joint_Example
 ```
-   
-```{toctree}
-:caption: API
-:hidden:
-:maxdepth: 1
 
-apidoc/modules
-```
