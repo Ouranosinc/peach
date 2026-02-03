@@ -40,7 +40,7 @@ python -m pip install .
 However, some dependencies might be harder to install using pip. It is recommended to use mamba to create a conda environment and install the dependencies.
 
 ```shell
-mamba env create -f environment.yml
+mamba env create -f environment.yml -n peach
 conda activate peach
 pip install -e .
 ```

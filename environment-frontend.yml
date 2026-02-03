@@ -9,3 +9,4 @@ dependencies:
   - ipywidgets_bokeh
   - hvplot
   - panel >= 1.5.5
+  

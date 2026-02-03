@@ -28,7 +28,7 @@ classifiers = [
 ]
 dynamic = ["description", "version"]
 dependencies = [
-  "xarray<2025.3.0",
+  "xarray",
   "xclim",
   "pyyaml",
   "zarr",

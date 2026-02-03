@@ -3,8 +3,9 @@ channels:
 - bokeh
 dependencies:
 - aiofiles
+- copulae
 - filelock
-- flit=3.9
+- flit>=3.11
 - gunicorn
 - hvplot
 - ipyleaflet
@@ -12,20 +13,20 @@ dependencies:
 - jupyter
 - lmoments3
 - numpy>=2.0
-- openturns
+- openturns>=1.24
 - pandas
 - panel >= 1.5.5
 - param
-- pip=24.0
+- pip>=25.0
 - pyextremes
-- python>=3.9,<3.12
+- python==3.12
 - s3fs
 - scipy
+- sphinx
 - starlette
 - uvicorn[standard]
 - watchfiles
-- xarray<2025.3.0
+- xarray
 - xclim
-- xscen>=0.10.1
 - yaml
-- zarr<3
+- zarr
