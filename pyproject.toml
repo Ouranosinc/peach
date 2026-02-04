@@ -44,7 +44,7 @@ dependencies = [
   "statsmodels",
   "copulae",
   "openturns>=1.24",
-  "flexparser<0.4",
+  "flexparser<0.5",
   "s3fs"
 ]
 
