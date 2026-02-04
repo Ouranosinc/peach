@@ -1,25 +1,27 @@
 channels:
-- https://conda.anaconda.org/conda-forge
+- conda-forge
+- nodefaults
 dependencies:
 - aiofiles
 - copulae
 - filelock
-- flit>=3.11
+- flit >=3.11.0
 - gunicorn
 - lmoments3
-- numpy>=2.0
-- openturns>=1.24
+- numpy >=2.0
+- openturns >=1.24
 - pandas
 - param
-- pip>=25.0
+- pip >=25.2
 - pyextremes
-- python==3.12
+- python >=3.12,<3.13
 - s3fs
 - scipy
 - sphinx
 - starlette
 - uvicorn[standard]
-- xarray
+- xarray <2025.3.0
 - xclim
+- xscen >=0.10.1
 - yaml
-- zarr
+- zarr <3

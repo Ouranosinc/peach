@@ -1,15 +1,16 @@
 channels:
-  - https://conda.anaconda.org/conda-forge
+  - conda-forge
+  - nodefaults
 dependencies:
-  - python==3.12
-  - pip>=25.0
-  - flit>=3.11
+  - python >=3.12,<3.13
+  - pip >=25.2
+  - flit >=3.11.0
   # data science
   - copulae
   - lmoments3
-  - numpy>=2.0
-  #- numcodecs<=0.15.1
-  - openturns>=1.24
+  - numpy >=2.0
+  #- numcodecs <=0.15.1
+  - openturns >=1.24
   - pandas
   - pyextremes
   - scipy
