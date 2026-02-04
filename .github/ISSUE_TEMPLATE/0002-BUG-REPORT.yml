@@ -1,5 +1,5 @@
 name: Bug report
-description: Help us improve xscen
+description: Help us improve peach
 labels: [ "bug" ]
 
 body:
@@ -13,9 +13,7 @@ body:
       label: Setup Information
       description: |
         What software versions are you running? Example:
-        - Relevant libraries versions: xscen v0.7.1, pandas v2.0
-        - Python version: 4.11
-        - Operating System: Nutmeg Linux 12.34 | macOS 11.0 "Redmond"
+        - Python version: 3.11
       value: |
         - Relevant libraries versions:
         - Python version:
@@ -39,6 +37,6 @@ body:
     id: submit-pr
     attributes:
       label: Contribution
-      description: Do you intend to submit a fix for this bug? (The xclim developers will help with code compliance)
+      description: Do you intend to submit a fix for this bug? 
       options:
         - label: I would be willing/able to open a Pull Request to address this bug.
