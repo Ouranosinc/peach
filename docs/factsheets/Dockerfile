@@ -8,6 +8,6 @@ RUN quarto install extension --no-prompt debruine/quarto-glossary
 
 WORKDIR /quarto-run
 
-COPY build.sh .
+COPY --chmod=0755 build.sh .
 
 CMD /bin/bash -c './build.sh; /bin/bash'

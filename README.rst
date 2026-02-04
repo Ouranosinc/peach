@@ -124,32 +124,32 @@ This package was created with Cookiecutter_ and the `Ouranosinc/cookiecutter-pyp
         :target: https://github.com/psf/black
         :alt: Python Black
 
-.. |build| image:: https://github.com/Ouranosinc/portial-ing/actions/workflows/main.yml/badge.svg
-        :target: https://github.com/Ouranosinc/portail-ing/actions
+.. |build| image:: https://github.com/Ouranosinc/peach/actions/workflows/main.yml/badge.svg
+        :target: https://github.com/Ouranosinc/peach/actions
         :alt: Build Status
 
-.. |coveralls| image:: https://coveralls.io/repos/github/Ouranosinc/portail-ing/badge.svg
-        :target: https://coveralls.io/github/Ouranosinc/portail-ing
+.. |coveralls| image:: https://coveralls.io/repos/github/Ouranosinc/peach/badge.svg
+        :target: https://coveralls.io/github/Ouranosinc/peach
         :alt: Coveralls
 
-.. |docs| image:: https://readthedocs.org/projects/portail-ing/badge/?version=latest
-        :target: https://portail-ing.readthedocs.io/en/latest/
+.. |docs| image:: https://readthedocs.org/projects/peach/badge/?version=latest
+        :target: https://peach.readthedocs.io/en/latest/
         :alt: Documentation Status
 
-.. |license| image:: https://img.shields.io/pypi/l/portail-ing
-        :target: https://github.com/Ouranosinc/portail-ing/blob/main/LICENSE
+.. |license| image:: https://img.shields.io/pypi/l/peach
+        :target: https://github.com/Ouranosinc/peach/blob/main/LICENSE
         :alt: License
 
-.. |ossf| image:: https://api.securityscorecards.dev/projects/github.com/Ouranosinc/portail-ing/badge
-        :target: https://securityscorecards.dev/viewer/?uri=github.com/Ouranosinc/portail-ing
+.. |ossf| image:: https://api.securityscorecards.dev/projects/github.com/Ouranosinc/peach/badge
+        :target: https://securityscorecards.dev/viewer/?uri=github.com/Ouranosinc/peach
         :alt: OpenSSF Scorecard
 
-.. |pre-commit| image:: https://results.pre-commit.ci/badge/github/Ouranosinc/portail-ing/main.svg
-        :target: https://results.pre-commit.ci/latest/github/Ouranosinc/portail-ing/main
+.. |pre-commit| image:: https://results.pre-commit.ci/badge/github/Ouranosinc/peach/main.svg
+        :target: https://results.pre-commit.ci/latest/github/Ouranosinc/peach/main
         :alt: pre-commit.ci status
 
-.. |pypi| image:: https://img.shields.io/pypi/v/portail-ing.svg
-        :target: https://pypi.python.org/pypi/portail-ing
+.. |pypi| image:: https://img.shields.io/pypi/v/peach.svg
+        :target: https://pypi.python.org/pypi/peach
         :alt: PyPI
 
 .. |ruff| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
@@ -160,6 +160,6 @@ This package was created with Cookiecutter_ and the `Ouranosinc/cookiecutter-pyp
         :target: https://www.repostatus.org/#active
         :alt: Project Status: Active – The project has reached a stable, usable state and is being actively developed.
 
-.. |versions| image:: https://img.shields.io/pypi/pyversions/portail-ing.svg
-        :target: https://pypi.python.org/pypi/portail-ing
+.. |versions| image:: https://img.shields.io/pypi/pyversions/peach.svg
+        :target: https://pypi.python.org/pypi/peach
         :alt: Supported Python Versions

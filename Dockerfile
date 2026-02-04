@@ -148,5 +148,6 @@ ENV GUNICORN_ARGS="--max-requests 60 --graceful-timeout 100"
 # pygeoapi.flask_app:APP
 ENV GUNICORN="gunicorn  pygeoapi.starlette_app:APP -k uvicorn.workers.UvicornH11Worker -c /app/src/peach/backend/gunicorn.conf.py -w ${WORKERS} -b ${PYGEOAPI_HOST}:${PYGEOAPI_PORT} ${GUNICORN_ARGS}"
 
-COPY --chown=${MAMBA_USER}:${MAMBA_USER} run.sh /app/
+COPY --chown=${MAMBA_USER}:${MAMBA_USER} --chmod=0755 run.sh /app/
+
 CMD bash -c ./run.sh
