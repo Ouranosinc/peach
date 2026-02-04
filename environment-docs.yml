@@ -1,0 +1,13 @@
+dependencies:
+  - figanos
+  - sphinx
+  - sphinx-codeautolink
+  - sphinx-copybutton
+  - sphinx-intl
+  - sphinx-book-theme
+  - nbsphinx
+  - pandoc
+  - ipython
+  - ipykernel
+  - jupyter_client
+  - myst-nb
