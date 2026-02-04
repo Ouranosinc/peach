@@ -1,26 +1,27 @@
 channels:
-- https://conda.anaconda.org/conda-forge
+- conda-forge
+- nodefaults
 - bokeh
 dependencies:
-- flit=3.9
+- flit >=3.11.0
 - hvplot
 - ipyleaflet
 - ipywidgets_bokeh
 - jupyter
 - lmoments3
-- numpy>=2.0
+- numpy >=2.0
 - openturns
 - pandas
-- panel >= 1.5.5
+- panel >=1.5.5
 - param
 - pip=24.0
 - pyextremes
-- python>=3.9,<3.12
+- python >=3.9,<3.12
 - s3fs
 - scipy
 - watchfiles
-- xarray<2025.3.0
+- xarray <2025.3.0
 - xclim
-- xscen>=0.10.1
+- xscen >=0.10.1
 - yaml
-- zarr<3
+- zarr <3

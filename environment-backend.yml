@@ -1,5 +1,6 @@
 channels:
-  - https://conda.anaconda.org/conda-forge
+  - conda-forge
+  - nodefaults
 dependencies:
   - starlette
   - aiofiles

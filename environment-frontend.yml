@@ -1,5 +1,6 @@
 channels:
-  - https://conda.anaconda.org/conda-forge
+  - conda-forge
+  - nodefaults
   - bokeh
 dependencies:
   - jupyter
@@ -8,4 +9,4 @@ dependencies:
   - ipyleaflet
   - ipywidgets_bokeh
   - hvplot
-  - panel >= 1.5.5
+  - panel >=1.5.5
