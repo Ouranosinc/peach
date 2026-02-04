@@ -124,7 +124,7 @@ This package was created with Cookiecutter_ and the `Ouranosinc/cookiecutter-pyp
         :target: https://github.com/psf/black
         :alt: Python Black
 
-.. |build| image:: https://github.com/Ouranosinc/portial-ing/actions/workflows/main.yml/badge.svg
+.. |build| image:: https://github.com/Ouranosinc/peach/actions/workflows/main.yml/badge.svg
         :target: https://github.com/Ouranosinc/peach/actions
         :alt: Build Status
 
