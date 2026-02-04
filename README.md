@@ -7,7 +7,7 @@
 | Documentation and Support | ![docs](https://readthedocs.org/projects/peach/badge/?version=latest) |
 | Open Source | ![license](https://img.shields.io/pypi/l/peach) ![ossf](https://api.securityscorecards.dev/projects/github.com/Ouranosinc/peach/badge) ![zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.17187211.svg) |
 | Coding Standards | ![black](https://img.shields.io/badge/code%20style-black-000000.svg) ![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json) ![pre-commit](https://results.pre-commit.ci/badge/github/Ouranosinc/peach/main.svg) |
-| Development Status | ![status](https://www.repostatus.org/badges/latest/active.svg) ![build](https://github.com/Ouranosinc/portial-ing/actions/workflows/main.yml/badge.svg) ![coveralls](https://coveralls.io/repos/github/Ouranosinc/peach/badge.svg) |
+| Development Status | ![status](https://www.repostatus.org/badges/latest/active.svg) ![build](https://github.com/Ouranosinc/peach/actions/workflows/main.yml/badge.svg) ![coveralls](https://coveralls.io/repos/github/Ouranosinc/peach/badge.svg) |
 
 
 PEACH is an online calculation service and Python package that offers calculation for climate hazard likelihood. 
