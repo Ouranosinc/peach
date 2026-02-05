@@ -30,6 +30,7 @@ dynamic = ["description", "version"]
 dependencies = [
   "xarray",
   "h5netcdf",
+  "h5py",
   "xclim",
   "pyyaml",
   "zarr",
