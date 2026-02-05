@@ -45,9 +45,14 @@ extensions = [
 ]
 myst_enable_extensions = ["colon_fence", "deflist", "fieldlist"]
 
-# Configure notebook execution (auto, never, always)
-nbsphinx_execute = "auto"
-    
+# Configure notebook execution (auto, off, force, cache, inline)
+# Using myst-nb, not nbsphinx !
+if os.getenv("READTHEDOCS_VERSION_NAME"):
+    nb_execution_mode = "auto"
+else:
+    nb_execution_mode = "cache"
+        
+nb_execution_timeout = 60 * 5
 
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2

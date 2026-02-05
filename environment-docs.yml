@@ -12,7 +12,6 @@ dependencies:
   - myst-nb
   # For notebooks
   - s3fs
-  #- netcdf4
   - h5py
   - h5netcdf
   - param
