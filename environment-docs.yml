@@ -6,8 +6,13 @@ dependencies:
   - sphinx-intl
   - sphinx-book-theme
   - nbsphinx
-  # - pandoc
   - ipython
   - ipykernel
   - jupyter_client
   - myst-nb
+  # For notebooks
+  - s3fs
+  #- netcdf4
+  - h5py
+  - h5netcdf
+  - param
