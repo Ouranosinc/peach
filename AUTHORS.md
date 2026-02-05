@@ -13,3 +13,6 @@
 
 - Trevor James Smith <smith.trevorj@ouranos.ca> [@Zeitsperre](https://github.com/Zeitsperre)
 - Long Vu <vu.long@ouranos.ca> [@tlvu](https://github.com/tlvu)
+- Alain Mailhot (INRS-ETE)
+- Samuel Bolduc (INRS-ETE)
+- Guillaume Talbot (INRS-ETE)
