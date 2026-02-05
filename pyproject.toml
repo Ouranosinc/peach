@@ -38,6 +38,7 @@ dependencies = [
   "numcodecs<=0.15.1", # Zarr < 3 is not compatible with latest numcodecs
   "scipy",
   "pandas",
+  "geopandas",
   "pyextremes",
   "pygeoapi",
   "statsmodels",
