@@ -40,7 +40,6 @@ dependencies = [
   "pandas",
   "pyextremes",
   "pygeoapi",
-  "xscen",
   "statsmodels",
   "copulae",
   "openturns>=1.24",

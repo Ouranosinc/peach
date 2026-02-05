@@ -8,10 +8,7 @@ body:
     attributes:
       label: Setup Information
       description: |
-        What software versions are you running? Example:
-        - Relevant libraries versions: xscen v0.7.1, pandas v2.0
-        - Python version: 4.11
-        - Operating System: Nutmeg Linux 12.34 | macOS 11.0 "Redmond"
+        What software versions are you running? 
       value: |
         - Relevant libraries versions:
         - Python version:

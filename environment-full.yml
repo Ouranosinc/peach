@@ -29,6 +29,5 @@ dependencies:
 - watchfiles
 - xarray <2025.3.0
 - xclim
-- xscen >=0.10.1
 - yaml
 - zarr <3

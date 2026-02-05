@@ -6,7 +6,7 @@ dependencies:
   - sphinx-intl
   - sphinx-book-theme
   - nbsphinx
-  - pandoc
+  # - pandoc
   - ipython
   - ipykernel
   - jupyter_client

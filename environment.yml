@@ -16,7 +16,6 @@ dependencies:
   - scipy
   - xarray
   - xclim==0.60
-  #- xscen>=0.10.1
   - zarr
   # parameters
   - param
