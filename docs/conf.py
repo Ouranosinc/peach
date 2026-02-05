@@ -18,6 +18,7 @@
 # absolute, like shown here.
 #
 import os
+import warnings
 import sys
 import datetime as dt
 sys.path.insert(0, os.path.abspath('..'))
@@ -44,9 +45,12 @@ extensions = [
 ]
 myst_enable_extensions = ["colon_fence", "deflist", "fieldlist"]
 
+# Configure notebook execution (auto, never, always)
+nbsphinx_execute = "auto"
+    
+
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
-nbsphinx_execute = "always"
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
     
