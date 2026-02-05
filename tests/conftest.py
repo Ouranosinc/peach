@@ -90,20 +90,26 @@ def idf_obs(tmp_workspace):
 
 
 @pytest.fixture(scope="session")
-def idf_sim(tmp_workspace):
+def idf_sim(tmp_workspace, pytestconfig):
     from peach.backend.compute_indicators import ComputeIDFProcessorSIM
+    
+    val = pytestconfig.cache.get("minio/idf_sim", None)
 
-    # Make IDF Obs
-    p = ComputeIDFProcessorSIM({"name": "Test-IDF-Sim"})
-    p.INPUT_DATASET_PATTERN = "s3://https://minio.ouranos.ca/portail-ing/portail_ing_{var}_CMIP6_stations_AHCCD_concat.zarr"
+    if val is None:
+        # Make IDF sim with temperature delta
+        p = ComputeIDFProcessorSIM({"name": "Test-IDF-Sim"})
+        p.INPUT_DATASET_PATTERN = "s3://https://minio.ouranos.ca/portail-ing/portail_ing_{var}_CMIP6_stations_AHCCD_concat.zarr"
 
-    data = {
-        "name": "IDF",
-        "params": {"duration": "1h"},
-        "stations": {"tas": "7033650"},
-    }
-    mimetype, output = p.execute(data)
-    return tmp_workspace / output["value"]
+        data = {
+            "name": "IDF",
+            "params": {"duration": "1h"},
+            "stations": {"tas": "7033650"},
+        }
+        mimetype, output = p.execute(data)
+
+        pytestconfig.cache.set("minio/idf_sim", str(tmp_workspace / output["value"]))
+
+    return val
 
 
 @pytest.fixture(scope="session")

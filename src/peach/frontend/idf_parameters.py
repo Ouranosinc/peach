@@ -113,11 +113,6 @@ class IndicatorSimIDF(IndicatorSimDA):
     title = param.Parameter("Extreme rainfall")
 
     def __init__(self, **kwargs):
-        self.data = (
-            kwargs["data"]
-            .set_index(realization=("variant_label", "source_id", "experiment_id"))
-            .unstack("realization")
-        )
         super().__init__(**kwargs)
         self._value = {
             "long_name": self.obs._value["long_name"],
