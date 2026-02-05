@@ -12,6 +12,7 @@ import numpy as np
 import param
 import xarray as xr
 import xclim as xc
+import scipy.stats
 from lmoments3.distr import gpa
 from xclim.core.formatting import update_history
 
@@ -106,7 +107,13 @@ class IndicatorObsWLCOND(IndicatorObsDA):
                 sample, size=size, iteration=iteration, replace=True
             )
 
-        return xc.indices.stats.fit(sample, dist=dist, dim="time", method="ML")
+        try:
+            return xc.indices.stats.fit(sample, dist=dist, dim="time", method="PWM")
+        except ValueError:
+            try:
+                return xc.indices.stats.fit(sample, dist=dist, dim="time", method="ML")
+            except scipy.stats.FitError:
+                return xc.indices.stats.fit(sample, dist=dist, dim="time", method="MM")
 
     @param.depends("_update_attrs", "dist", "period", watch=True, on_init=True)
     def _update_params(self) -> None:
@@ -223,8 +230,13 @@ class IndicatorObsPRCOND(IndicatorObsDA):
             sample = bootstrap.resample(
                 sample, size=size, iteration=iteration, replace=True
             )
-
-        return xc.indices.stats.fit(sample, dist=dist, dim="time", method="ML")
+        try:
+            return xc.indices.stats.fit(sample, dist=dist, dim="time", method="PWM")
+        except ValueError:
+            try:
+                return xc.indices.stats.fit(sample, dist=dist, dim="time", method="ML")
+            except scipy.stats.FitError:
+                return xc.indices.stats.fit(sample, dist=dist, dim="time", method="MM")
 
 
 class IndicatorSimWLCOND(IndicatorSimWL):
