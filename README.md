@@ -1,25 +1,29 @@
 ![zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.17187211.svg)
 
-# PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v0.1.0
+# PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v0.2.0
 
 | Versions | ![pypi](https://img.shields.io/pypi/v/peach.svg) ![versions](https://img.shields.io/pypi/pyversions/peach.svg) |
-|---|---|
 | Documentation and Support | ![docs](https://readthedocs.org/projects/peach/badge/?version=latest) |
 | Open Source | ![license](https://img.shields.io/pypi/l/peach) ![ossf](https://api.securityscorecards.dev/projects/github.com/Ouranosinc/peach/badge) ![zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.17187211.svg) |
 | Coding Standards | ![black](https://img.shields.io/badge/code%20style-black-000000.svg) ![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json) ![pre-commit](https://results.pre-commit.ci/badge/github/Ouranosinc/peach/main.svg) |
 | Development Status | ![status](https://www.repostatus.org/badges/latest/active.svg) ![build](https://github.com/Ouranosinc/peach/actions/workflows/main.yml/badge.svg) ![coveralls](https://coveralls.io/repos/github/Ouranosinc/peach/badge.svg) |
 
 
-PEACH is an online calculation service and Python package that offers calculation for climate hazard likelihood. 
-Peach can be used to deploy calculation services and graphical interface or as a traditional Python package to estimate climate hazard likelihood.
+PEACH is an online climate service for the estimation of climate hazards probability. It computes climate indicators over hundreds of different Earth System Model (ESM) simulations, then combine the results into a single probability density function, accounting for model performance and the relative likelihood of greenhouse gas (GHG) emission scenarios. 
 
-The code
 
 ## Features
-- Relies on more than 500 bias-adjusted climate model simulations from CMIP6, please consult the [FRDR repository](https://www.frdr-dfdr.ca/repo/dataset/876e9380-63fc-4eaa-987b-aa16c3770941) and [Pre-Workflow folder](pre_workflow_data/)
-- Applies weights to SSPs (experiment_id) and models (source_id) to provide a probabilistic estimate of the hazard
-- Provides a computational backend with an OGCAPI-Processes interface
-- Provides a web interface prototype to run the analysis
+- Relies on more than 500 climate model simulations from CMIP6, bias-adjusted relative to weather station records across Canada;
+- Applies weights to GHG scenarios and ESMs to provide a probabilistic estimate of hazards;
+- Provides a computational backend with an OGCAPI-Processes interface for the calculation of climate indicator time series and the probabilistic analysis; 
+- Provides a web interface prototype to run the analysis;
+- Peer-reviewed, see [Huard et al. (2026)](https://doi.org/10.1088/2515-7620/ae3a4d)
+
+
+## Data availability
+
+- The bias adjusted data is available on this [FRDR repository](https://www.frdr-dfdr.ca/repo/dataset/876e9380-63fc-4eaa-987b-aa16c3770941);
+- The logic to prepare the sea level data is detailed in the [pre-workflow folder](pre_workflow_data/).
 
 
 ## Credits
