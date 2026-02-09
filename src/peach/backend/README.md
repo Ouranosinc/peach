@@ -26,7 +26,7 @@ See config.yml for configuration options. https://docs.pygeoapi.io/en/stable/ind
 ## Installation
 In env with `peach`:
 ```bash
-pip install 'pydantic<2'
+#pip install 'pydantic<2'
 pip install pygeoapi
 
 export PYGEOAPI_CONFIG=config.yml PYGEOAPI_OPENAPI=openapi.yml

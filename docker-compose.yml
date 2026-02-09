@@ -24,7 +24,7 @@ services:
         NEW_MAMBA_USER: ${MY_USERNAME:-root}
         NEW_MAMBA_USER_ID: ${MY_UID:-0}
         NEW_MAMBA_USER_GID: ${MY_GID:-0}
-        PYGEOAPI_SOURCE: ${PYGEOAPI_SOURCE:-pip}
+        #PYGEOAPI_SOURCE: ${PYGEOAPI_SOURCE:-pip}
         # Change these to your needs.
         MAMBA_ENV_BACKEND_FILE: environment-backend-full.yml
         MAMBA_ENV_FRONTEND_FILE: environment-frontend-full.yml
