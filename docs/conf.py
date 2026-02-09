@@ -18,8 +18,9 @@
 # absolute, like shown here.
 #
 import os
+import warnings
 import sys
-import datetime
+import datetime as dt
 sys.path.insert(0, os.path.abspath('..'))
 
 import peach  # noqa: F401
@@ -42,13 +43,22 @@ extensions = [
     'sphinx_copybutton',
     "myst_nb"
 ]
+myst_enable_extensions = ["colon_fence", "deflist", "fieldlist"]
+
+# Configure notebook execution (auto, off, force, cache, inline)
+# Using myst-nb, not nbsphinx !
+if os.getenv("READTHEDOCS_VERSION_NAME"):
+    nb_execution_mode = "auto"
+else:
+    nb_execution_mode = "cache"
+        
+nb_execution_timeout = 60 * 5
 
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
-nbsphinx_execute = "always"
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
-
+    
 # To ensure that underlined fields (e.g. `_field`) are shown in the docs.
 autodoc_default_options = {
     "members": True,
@@ -77,7 +87,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'peach'
-copyright = f"2022-{datetime.now().year}, Ouranos Inc. David Huard"
+copyright = f"2022-{dt.datetime.now().year}, Ouranos Inc. David Huard"
 author = "David Huard"
 
 # The version info for the project you're documenting, acts as replacement
@@ -103,7 +113,7 @@ gettext_compact = False  # optional
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'factsheets']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'

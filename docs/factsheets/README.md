@@ -1,4 +1,10 @@
-To render factsheets in HTML,
+# Rendering the factsheets in HTML
+
+Rendering the factsheets into HTML should be done automatically by the top-level `docker-compose`. 
+The Docker container runs Quarto, a documentation engine running off a custom version of Markdown. 
+These factsheets do not appear in the project documentation, only in the graphical user interface. 
+
+## Manuel build instructions
 
 1. Install Quarto
 2. Install the glossary extension with `quarto install extension debruine/quarto-glossary` in each folder (en, fr)

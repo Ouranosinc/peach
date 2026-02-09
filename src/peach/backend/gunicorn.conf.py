@@ -4,7 +4,7 @@ Gunicorn config file.
 See: https://docs.gunicorn.org/en/stable/settings.html
 
 Specific changes in Portail Ingénieurs:
-- Callbacks are added for importing xclim and xscen on server start and worker creation
+- Callbacks are added for importing xclim on server start and worker creation
 - When workers have completed a request, garbage collection is triggered.
 
 """
@@ -22,9 +22,8 @@ def when_ready(server):
     import logging  # noqa: F401
 
     import xclim  # noqa: F401
-    import xscen  # noqa: F401
 
-    server.log.info("[gunicorn.when_ready] xclim and xscen imported")
+    server.log.info("[gunicorn.when_ready] xclim imported")
     logging.getLogger("botocore.httpchecksum").setLevel(logging.ERROR)
     logging.getLogger("pygeoapi.l10n").setLevel(logging.ERROR)
     pass
@@ -46,9 +45,8 @@ def post_fork(server, worker):
 def post_worker_init(worker):
     """Called after a worker has initialized the application."""
     import xclim  # noqa: F401
-    import xscen  # noqa: F401
 
-    worker.log.info("[gunicorn.post_worker_init] xclim and xscen imported")
+    worker.log.info("[gunicorn.post_worker_init] xclim imported")
     pass
 
 

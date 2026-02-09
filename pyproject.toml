@@ -13,7 +13,7 @@ authors = [
 maintainers = [
   {name = "Trevor James Smith", email = "smith.trevorj@ouranos.ca"}
 ]
-readme = {file = "README.rst", content-type = "text/x-rst"}
+readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.9"
 keywords = ["peach"]
 license = {file = "LICENSE"}
@@ -24,13 +24,13 @@ classifiers = [
   "Natural Language :: English",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
-
-  
   "Programming Language :: Python :: Implementation :: CPython"
 ]
 dynamic = ["description", "version"]
 dependencies = [
-  "xarray<2025.3.0",
+  "xarray",
+  "h5netcdf",
+  "h5py",
   "xclim",
   "pyyaml",
   "zarr",
@@ -40,9 +40,9 @@ dependencies = [
   "numcodecs<=0.15.1", # Zarr < 3 is not compatible with latest numcodecs
   "scipy",
   "pandas",
+  "geopandas",
   "pyextremes",
   "pygeoapi",
-  "xscen",
   "statsmodels",
   "copulae",
   "openturns>=1.24",
@@ -96,7 +96,7 @@ docs = [
   "sphinx-codeautolink",
   "sphinx-copybutton",
   "sphinx-intl",
-  "sphinx-rtd-theme >=1.0",
+  "sphinx-book-theme",
   "nbsphinx",
   "pandoc",
   "ipython",
@@ -109,8 +109,8 @@ docs = [
 # "Homepage" = "https://peach.readthedocs.io/"
 # "Changelog" = "https://peach.readthedocs.io/en/stable/history.html"
 # "About Ouranos" = "https://www.ouranos.ca/en/"
-"Source" = "https://github.com/sarahclaude/peach"
-"Issue tracker" = "https://github.com/sarahclaude/peach/issues"
+"Source" = "https://github.com/ouranosinc/peach"
+"Issue tracker" = "https://github.com/ouranosinc/peach/issues"
 
 [tool]
 
@@ -170,18 +170,19 @@ omit = ["tests/*.py"]
 [tool.flit.sdist]
 include = [
   ".zenodo.json",
-  "AUTHORS.rst",
-  "CHANGES.rst",
-  "CONTRIBUTING.rst",
+  "AUTHORS.md",
+  "CHANGES.md",
+  "CONTRIBUTING.md",
   "LICENSE",
   "Makefile",
-  "README.rst",
+  "README.md",
   "environment-dev.yml",
   "environment-docs.yml",
   "docs/_static/_images/*.gif",
   "docs/_static/_images/*.jpg",
   "docs/_static/_images/*.png",
   "docs/_static/_images/*.rst",
+  "docs/_static/_images/*.md",
   "docs/Makefile",
   "docs/conf.py",
   "docs/make.bat",

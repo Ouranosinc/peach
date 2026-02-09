@@ -17,14 +17,14 @@ build:
   os: "ubuntu-24.04"
   tools:
     python: "mambaforge-23.11"
-  jobs:
-    pre_build:
-      - sphinx-apidoc -o docs/apidoc --private --module-first src/figanos
+  #jobs:
+  #  pre_build:
+      #- sphinx-apidoc -o docs/apidoc --private --module-first src/peach
       # - sphinx-build -M gettext docs docs/_build
 
 conda:
   # not sure which environment to use here, choosing environment.yml so docs with examples works (but not working for dev)
-  environment: environment-dev.yml
+  environment: environment-docs.yml
 
 python:
   install:

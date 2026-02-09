@@ -10,9 +10,8 @@ execution-mode: cache
 
 # Services de calculs
 
-Le projet "Outils facilitant les analyses des risques aux infrastructures posés par le climat" vise à faciliter l'estimation des probabilités d'aléas climatiques en climat futur. L'objectif principal du projet est de proposer une [méthode]() permettant d'inclure les principales incertitudes climatiques, et faire en sorte que les praticiens n'aient pas à faire des choix difficiles concernant la sélection de modèles climatiques ou de scénarios de GES.
+Le projet "Outils facilitant les analyses des risques aux infrastructures posés par le climat" vise à faciliter l'estimation des probabilités d'aléas climatiques en climat futur. L'objectif principal du projet est de proposer une méthode ([Huard et al., 2026](https://doi.org/10.1088/2515-7620/ae3a4d)) permettant d'inclure les principales incertitudes climatiques, et faire en sorte que les praticiens n'aient pas à faire des choix difficiles concernant la sélection de modèles climatiques ou de scénarios de GES.
 
-Cette collection de notebooks propose des exemples d'utilisation des outils développés dans le cadre du projet, et cible des professionnels avec des aptitudes de programmation en Python.
 
 ## Services de calculs offerts
 
@@ -25,7 +24,8 @@ Dans le cadre du projet, différents [services de calculs](https://pavics.ourano
 : Calcule des indicateurs climatiques sur une série de simulations climatiques (1950–2100) dont les biais par rapport à une station donnée a été corrigé. Retourne un lien vers les résultats en format zarr.
 
 ``compute-hazard-thresholds``
-: Calcule la probabilité de dépassement de seuils climatiques pour différents indicateurs à une station donnée.
+: Calcule la probabilité de dépassement de seuils climatiques pour différents indicateurs à une station donnée. Retourne un fichier JSON. 
+
 
 ## Exemple de calcul d'un indicateur
 
@@ -43,7 +43,7 @@ import json
 
 process = "compute-indicators-obs"
 headers = {"Content-Type": "application/json", "Prefer": "respond-sync"}
-url = f"https://notos.ouranos.ca/portail-ing-backend/processes/{process}/execution"
+url = f"https://pavics.ouranos.ca/portail-ing-backend/processes/{process}/execution"
 data = {"inputs":{
     "name": "HEATING_DEGREE_DAYS",
     "params": {"thresh": "10 degC"},
@@ -59,7 +59,7 @@ results = requests.get(resp.headers['location'] + "/results?f=json").json()
 print(json.dumps(results, indent=2))
 ```
 
-Le lien qui est retourné pointe vers un fichier [zarr](https://zarr.dev/) hébergé sur une instance de [Minio](https://min.io/), un service web compatible avec le standard S3. Pour ouvrir et lire le fichier, on utilise les librairies `s3fs` pour accéder au systèmes de fichiers, et `xarray` pour lire le format Zarr:
+Le lien qui est retourné pointe vers un fichier [zarr](https://zarr.dev/) hébergé sur un serveur [Minio](https://min.io/), un service de stockage compatible avec le standard S3. Pour ouvrir et lire le fichier, on utilise les librairies `s3fs` pour accéder au systèmes de fichiers, et `xarray` pour lire le format Zarr:
 
 ```{code-cell} python3
 import s3fs
@@ -75,12 +75,12 @@ ds = xr.open_zarr(store, decode_timedelta=False)
 ds
 ```
 
-On peut aussi utiliser l'utilitaire `mc`, fourni par Minio pour télécharger directement le dossier zarr sur la machine locale ([](../storage.md)). On l'ouvrira par la suite avec `xr.open_zarr("dossier.zarr")` dans un interpréteur python.
+On peut aussi utiliser l'utilitaire `mc`, fourni par Minio pour télécharger directement le dossier zarr sur la machine locale (voir [stockage](../storage.md)). On l'ouvrira par la suite avec `xr.open_zarr("<dossier.zarr>")` dans un interpréteur python.
 
 
 ## Exemple de calcul des probabilités de dépassement
 
-Le portail offre aussi un service de calcul "tout-en-un" qui réplique les résultats offert à l'onglet « Seuils climatiques » de l'interface web. L'idée est la même qu'à la section précédente, mais le résultat est un dictionnaire des probabilités de dépassement. Les données d'entrées nécessaires sont :
+Le portail offre aussi un service de calcul "tout-en-un" qui réplique les résultats offert à l'onglet « Seuils climatiques » de l'interface web. L'idée est la même qu'à la section précédente, mais le résultat est un dictionnaire des probabilités de dépassement. Les données d'entrées nécessaires sont:
 
 :indicators (List[Dict]): Une liste d'indicateurs et de leur paramètres, c'est à dire une liste de dictionnaires avec les clefs `name` et `params` tels que définies dans la section précédente.
 :stations (Dict): Le même argument `stations` que précédemment.
@@ -128,7 +128,7 @@ resp = requests.post(url, json=data, headers=headers, timeout=60)
 print(resp.headers["location"])
 ```
 
-Les résultats sont directement dans le json final:
+Les résultats sont disponibles directement dans la réponse du serveur, en format JSON:
 
 ```{code-cell} python3
 results = requests.get(resp.headers['location'] + "/results?f=json").json()
@@ -139,10 +139,9 @@ Notez qu'il est préférable de lancer des requêtes en mode asynchrone afin d'�
 ```
 headers = {"Content-Type": "application/json", "Prefer": "respond-async"}
 ```
-Si les calculs ne sont pas démarrés, le serveur retourne simplement comme résultat:
+Si les calculs ne sont pas démarrés, le serveur retourne le résultat suivant:
 ```
 {'code': 'ResultNotReady',
  'type': 'ResultNotReady',
  'description': 'job accepted but not yet running'}
 ```
-

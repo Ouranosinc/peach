@@ -1,0 +1,20 @@
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - figanos
+  - sphinx
+  - sphinx-codeautolink
+  - sphinx-copybutton
+  - sphinx-intl
+  - sphinx-book-theme
+  - nbsphinx
+  - ipython
+  - ipykernel
+  - jupyter_client
+  - myst-nb
+  # For notebooks
+  - s3fs
+  - h5py
+  - h5netcdf
+  - param
