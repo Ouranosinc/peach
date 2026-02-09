@@ -42,19 +42,6 @@ If you are proposing a feature:
 If you are new to using GitHub and `git`, please read [this guide](https://guides.github.com/activities/hello-world/) first.
 :::
 
-:::{warning}
-Anaconda Python users: Due to the complexity of some packages, the default dependency solver can take a long time to resolve the environment. Consider running the following commands in order to speed up the process:
-
-```shell
-conda install -n base conda-libmamba-solver
-conda config --set solver libmamba
-```
-
-For more information, please see the following link: <https://www.anaconda.com/blog/a-faster-conda-for-a-growing-community>
-
-Alternatively, you can use the [mamba](https://mamba.readthedocs.io/en/latest/index.html) package manager, which is a drop-in replacement for `conda`. If you are already using mamba, replace the following commands with `mamba` instead of `conda`.
-:::
-
 
 Ready to contribute? Here's how to set up `peach` for local development.
 
