@@ -89,7 +89,7 @@ Ready to contribute? Here's how to set up `peach` for local development.
 6. For changes to the required packages, we suggest adding a minor/patch version to environment.yml, and, before running your tests, updating your environment with:
 
    ```shell
-   conda env update -n portail_eng -f environment.yml
+   conda env update -n peach -f environment.yml
    ```
 
 7. When you're done making changes, we **strongly** suggest running the tests in your environment or with the help of `tox`:
