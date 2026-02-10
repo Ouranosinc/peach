@@ -1959,6 +1959,7 @@ class IndicatorObsDA(IndicatorDA):
             objs = {
                 f"{k} ({self.metric.upper()}: {v:.2f})": k
                 for k, v in sorted(m.items(), key=lambda x: x[1])
+                if np.isfinite(v)
             }
             self.param.dist.objects = objs
 
@@ -1975,9 +1976,12 @@ class IndicatorObsDA(IndicatorDA):
         BIC = log(n) k - 2 log(L)
         """
         sample = self._sample(period)
-        dparams = self.fit(dist, period)
-        ll = self._ll(dparams, sample)
-        out = np.log(len(sample)) * len(dparams) - 2 * ll
+        try:
+            dparams = self.fit(dist, period)
+            ll = self._ll(dparams, sample)
+            out = np.log(len(sample)) * len(dparams) - 2 * ll
+        except Exception as e:
+            return xr.DataArray(np.inf)
         out.attrs = {
             "long_name": "Bayesian Information Criterion",
             "description": "BIC = log(n) k - 2 log(L)",
@@ -1999,9 +2003,12 @@ class IndicatorObsDA(IndicatorDA):
 
     def _aic(self, dist, period) -> xr.DataArray:
         sample = self._sample(period)
-        dparams = self.fit(dist, period)
-        ll = self._ll(dparams, sample)
-        out = 2 * len(dparams) - 2 * ll
+        try:
+            dparams = self.fit(dist, period)
+            ll = self._ll(dparams, sample)
+            out = 2 * len(dparams) - 2 * ll
+        except Exception as e:
+            return xr.DataArray(np.inf)
         out.attrs = {
             "long_name": "Akaike Information Criterion",
             "description": "AIC = 2 k - 2 log(L)",
