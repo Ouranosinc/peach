@@ -2485,7 +2485,7 @@ class HazardMatrix(BaseParameterized):
             df = pd.concat(out, axis=1).T  # .set_index(["long_name", "descr"])
             # df = df.set_axis(ht.index.to_flat_index(), axis=1)
             # return df.set_axis(df.columns.to_flat_index(), axis=1).)
-            return df
+            return df.astype("object")
 
     @property
     def titles(self):
