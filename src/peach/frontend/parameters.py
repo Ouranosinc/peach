@@ -1492,7 +1492,7 @@ class Analysis(BaseParameterized):
             new_period = self.check_extend_ref_period(da, ref_period)
             if ref_period[0] != new_period[0] or ref_period[1] != new_period[1]:
                 logger.debug(
-                    f"Extending Reference Period: {ref_period} to {new_ref_period}"
+                    f"Extending Reference Period: {ref_period} to {new_period}"
                 )
 
                 updaters["ref_period"] = (
