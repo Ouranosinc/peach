@@ -1437,7 +1437,7 @@ class Analysis(BaseParameterized):
     @param.depends("ref_period", watch=True)
     def watch_ref_period(self):
         logger.info(f"watch_ref_period: Triggered with {self.ref_period}")
-
+        
         update_checks = {}
         for kind in self.ds.keys():
             for uuid in self.ds[kind]:
@@ -1490,11 +1490,15 @@ class Analysis(BaseParameterized):
         if (kind == "obs") and (force or not self.checked[uuid][kind]["ref_period"]):
             ref_period = updaters.get("ref_period", self.ref_period)
             new_period = self.check_extend_ref_period(da, ref_period)
+            if ref_period[0] != new_period[0] or ref_period[1] != new_period[1]:
+                logger.debug(
+                    f"Extending Reference Period: {ref_period} to {new_ref_period}"
+                )
 
-            updaters["ref_period"] = (
-                min(ref_period[0], new_period[0]),
-                max(ref_period[1], new_period[1]),
-            )
+                updaters["ref_period"] = (
+                    min(ref_period[0], new_period[0]),
+                    max(ref_period[1], new_period[1]),
+                )
 
             self.checked[uuid][kind]["ref_period"] = True
 
@@ -1525,9 +1529,6 @@ class Analysis(BaseParameterized):
 
             new_ref_period = self.extend_range_to_arr(
                 years_with_obs_data.dt.year.data, global_config.MIN_OBS_DATA, ref_period
-            )
-            logger.debug(
-                f"Extending Reference Period: {ref_period} to {new_ref_period}"
             )
             return new_ref_period
 
