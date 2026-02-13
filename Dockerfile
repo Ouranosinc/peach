@@ -8,7 +8,7 @@ ARG MULTIMAMBA=1
 # One of : backend, frontend, base:
 ENV ENV_NAME=base
 
-ARG PYGEOAPI_SOURCE=https://github.com/Ouranosinc/pygeoapi/archive/refs/heads/add-job-before-accepting.zip
+#ARG PYGEOAPI_SOURCE=https://github.com/Ouranosinc/pygeoapi/archive/refs/heads/add-job-before-accepting.zip
 
 ARG NEW_MAMBA_USER=root
 ARG NEW_MAMBA_USER_ID=0
@@ -87,7 +87,7 @@ RUN if [ "${MULTIMAMBA}" = "1" ]; then \
 else \
   micromamba install -y -n base -f ${MAMBA_ENV_FILE}; \
 fi && \
-  if [ "${PYGEOAPI_SOURCE}" = "conda" ]; then micromamba install -y -n base -c conda-forge "pygeoapi>=0.17"; fi && \
+  #if [ "${PYGEOAPI_SOURCE}" = "conda" ]; then micromamba install -y -n base -c conda-forge "pygeoapi>=0.17"; fi && \
   micromamba clean --all --yes
 
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
@@ -97,26 +97,26 @@ ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
 # PROD: use "--no-deps"
 # DEV:  use "--no-deps --editable"
 
-RUN \
-  if [ "${PYGEOAPI_SOURCE}" ] && [ "${PYGEOAPI_SOURCE}" != "conda" ]; then \
-    if [ "${PYGEOAPI_SOURCE}" != "pip" ]; then \
-      if [ "${MULTIMAMBA}" = "1" ]; then \
-        micromamba run -n backend pip install ${PYGEOAPI_SOURCE}; \
-      else \
-        pip install ${PYGEOAPI_SOURCE}; \
-      fi; \
-    else \
-      if [ "${MULTIMAMBA}" = "1" ]; then \
-        micromamba run -n backend pip install pygeoapi; \
-      else \
-        pip install pygeoapi; \
-      fi; \
-    fi; \
-  fi
+#RUN \
+  #if [ "${PYGEOAPI_SOURCE}" ] && [ "${PYGEOAPI_SOURCE}" != "conda" ]; then \
+  #  if [ "${PYGEOAPI_SOURCE}" != "pip" ]; then \
+  #    if [ "${MULTIMAMBA}" = "1" ]; then \
+  #      micromamba run -n backend pip install ${PYGEOAPI_SOURCE}; \
+  #    else \
+  #      pip install ${PYGEOAPI_SOURCE}; \
+  #    fi; \
+  #  else \
+  #    if [ "${MULTIMAMBA}" = "1" ]; then \
+  #      micromamba run -n backend pip install pygeoapi; \
+  #    else \
+  #      pip install pygeoapi; \
+  #    fi; \
+  #  fi; \
+  #fi
 # NB: we copy src towards the end of the build, so that the
 #     we do not need to re-install dependencies on each build, if they have not changed.
 
-COPY --chown=${MAMBA_USER}:${MAMBA_USER} pyproject.toml *.rst LICENSE /app/
+COPY --chown=${MAMBA_USER}:${MAMBA_USER} pyproject.toml *.md LICENSE /app/
 #COPY --chown=${MAMBA_USER}:${MAMBA_USER} src /app/src
 #RUN pip install ${PIP_ARGS} .
 
