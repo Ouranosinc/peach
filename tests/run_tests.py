@@ -39,9 +39,9 @@ def make_request(payload):
         elapsed.append(res.elapsed.total_seconds() * 1000)
         if notsync:
             loc = res.headers["location"]
-            for i in range(120):
+            for _i in range(120):
                 time.sleep(1)
-                res = req.get(loc)
+                res = req.get(loc, timeout=20)
                 elapsed.append(res.elapsed.total_seconds() * 1000)
                 resd = res.json()
                 if "status" not in resd:
@@ -59,7 +59,7 @@ def make_request(payload):
                     "compute": -1,
                     "wall": t1 - t0,
                 }
-            res = req.get(loc + "/results?f=json")
+            res = req.get(loc + "/results?f=json", timeout=20)
             elapsed.append(res.elapsed.total_seconds() * 1000)
         resd = res.json()
         print(resd)
@@ -77,10 +77,10 @@ def make_request(payload):
 
 def make_payload(i, notsync, israndom):
     if israndom:
-        func = random.choice(funcs)
+        func = random.choice(funcs)  # noqa: S311
         xcind = xc.core.indicator.registry[func].get_instance()
-        params = {"freq": random.choice(list(names.keys()))}
-        stns = {varname: random.choice(stations) for varname, param in xcind.parameters.items() if param.kind == 0}
+        params = {"freq": random.choice(list(names.keys()))}  # noqa: S311
+        stns = {varname: random.choice(stations) for varname, param in xcind.parameters.items() if param.kind == 0}  # noqa: S311
     else:
         case = i % 3
         func = funcs[(i // 3) % len(funcs)]

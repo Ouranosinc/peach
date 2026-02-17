@@ -87,7 +87,8 @@ scipy_dists = ["norm", "t", "gamma", "genextreme", "lognorm", "uniform", "weibul
 # Load the scenario weights as a function of time
 scen_weights = scenario_weights_from_iams()
 
-logger.info(f"Workspace: {global_config.WORKSPACE}")
+_wspace = f"Workspace: {global_config.WORKSPACE}"
+logger.info(_wspace)
 
 # Mapping from dependent variables to core variables
 VARIABLE_MAPPING = {"tasmax": "tas", "tasmin": "tas", "wl_pot": "wl"}
@@ -1709,7 +1710,7 @@ class IndicatorDA(BaseParameterized):
         out.name = name
         return out
 
-    def _slice(self, period: (int, int)) -> slice:
+    def _slice(self, period: tuple[int, int]) -> slice:
         """Return the reference period as a slice."""
         return slice(*map(str, period))
 
@@ -2608,11 +2609,8 @@ class HazardThreshold(BaseParameterized):
         setattr(self, name, event.value)
 
 
-def haversine(lon1: float, lat1: float, lon2: np.array, lat2: np.array):
-    """
-    Calculate the great circle distance between points
-    on the earth (specified in decimal degrees)
-    """
+def haversine(lon1: float, lat1: float, lon2: np.ndarray, lat2: np.ndarray):
+    """Calculate the great circle distance between points on the earth (specified in decimal degrees)."""
     lon1, lat1, lon2, lat2 = map(np.radians, [lon1, lat1, lon2, lat2])
 
     dlon = lon2 - lon1

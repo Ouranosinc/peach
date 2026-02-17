@@ -1,3 +1,5 @@
+"""Water Level Indicators."""
+
 from __future__ import annotations
 
 import xarray as xr
@@ -27,6 +29,8 @@ class WaterLevels(Hourly):
 
 
 class WLIndicator(Indicator):
+    """Base Water Level Indicator Class."""
+
     pass
 
 
@@ -55,7 +59,7 @@ def _water_level_max(wl: xr.DataArray, freq: str = "YS") -> xr.DataArray:
 @declare_units(wl="[length]")
 def _water_level_pot(
     wl: xr.DataArray,
-    thresh: float = None,
+    thresh: float | None = None,
 ) -> xr.DataArray:
     """
     Return water level peaks over threshold.
@@ -64,9 +68,9 @@ def _water_level_pot(
     ----------
     wl : xarray.DataArray
         Hourly water level values.
-    thresh : float
+    thresh : float, optional
         Threshold to use for computing peaks over threshold.
-        Only used if method != None.
+        Only used if method is not None.
 
     Returns
     -------
@@ -87,7 +91,7 @@ def _water_level_pot(
 @declare_units(wl_pot="[length]")
 def _water_level_pot_lambda(
     wl_pot: xr.DataArray,
-    thresh: float = None,
+    thresh: float | None = None,
 ) -> xr.DataArray:
     """
     Return water level peaks over threshold.
@@ -96,6 +100,8 @@ def _water_level_pot_lambda(
     ----------
     wl_pot : xarray.DataArray
         Hourly water level values.
+    thresh : float, optional
+        Unused.
 
     Returns
     -------

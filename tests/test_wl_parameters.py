@@ -18,16 +18,17 @@ from peach.risk import bootstrap
 
 @pytest.mark.online
 @pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI")
-def test_IndicatorsWL(wl_pot_obs, wl_pot_sim):
-    dao = xr.open_dataarray(wl_pot_obs, engine="zarr")
-    o = IndicatorObsWL(data=dao, period=(1970, 2010))
+class TestIndicatorsWL:
+    def test_simple(self, wl_pot_obs, wl_pot_sim):
+        dao = xr.open_dataarray(wl_pot_obs, engine="zarr")
+        o = IndicatorObsWL(data=dao, period=(1970, 2010))
 
-    das = xr.open_dataarray(wl_pot_sim, engine="zarr")
-    ref = IndicatorRefWL(data=das, obs=o)
+        das = xr.open_dataarray(wl_pot_sim, engine="zarr")
+        ref = IndicatorRefWL(data=das, obs=o)
 
-    fut = IndicatorSimWL(data=das, obs=o, period=(2040, 2070), model_weights=ref.param.model_weights)
+        _fut = IndicatorSimWL(data=das, obs=o, period=(2040, 2070), model_weights=ref.param.model_weights)
 
-    assert ref.isf(0.1) > 0
+        assert ref.isf(0.1) > 0
 
 
 class TestIndicatorObsWL:

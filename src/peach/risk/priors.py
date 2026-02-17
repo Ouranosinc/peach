@@ -9,6 +9,7 @@ DATADIR = Path(__file__).parent.parent / "data"
 
 
 def load_sherwood_ecs():
+    """Load sherwood ecs data."""
     return pd.read_json(DATADIR / "sherwood_ecs.json").reindex()
 
 
@@ -44,7 +45,8 @@ def model_weights_from_sherwood(models=None, method="L2", lambda_=100):
         "L2Var" adds to L2 the variance of the weights Var(w), normalized by 1+Var(w).
         "L2SGradient" adds to L2 the squared gradient of the weights , normalized by 1+(∇w)².
         "L2Laplacian" adds to L2 the Laplacian of the weights , normalized by 1+∇²w.
-        "KLVar" minimizes the relative entropy between the theoretical distribution and the KDE estimated from the weighted sample, with a penalty based on the variance of the weights.
+        "KLVar" minimizes the relative entropy between the theoretical distribution and the KDE estimated from the weighted sample,
+        with a penalty based on the variance of the weights.
     lambda : float
         Importance given to the penalty term in the cost function. The higher, the smoother the weights.
 
@@ -286,7 +288,7 @@ def calcul_des_poids_pour_guillaume():
     return pd.concat(out, axis=1)
 
 
-def graph_model_weights(w):
+def graph_model_weights(w) -> plt.fi:
     """Create graphic showing the theoretical and empirical distribution of the PDF, CDF, and the weights."""
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec

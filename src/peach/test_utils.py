@@ -1,3 +1,5 @@
+"""Testing Utilities for PEACH."""
+
 import io
 import itertools
 import threading
@@ -28,7 +30,8 @@ def synthetic_ds():
                 "stations": {"pr": "7028441"},
                 "id": "XIND",
                 "params": {"thresh": "1.0 mm/d"},
-                "history": f"[2024-11-18 20:37:17] {uuid}: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
+                "history": f"[2024-11-18 20:37:17] {uuid}: "
+                "XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
             },
         )
     return ds.data_vars
@@ -116,7 +119,10 @@ def synthetic_ds_daily():
             "stations": {"pr": "7028441"},
             "id": "XIND",
             "params": {"thresh": "1.0 mm/d"},
-            "history": "[2024-11-18 20:37:17] pr_sim_daily: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
+            "history": (
+                "[2024-11-18 20:37:17] pr_sim_daily: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') "
+                "with options check_missing=skip - xclim version: 0.53.2"
+            ),
         },
     )
 

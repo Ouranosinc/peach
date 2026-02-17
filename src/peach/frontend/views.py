@@ -202,10 +202,12 @@ class StationViewer(Viewer):
             radius = self._conf["site"]["radius"]
             update = True
         if update:
-            logger.debug(f"Update self.site ({self.site.lat}, {self.site.lon}, {self.site.radius}), to {center}, {radius}")
+            msg = f"Update self.site ({self.site.lat}, {self.site.lon}, {self.site.radius}), to {center}, {radius}"
+            logger.debug(msg)
             self.site.param.update(lat=center[0], lon=center[1], radius=radius)
         else:
-            logger.debug(f"using self.site ({self.site.lat}, {self.site.lon}, {self.site.radius}) for center, radius")
+            msg = f"using self.site ({self.site.lat}, {self.site.lon}, {self.site.radius}) for center, radius"
+            logger.debug(msg)
         return center, radius, self.site.enabled
 
     def init_map_loc(self):
@@ -228,7 +230,7 @@ class StationViewer(Viewer):
         return center, zoom
 
     def init_site_circle(self):
-        # find initial parameters from either self.site, if avail, or _conf
+        """Find initial parameters from either self.site, if available, or _conf."""
         center, radius, enabled = self.init_site_val()
         logger.debug("StationViewer.init_site_circle: %s %s %s", center, radius, enabled)
 
@@ -428,7 +430,9 @@ class StationViewer(Viewer):
             if station_id is not None:
                 sel = table[table["station"] == station_id]
                 self.table[var].selection = sel.index.to_list()
-                logger.info(f"update_tabulator_tables_from_site {var} {station_id} {sel.index.to_list()}")
+
+                msg = f"update_tabulator_tables_from_site {var} {station_id} {sel.index.to_list()}"
+                logger.info(msg)
 
     @param.depends("station.site_df", watch=True)
     def update_site_markers(self):
@@ -523,7 +527,9 @@ class StationViewer(Viewer):
                 # Not sure why the only way it works is through a private prop...
                 # IIUC, there might be a fix upcoming in panel 1.4.6
                 station = self.table[var].value.iloc[i].station
-                # pn.state.notifications.info(f"{self.table[var].selection}, {i}, {station}, {self.table[var]._processed.iloc[i].station} {self.table[var].value.iloc[i].station}")
+                # pn.state.notifications.info(
+                # f"{self.table[var].selection}, {i}, {station}, {self.table[var]._processed.iloc[i].station} {self.table[var].value.iloc[i].station}"
+                # )
             self.select_station(var, station, origin="table")
 
         return callback
@@ -1240,7 +1246,8 @@ class IndicatorDAViewer(Viewer):
     # not getting called on obs data creation
     @param.depends("ind.dparams", "ind.locale", watch=True)  # und.period always changes ind.dparams due to param.trigger()
     def _update_plots(self):
-        logger.debug(f"Updating plots: {self.name}, {self.ind.description}")
+        msg = f"Updating plots: {self.name}, {self.ind.description}"
+        logger.debug(msg)
 
         self.plot.object = pn.pane.HoloViews(self.create_plots(), linked_axes=False)
 
@@ -1326,6 +1333,7 @@ class HazardMatrixViewer(Viewer):
     # No watch as panel will watch it himself
     @param.depends("hm.locale")
     def draw_table(self):
+        """Draw a table."""
         NF = NumberFormatter
         fmt = {
             "obs_sf": NF(format="0.%"),
@@ -1423,10 +1431,12 @@ class HazardMatrixViewer(Viewer):
 
     @param.depends("hm.matrix", watch=True)
     def update_table(self, event=None):
+        """Update a table."""
         if hasattr(self, "table"):
             self.table.value = self.hm.df
 
     def on_edit(self, event):
+        """On edit event."""
         ht = self.hm.get_ht(event.row)
         ht.on_edit(event)
         self._notify_out_of_bounds(ht)
@@ -1440,6 +1450,7 @@ class HazardMatrixViewer(Viewer):
         # table.patch(patch, as_index=False)
 
     def on_click(self, event):
+        """On click event."""
         self.hm.on_click(event)
         # self.update_table()
         # self.table.value = self.hm.df

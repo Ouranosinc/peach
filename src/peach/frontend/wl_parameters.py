@@ -335,7 +335,10 @@ class IndicatorSimWL(IndicatorDA):
                 f"permet de contrôler leur visibilité."
             )
         else:
-            return f"Projected time series for `{self.long_name}` at {st}, with a threshold of {thresh} m. Clicking on legend items allows to control their visibility."
+            return (
+                f"Projected time series for `{self.long_name}` at {st}, with a threshold of {thresh} m."
+                "Clicking on legend items allows to control their visibility."
+            )
 
     @property
     def hist_caption(self):
