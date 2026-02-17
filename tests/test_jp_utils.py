@@ -1,4 +1,5 @@
-"""Missing tests TODO for completion:
+"""
+Missing tests TODO for completion:
 - ot_copula, ot_joint (see copula.py)
 - wl_norm
 """
@@ -51,19 +52,17 @@ def test_get_matching_events(synthetic_ewl_ds, synthetic_ds_daily):
     _, wl_pot, _, _ = synthetic_ewl_ds
     pr_sim = synthetic_ds_daily
 
-    pr_timeseries = pr_sim.sel(time=slice("1995-01-01", "2014-12-31")).isel(
-        realization=0
-    )
+    pr_timeseries = pr_sim.sel(time=slice("1995-01-01", "2014-12-31")).isel(realization=0)
     pot_da_clean, pr_cond = matching_events(wl_pot, pr_timeseries)
 
-    assert (pr_cond.time.values >= pr_timeseries.time.values.min() - np.timedelta64(1, 'D')).all()
-    assert (pr_cond.time.values <= pr_timeseries.time.values.max() + np.timedelta64(1, 'D')).all()
+    assert (pr_cond.time.values >= pr_timeseries.time.values.min() - np.timedelta64(1, "D")).all()
+    assert (pr_cond.time.values <= pr_timeseries.time.values.max() + np.timedelta64(1, "D")).all()
     assert (pr_cond.values >= pr_timeseries.values.min()).all()
     assert (pr_cond.values <= pr_timeseries.values.max()).all()
     assert len(pr_cond) == len(pot_da_clean)
 
 
-### MARGINAL (UNIVARIATE) DISTRIBUTIONS
+# MARGINAL (UNIVARIATE) DISTRIBUTIONS
 def create_xarray_dparams(params):
     """Create dprams xarray for testing."""
     data = np.array([params[key] for key in params.keys()])
@@ -97,17 +96,13 @@ def test_student_mapping():
     assert params[2] == dparams.sel(dparams="scale").item()
 
     test_value = 1.5
-    scipy_t = scipy.stats.t(
-        df=dparams.values[0], loc=dparams.values[1], scale=dparams.values[2]
-    )
+    scipy_t = scipy.stats.t(df=dparams.values[0], loc=dparams.values[1], scale=dparams.values[2])
     assert np.isclose(ot_dist.computePDF(test_value), scipy_t.pdf(test_value))
     assert np.isclose(ot_dist.computeCDF(test_value), scipy_t.cdf(test_value))
 
 
 def test_gamma_mapping():
-    dparams = create_xarray_dparams(
-        {"a": 2.0, "loc": 1.0, "scale": 2.0}
-    )  # scipy: shape, loc, scale
+    dparams = create_xarray_dparams({"a": 2.0, "loc": 1.0, "scale": 2.0})  # scipy: shape, loc, scale
     ot_dist = ot_marginal("gamma", dparams)
 
     assert isinstance(ot_dist, ot.Gamma)
@@ -117,9 +112,7 @@ def test_gamma_mapping():
     assert params[2] == dparams.sel(dparams="loc").item()  # ot: shift
 
     test_value = 1.5
-    scipy_gamma = scipy.stats.gamma(
-        a=dparams.values[0], loc=dparams.values[1], scale=dparams.values[2]
-    )
+    scipy_gamma = scipy.stats.gamma(a=dparams.values[0], loc=dparams.values[1], scale=dparams.values[2])
     assert np.isclose(ot_dist.computePDF(test_value), scipy_gamma.pdf(test_value))
     assert np.isclose(ot_dist.computeCDF(test_value), scipy_gamma.cdf(test_value))
 
@@ -137,9 +130,7 @@ def test_genextreme_mapping():
     assert ot_params[2] == -dparams.sel(dparams="c").item()  # shape
 
     test_value = 1.5
-    scipy_genextreme = scipy.stats.genextreme(
-        c=dparams.values[0], loc=dparams.values[1], scale=dparams.values[2]
-    )
+    scipy_genextreme = scipy.stats.genextreme(c=dparams.values[0], loc=dparams.values[1], scale=dparams.values[2])
     assert np.isclose(ot_dist.computePDF(test_value), scipy_genextreme.pdf(test_value))
     assert np.isclose(ot_dist.computeCDF(test_value), scipy_genextreme.cdf(test_value))
 
@@ -155,9 +146,7 @@ def test_genpareto_mapping():
     assert ot_params[2] == dparams.sel(dparams="loc").item()
 
     test_value = 1.5
-    scipy_dist = scipy.stats.genpareto(
-        c=dparams.values[0], loc=dparams.values[1], scale=dparams.values[2]
-    )
+    scipy_dist = scipy.stats.genpareto(c=dparams.values[0], loc=dparams.values[1], scale=dparams.values[2])
     assert np.isclose(ot_dist.computePDF(test_value), scipy_dist.pdf(test_value))
     assert np.isclose(ot_dist.computeCDF(test_value), scipy_dist.cdf(test_value))
 
@@ -168,16 +157,12 @@ def test_lognorm_mapping():
 
     assert isinstance(ot_dist, ot.LogNormal)
     ot_params = ot_dist.getParameter()
-    assert ot_params[0] == np.log(
-        dparams.sel(dparams="scale").item()
-    )  # np.log(params[2])
+    assert ot_params[0] == np.log(dparams.sel(dparams="scale").item())  # np.log(params[2])
     assert ot_params[1] == dparams.sel(dparams="s").item()  # params[0]
     assert ot_params[2] == dparams.sel(dparams="loc").item()  # params[1]
 
     test_value = 1.5
-    scipy_lognorm = scipy.stats.lognorm(
-        s=dparams.values[0], loc=dparams.values[1], scale=dparams.values[2]
-    )
+    scipy_lognorm = scipy.stats.lognorm(s=dparams.values[0], loc=dparams.values[1], scale=dparams.values[2])
     assert np.isclose(ot_dist.computePDF(test_value), scipy_lognorm.pdf(test_value))
     assert np.isclose(ot_dist.computeCDF(test_value), scipy_lognorm.cdf(test_value))
 
@@ -189,14 +174,9 @@ def test_uniform_mapping():
     assert isinstance(ot_dist, ot.Uniform)
     ot_params = ot_dist.getParameter()
     assert ot_params[0] == dparams.sel(dparams="loc").item()
-    assert (
-        ot_params[1]
-        == dparams.sel(dparams="loc").item() + dparams.sel(dparams="scale").item()
-    )
+    assert ot_params[1] == dparams.sel(dparams="loc").item() + dparams.sel(dparams="scale").item()
 
     test_value = 7.5
-    scipy_uniform = scipy.stats.uniform(
-        loc=dparams.sel(dparams="loc").item(), scale=dparams.sel(dparams="scale").item()
-    )
+    scipy_uniform = scipy.stats.uniform(loc=dparams.sel(dparams="loc").item(), scale=dparams.sel(dparams="scale").item())
     assert np.isclose(ot_dist.computePDF(test_value), scipy_uniform.pdf(test_value))
     assert np.isclose(ot_dist.computeCDF(test_value), scipy_uniform.cdf(test_value))

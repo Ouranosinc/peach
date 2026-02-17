@@ -32,7 +32,8 @@ class WLIndicator(Indicator):
 
 @declare_units(wl="[length]")
 def _water_level_max(wl: xr.DataArray, freq: str = "YS") -> xr.DataArray:
-    """Compute the maximum water level.
+    """
+    Compute the maximum water level.
 
     Resample the original hourly water level data to the specified frequency and compute the maximum value.
 
@@ -56,7 +57,8 @@ def _water_level_pot(
     wl: xr.DataArray,
     thresh: float = None,
 ) -> xr.DataArray:
-    """Return water level peaks over threshold.
+    """
+    Return water level peaks over threshold.
 
     Parameters
     ----------
@@ -87,7 +89,8 @@ def _water_level_pot_lambda(
     wl_pot: xr.DataArray,
     thresh: float = None,
 ) -> xr.DataArray:
-    """Return water level peaks over threshold.
+    """
+    Return water level peaks over threshold.
 
     Parameters
     ----------

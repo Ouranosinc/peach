@@ -17,10 +17,9 @@ and feed some attributes to the backend.
 
 
 @declare_units(idf="[precipitation]", tas="[temperature]")
-def _lambda(
-    idf: xr.DataArray, tas: xr.DataArray = None, duration: str = "24h"
-) -> xr.DataArray:
-    """Maximum annual precipitation for the given duration.
+def _lambda(idf: xr.DataArray, tas: xr.DataArray = None, duration: str = "24h") -> xr.DataArray:
+    """
+    Maximum annual precipitation for the given duration.
 
     Return the maximum annual precipitation aggregated over a given duration.
 

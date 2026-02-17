@@ -15,7 +15,8 @@ def _gen_idx(
     size: int,
     replace: bool,
 ) -> xr.DataArray:
-    """Generate indices to select from.
+    """
+    Generate indices to select from.
 
     Parameters
     ----------
@@ -34,9 +35,7 @@ def _gen_idx(
         idx = np.random.randint(0, da.size, (iteration, size))
     else:
         rng = np.random.Generator(np.random.PCG64())
-        idx = np.array(
-            [rng.choice(da.size, size, replace=replace) for i in range(iteration)]
-        )
+        idx = np.array([rng.choice(da.size, size, replace=replace) for i in range(iteration)])
 
     return xr.DataArray(
         idx,
@@ -46,7 +45,8 @@ def _gen_idx(
 
 
 def resample(da, iteration, size=None, replace=True, dim="time"):
-    """Resample a DataArray.
+    """
+    Resample a DataArray.
 
     Parameters
     ----------
@@ -62,9 +62,7 @@ def resample(da, iteration, size=None, replace=True, dim="time"):
     size = size or len(da[dim])
 
     if size == len(da[dim]) and replace is False and iteration > 1:
-        raise ValueError(
-            "It's not really useful to sample without replacement more than once if `size` is the same."
-        )
+        raise ValueError("It's not really useful to sample without replacement more than once if `size` is the same.")
 
     idx = _gen_idx(da[dim], iteration, size, replace)
     return da.isel({dim: idx})

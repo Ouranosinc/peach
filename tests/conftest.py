@@ -39,14 +39,13 @@ def tmp_workspace(tmp_path_factory):
 
 @pytest.fixture
 def config():
-
-    with open(CONFIG / "indicators.yml") as file:
+    with Path(CONFIG / "indicators.yml").open() as file:
         c1 = yaml.safe_load(file)
-    with open(CONFIG / "station_select.yml") as file:
+    with Path(CONFIG / "station_select.yml").open() as file:
         c2 = yaml.safe_load(file)
-    with open(CONFIG / "indicator_select.yml") as file:
+    with Path(CONFIG / "indicator_select.yml").open() as file:
         c3 = yaml.safe_load(file)
-    with open(CONFIG / "application.yml") as file:
+    with Path(CONFIG / "application.yml").open() as file:
         c4 = yaml.safe_load(file)
 
     return c1, c2, c3, c4
@@ -76,9 +75,7 @@ def idf_obs(tmp_workspace):
 
     # Make IDF Obs
     p = ComputeIDFProcessorOBS({"name": "Test-IDF-Obs"})
-    p.INPUT_DATASET_PATTERN = (
-        "s3://https://minio.ouranos.ca/portail-ing/IDF3.30.zarr"
-    )
+    p.INPUT_DATASET_PATTERN = "s3://https://minio.ouranos.ca/portail-ing/IDF3.30.zarr"
 
     data = {
         "name": "IDF",
@@ -92,7 +89,7 @@ def idf_obs(tmp_workspace):
 @pytest.fixture(scope="session")
 def idf_sim(tmp_workspace, pytestconfig):
     from peach.backend.compute_indicators import ComputeIDFProcessorSIM
-    
+
     val = pytestconfig.cache.get("minio/idf_sim", None)
 
     if val is None:

@@ -202,14 +202,10 @@ class StationViewer(Viewer):
             radius = self._conf["site"]["radius"]
             update = True
         if update:
-            logger.debug(
-                f"Update self.site ({self.site.lat}, {self.site.lon}, {self.site.radius}), to {center}, {radius}"
-            )
+            logger.debug(f"Update self.site ({self.site.lat}, {self.site.lon}, {self.site.radius}), to {center}, {radius}")
             self.site.param.update(lat=center[0], lon=center[1], radius=radius)
         else:
-            logger.debug(
-                f"using self.site ({self.site.lat}, {self.site.lon}, {self.site.radius}) for center, radius"
-            )
+            logger.debug(f"using self.site ({self.site.lat}, {self.site.lon}, {self.site.radius}) for center, radius")
         return center, radius, self.site.enabled
 
     def init_map_loc(self):
@@ -234,7 +230,7 @@ class StationViewer(Viewer):
     def init_site_circle(self):
         # find initial parameters from either self.site, if avail, or _conf
         center, radius, enabled = self.init_site_val()
-        logger.debug(f"StationViewer.init_site_circle: {center} {radius} {enabled}")
+        logger.debug("StationViewer.init_site_circle: %s %s %s", center, radius, enabled)
 
         # dot at center of circle:
         center_marker = CircleMarker(
@@ -266,7 +262,7 @@ class StationViewer(Viewer):
 
     def init_site_widgets(self):
         center, radius, enabled = self.init_site_val()
-        logger.debug(f"StationViewer.init_site_widgets: {center} {radius} {enabled}")
+        logger.debug("StationViewer.init_site_widgets: %s %s %s", center, radius, enabled)
 
         # widgets to control the site parameters:
         site_toggle = Button(
@@ -275,12 +271,8 @@ class StationViewer(Viewer):
             disabled=False,
         )
 
-        lat_editor = FloatText(
-            placeholder="Lat", value=center[0], layout=Layout(width="40%"), step=0.1
-        )
-        lon_editor = FloatText(
-            placeholder="Lon", value=center[1], layout=Layout(width="40%"), step=0.1
-        )
+        lat_editor = FloatText(placeholder="Lat", value=center[0], layout=Layout(width="40%"), step=0.1)
+        lon_editor = FloatText(placeholder="Lon", value=center[1], layout=Layout(width="40%"), step=0.1)
 
         radius_slider = IntSlider(
             description="Distance (km):",
@@ -306,12 +298,8 @@ class StationViewer(Viewer):
         lon_editor.observe(self.site_lon_editor_changed, "value")
         radius_slider.observe(self.site_radius_slider_changed, "value")
 
-        widgetbox = VBox(
-            [HBox([site_toggle, lat_editor, lon_editor], width="200px"), radius_slider]
-        )
-        widgetcontrol = WidgetControl(
-            widget=widgetbox, position="topright", max_width=300
-        )
+        widgetbox = VBox([HBox([site_toggle, lat_editor, lon_editor], width="200px"), radius_slider])
+        widgetcontrol = WidgetControl(widget=widgetbox, position="topright", max_width=300)
         self.map.add(widgetcontrol)
 
     def update_ipywidget_from_param(self, subparam_name, widget, **traitvalues):
@@ -326,9 +314,7 @@ class StationViewer(Viewer):
 
     def update_param_from_ipywidget(self, param_name, **kwargs):
         param_vals = self.param.values()
-        if param_name in param_vals and isinstance(
-            param_vals[param_name], param.Parameterized
-        ):
+        if param_name in param_vals and isinstance(param_vals[param_name], param.Parameterized):
             update = {}
             for key, val in kwargs.items():
                 if not self.updating_paramwidget.get(key):
@@ -368,15 +354,9 @@ class StationViewer(Viewer):
         center = (lat, lon)
         mod_radius = self.get_modified_circle_radius(radius, center)
 
-        self.update_ipywidget_from_param(
-            "radius", self.site_widgets.get("radius_slider"), value=radius
-        )
-        self.update_ipywidget_from_param(
-            "lat", self.site_widgets.get("lat_editor"), value=lat
-        )
-        self.update_ipywidget_from_param(
-            "lon", self.site_widgets.get("lon_editor"), value=lon
-        )
+        self.update_ipywidget_from_param("radius", self.site_widgets.get("radius_slider"), value=radius)
+        self.update_ipywidget_from_param("lat", self.site_widgets.get("lat_editor"), value=lat)
+        self.update_ipywidget_from_param("lon", self.site_widgets.get("lon_editor"), value=lon)
 
         self.update_ipywidget_from_param(
             "border_marker",
@@ -384,13 +364,10 @@ class StationViewer(Viewer):
             radius=mod_radius,
             location=center,
         )
-        self.update_ipywidget_from_param(
-            "center_marker", self.site_circle.get("center_marker"), location=center
-        )
+        self.update_ipywidget_from_param("center_marker", self.site_circle.get("center_marker"), location=center)
 
     def map_bounds_link(self, *events):
         with param.parameterized.batch_call_watchers(self.map_param):
-
             for event in events:
                 if event["name"] == "center":
                     # setting clat, clon to 4 decimals is enough accuracy to prevent jitter.
@@ -447,15 +424,11 @@ class StationViewer(Viewer):
             return
         for var, table in self.station.site_df.items():
             station_id = self.station.station_id[var]
-            self.table[var].value = table[self.table[var].value.columns].reset_index(
-                drop=True
-            )
+            self.table[var].value = table[self.table[var].value.columns].reset_index(drop=True)
             if station_id is not None:
                 sel = table[table["station"] == station_id]
                 self.table[var].selection = sel.index.to_list()
-                logger.info(
-                    f"update_tabulator_tables_from_site {var} {station_id} {sel.index.to_list()}"
-                )
+                logger.info(f"update_tabulator_tables_from_site {var} {station_id} {sel.index.to_list()}")
 
     @param.depends("station.site_df", watch=True)
     def update_site_markers(self):
@@ -489,7 +462,8 @@ class StationViewer(Viewer):
                 layergroup.add(marker)
 
     def select_station(self, variable, station, origin):
-        """Select a station.
+        """
+        Select a station.
 
         If station was already selected, deselect it by setting back the station to None.
 
@@ -508,7 +482,7 @@ class StationViewer(Viewer):
         (`update_site_markers`) and the tables (`update_station_tables_from_site`), so there is no
         need to do this explicitly here.
         """
-        logger.info(f"Selected station from {origin}: {variable} {station}")
+        logger.info("Selected station from %s: %s %s", origin, variable, station)
         self.load()
         # If the same station is clicked, deselect it.
         if self.station.station_id[variable] == station:
@@ -533,7 +507,8 @@ class StationViewer(Viewer):
         return callback
 
     def make_table_click_callback(self, var):
-        """Create custom function for each table.
+        """
+        Create custom function for each table.
 
         We need this to pass information to the callback function, since `on_click` does not accept
         arguments other than the callback function itself.
@@ -566,12 +541,7 @@ class StationViewer(Viewer):
         """On map move, update marker locations"""
         # initial bounds:
         north, east, south, west, centre = self.get_bounds_centre()
-        if not (
-            self.map_param.clat is None
-            or self.map_param.clat == 0
-            or self.map_param.clon is None
-            or self.map_param.clon == 0
-        ):
+        if not (self.map_param.clat is None or self.map_param.clat == 0 or self.map_param.clon is None or self.map_param.clon == 0):
             centre = (self.map_param.clon, self.map_param.clat)
 
         ne_easting, ne_northing = p.latlng_to_proj(north, east)
@@ -594,9 +564,7 @@ class StationViewer(Viewer):
             )
 
             # var_df['geometry'] = shapely.Point(var_df.easting, var_df.northing)
-            var_df = gpd.GeoDataFrame(
-                var_df, geometry=gpd.points_from_xy(var_df.lon, var_df.lat), crs=4326
-            )
+            var_df = gpd.GeoDataFrame(var_df, geometry=gpd.points_from_xy(var_df.lon, var_df.lat), crs=4326)
             markers = ipyleaflet.GeoData(
                 geo_dataframe=var_df,
                 point_style={
@@ -675,11 +643,7 @@ class StationViewer(Viewer):
 
     def toggle_variable_callback(self, button, variable):
         """Callback to toggle visibility of a variable."""
-        ind = [
-            ind
-            for ind, var in enumerate(self.station.variables.keys())
-            if var == variable
-        ][0]
+        ind = [ind for ind, var in enumerate(self.station.variables.keys()) if var == variable][0]
 
         def toggle_variable(event):
             if variable in self.variables:
@@ -733,9 +697,7 @@ class StationViewer(Viewer):
         df = pd.DataFrame(
             columns=self._conf["table"]["columns"],
         )
-        labels = {
-            key: self.station._label[key][self.station.locale] for key in df.columns
-        }
+        labels = {key: self.station._label[key][self.station.locale] for key in df.columns}
         filters = {
             "station": {
                 "type": "input",
@@ -805,7 +767,7 @@ class StationViewer(Viewer):
 
         widget_stream = WidgetStream(widget=self.map, max_fps=1)
         image_recorder = ImageRecorder(stream=widget_stream)
-        with open(path, "wb") as f:
+        with Path(path).open("wb") as f:
             f.write(image_recorder.image.value)
 
     @param.depends("station.locale", watch=True)
@@ -832,7 +794,6 @@ class StationViewer(Viewer):
         self.table_container.loading = False
 
     def _dynamic_unload(self):
-
         logger.debug("StationViewer._dynamic_unload")
         self.map_container = None
 
@@ -856,13 +817,9 @@ class StationViewer(Viewer):
 
     def _default_layout(self):
         if self.map_container is None:
-            self.map_container = pn.pane.Placeholder(
-                loading=True, **self._conf["pre_map_layout"]
-            )
+            self.map_container = pn.pane.Placeholder(loading=True, **self._conf["pre_map_layout"])
         if self.table_container is None:
-            self.table_container = pn.pane.Placeholder(
-                loading=True, **self._conf["pre_map_layout"]
-            )
+            self.table_container = pn.pane.Placeholder(loading=True, **self._conf["pre_map_layout"])
 
         return pn.Column(self.map_container, self.table_container)
 
@@ -925,9 +882,7 @@ class IndicatorComputationViewer(pn.viewable.Viewer):
             show_name=False,
         )
 
-        return pn.Column(
-            header, abstract, params, width_policy="max", sizing_mode="stretch_width"
-        )
+        return pn.Column(header, abstract, params, width_policy="max", sizing_mode="stretch_width")
 
 
 class IndicatorListViewer(Viewer):
@@ -944,13 +899,10 @@ class IndicatorListViewer(Viewer):
         for cname, conf in self._conf.items():
             rows = []
             for iid in conf["items"]:
-
                 ind = self.inds.indicators[iid]
 
                 # Indicator title
-                title = pn.pane.Markdown(
-                    ind.title, min_width=300, sizing_mode="stretch_width"
-                )
+                title = pn.pane.Markdown(ind.title, min_width=300, sizing_mode="stretch_width")
 
                 # Shows which variables have data
                 variables = pn.Param(
@@ -988,9 +940,7 @@ class IndicatorListViewer(Viewer):
         try:
             self.inds.add(iid)
         except OverflowError:
-            pn.state.notifications.error(
-                "Le nombre maximal d'indicateur est atteint. Veuillez en retirer avant d'en ajouter de nouveaux."
-            )
+            pn.state.notifications.error("Le nombre maximal d'indicateur est atteint. Veuillez en retirer avant d'en ajouter de nouveaux.")
 
     @param.depends("inds.selected", "inds.locale")
     def selected_view(self):
@@ -1033,17 +983,11 @@ class IndicatorListViewer(Viewer):
         try:
             self.inds.post_all_requests()
         except requests.exceptions.RequestException as e:
-            pn.state.notifications.info(
-                f"Erreur lors de l'envoi des requêtes de calcul: {e}"
-            )
+            pn.state.notifications.info(f"Erreur lors de l'envoi des requêtes de calcul: {e}")
 
-        logger.debug(
-            "IndicatorListViewer.compute_action(): Launching monitoring callback"
-        )
+        logger.debug("IndicatorListViewer.compute_action(): Launching monitoring callback")
         # The timeout is to short, future computations take 2 min on my laptop.
-        self._monitor = pn.state.add_periodic_callback(
-            self.monitor_jobs, period=1500, start=True, timeout=20000
-        )
+        self._monitor = pn.state.add_periodic_callback(self.monitor_jobs, period=1500, start=True, timeout=20000)
 
     def monitor_jobs(self):
         if self.inds.monitor_jobs():
@@ -1112,9 +1056,7 @@ class AbstractAnalysisViewer(Viewer):
 
     config = param.Dict({})
     empty_title = param.String("Pas de données disponibles")
-    empty_message = param.String(
-        "Lancez les calculs d'indicateurs avant d'afficher les résultats."
-    )
+    empty_message = param.String("Lancez les calculs d'indicateurs avant d'afficher les résultats.")
 
     _label = {
         "empty_title": {"fr": "Pas de données disponibles", "en": "No data available"},
@@ -1127,9 +1069,7 @@ class AbstractAnalysisViewer(Viewer):
     @param.depends("analysis.locale")
     def empty_view(self):
         """Message displayed when results are not yet computed."""
-        return pn.pane.Alert(
-            f"### {self.empty_title}\n{self.empty_message}", alert_type="info"
-        )
+        return pn.pane.Alert(f"### {self.empty_title}\n{self.empty_message}", alert_type="info")
 
     def _dynamic_load(self):
         for obj in self.results.values():
@@ -1253,12 +1193,7 @@ class IndicatorDAViewer(Viewer):
     def ts_view(self):
         """Time series."""
         vspan = self.period_span()
-        return (
-            self.ind.ts.hvplot(width=self.lw, height=self.h).opts(
-                active_tools=["pan"], ylabel=self.ylabel, xlabel=""
-            )
-            * vspan
-        )
+        return self.ind.ts.hvplot(width=self.lw, height=self.h).opts(active_tools=["pan"], ylabel=self.ylabel, xlabel="") * vspan
 
     def hist_view(self):
         """Histogram."""
@@ -1269,14 +1204,8 @@ class IndicatorDAViewer(Viewer):
     def pdf_view(self):
         """PDF"""
         x = np.linspace(self.ind.sample.min().item(), self.ind.sample.max().item(), 100)
-        x = xr.DataArray(
-            data=x, dims=(self.ind.data.long_name,), coords={self.ind.data.long_name: x}
-        )
-        return (
-            self.ind.pdf(x)
-            .hvplot(invert=True, width=self.rw, height=self.h)
-            .opts(active_tools=["pan"], xlabel="", ylabel="")
-        )
+        x = xr.DataArray(data=x, dims=(self.ind.data.long_name,), coords={self.ind.data.long_name: x})
+        return self.ind.pdf(x).hvplot(invert=True, width=self.rw, height=self.h).opts(active_tools=["pan"], xlabel="", ylabel="")
 
     def ts_view_caption(self):
         """Caption for the time series."""
@@ -1289,9 +1218,7 @@ class IndicatorDAViewer(Viewer):
 
     def score_view(self):
         items = (
-            pn.pane.Markdown(
-                "BIC", align=("start", "end"), width_policy="min", sizing_mode="fixed"
-            ),
+            pn.pane.Markdown("BIC", align=("start", "end"), width_policy="min", sizing_mode="fixed"),
             pn.widgets.TooltipIcon(
                 value="Bayesian Information Criterion",
                 align=("start", "center"),
@@ -1308,15 +1235,10 @@ class IndicatorDAViewer(Viewer):
         return pn.Row(*items)
 
     def create_plots(self):
-        return (
-            self.ts_view()
-            + (self.hist_view() * self.pdf_view()).opts(show_legend=False)
-        ).opts(toolbar="right")
+        return (self.ts_view() + (self.hist_view() * self.pdf_view()).opts(show_legend=False)).opts(toolbar="right")
 
     # not getting called on obs data creation
-    @param.depends(
-        "ind.dparams", "ind.locale", watch=True
-    )  # und.period always changes ind.dparams due to param.trigger()
+    @param.depends("ind.dparams", "ind.locale", watch=True)  # und.period always changes ind.dparams due to param.trigger()
     def _update_plots(self):
         logger.debug(f"Updating plots: {self.name}, {self.ind.description}")
 
@@ -1378,9 +1300,7 @@ class IndicatorSimDAViewer(IndicatorDAViewer):
                 color=color,
                 muted_alpha=0,
             )
-            * self.ind.obs.ts.hvplot(
-                width=self.lw, color="k", label="Observations", muted_alpha=0
-            )
+            * self.ind.obs.ts.hvplot(width=self.lw, color="k", label="Observations", muted_alpha=0)
         ).redim.label(**{f"{self.ind.data.name}_p10": f"{self.ind.data.long_name}"})
 
         return (graph * vspan).opts(
@@ -1462,10 +1382,7 @@ class HazardMatrixViewer(Viewer):
 
         # Styling to highlight the editable columns on hover
         editable = "{outline-color: #3246a8; outline-width: 2px; outline-style: solid; outline-offset: -2px;}"
-        stylesheets = stylesheets + [
-            f':host div.tabulator-row:hover [tabulator-field="{key}"] {editable}'
-            for key in ["value", "obs_t", "descr"]
-        ]
+        stylesheets = stylesheets + [f':host div.tabulator-row:hover [tabulator-field="{key}"] {editable}' for key in ["value", "obs_t", "descr"]]
 
         self.table = pn.widgets.Tabulator(
             self.hm.df,
@@ -1573,12 +1490,8 @@ class Application(pn.viewable.Viewer):
         super().__init__(**params)
         if self.analysis is None:
             with param.parameterized.discard_events(self):
-                self.analysis = p.Analysis(
-                    indicators=self.indicators, locale=self.global_.param.locale
-                )
-                self.hazmat = p.HazardMatrix(
-                    analysis=self.analysis, locale=self.global_.param.locale
-                )
+                self.analysis = p.Analysis(indicators=self.indicators, locale=self.global_.param.locale)
+                self.hazmat = p.HazardMatrix(analysis=self.analysis, locale=self.global_.param.locale)
         self.download_grp = pn.pane.Placeholder()
         self.text = Text(locale=self.global_.param.locale)
 
@@ -1595,9 +1508,7 @@ class Application(pn.viewable.Viewer):
             steps.append(
                 (
                     conf["name"][self.global_.locale],
-                    f'*{conf["description"][self.global_.locale]}*'
-                    + "\n\n"
-                    + conf["help"][self.global_.locale],
+                    f"*{conf['description'][self.global_.locale]}*" + "\n\n" + conf["help"][self.global_.locale],
                 )
             )
         return pn.Accordion(*steps, active=self.global_.sidebar_tab)
@@ -1650,9 +1561,7 @@ class Application(pn.viewable.Viewer):
             button_type="primary",
             label="Exporter les résultats",
             locale=self.global_.locale,
-            _value={
-                "label": {"fr": "Exporter les résultats", "en": "Export the results"}
-            },
+            _value={"label": {"fr": "Exporter les résultats", "en": "Export the results"}},
             icon="download",
         )
         download_request = LocalizedFileDownload(
@@ -1707,11 +1616,7 @@ class Application(pn.viewable.Viewer):
     def make_help(self, step):
         conf = self.config["steps"][step]
         # tt = pn.widgets.TooltipIcon(value=conf["help"][self.locale], align=("start", "start"), width=50)
-        html = (
-            """<details open><summary>Instructions</summary>"""
-            + conf["help"][self.global_.locale]
-            + "</details>"
-        )
+        html = """<details open><summary>Instructions</summary>""" + conf["help"][self.global_.locale] + "</details>"
         return pn.Row(pn.pane.Markdown(html), width_policy="max")
 
     def make_dash_item(self, step, kls, **kwds):
@@ -1719,7 +1624,7 @@ class Application(pn.viewable.Viewer):
         try:
             conf = self.config["steps"][step]
             if "view_config" in conf:
-                with open(CONFIG_DIR / conf["view_config"]) as fh:
+                with Path(CONFIG_DIR / conf["view_config"]).open() as fh:
                     config = yaml.safe_load(fh)
                     kwds["config"] = config
 
@@ -1732,7 +1637,7 @@ class Application(pn.viewable.Viewer):
             return header, pn.Column(view)
 
         except Exception as err:
-            logger.error(f"make_dash_item failed for step {step} with {err}")
+            logger.error("make_dash_item failed for step %s with %s", step, err)
             print(traceback.format_exc())
             raise
 
@@ -1748,9 +1653,7 @@ class Application(pn.viewable.Viewer):
                 site=self.param.site,
                 map_param=self.param.map_param,
             ),
-            self.make_dash_item(
-                "indicator_select", IndicatorListViewer, inds=self.indicators
-            ),
+            self.make_dash_item("indicator_select", IndicatorListViewer, inds=self.indicators),
         )
 
     @param.depends("analysis.obs", watch=True)
@@ -1782,11 +1685,7 @@ class Application(pn.viewable.Viewer):
     @param.depends("_add_sim_tab", watch=True)
     def _add_hazmat_tab(self):
         if "hazard_threshold_select" not in self.views:
-            self.layout.append(
-                self.make_dash_item(
-                    "hazard_threshold_select", HazardMatrixViewer, hm=self.hazmat
-                )
-            )
+            self.layout.append(self.make_dash_item("hazard_threshold_select", HazardMatrixViewer, hm=self.hazmat))
             # self.matrix_updated = True
 
     def lang_switcher(self):
@@ -1837,11 +1736,7 @@ class Application(pn.viewable.Viewer):
         elif mode == "request":
             out = {
                 "indicators": self.indicators.to_dict(mode="request"),
-                "stations": {
-                    vv: sid
-                    for vv, sid in self.station.station_id.items()
-                    if sid is not None
-                },
+                "stations": {vv: sid for vv, sid in self.station.station_id.items() if sid is not None},
                 "analysis": self.analysis.to_dict(mode="request"),
                 "hazards": self.hazmat.to_dict(mode="request"),
             }
@@ -1869,11 +1764,7 @@ class Application(pn.viewable.Viewer):
         """Export the minimal configuration needed to reproduce the results, as a json file."""
         self.download_grp.loading = True
         data = io.StringIO()
-        data.write(
-            json.dumps(
-                self.to_dict(mode="request"), indent=4, default=str, ensure_ascii=False
-            )
-        )
+        data.write(json.dumps(self.to_dict(mode="request"), indent=4, default=str, ensure_ascii=False))
         data.seek(0)
         self.download_grp.loading = False
         return data
@@ -1893,9 +1784,7 @@ class Application(pn.viewable.Viewer):
             event.obj.clear()
             return
 
-        if (
-            len(data["indicators"]) + len(self.indicators.selected)
-        ) > global_config.MAX_INDICATORS:
+        if (len(data["indicators"]) + len(self.indicators.selected)) > global_config.MAX_INDICATORS:
             pn.state.notifications.error(
                 f"Le nombre d'indicateurs est limité à {global_config.MAX_INDICATORS}, "
                 f"mais la requête en contient {len(data['indicators'])} "
@@ -1922,14 +1811,8 @@ class Application(pn.viewable.Viewer):
                 time.sleep(2)
 
             # Analysis
-            params = {
-                k: tuple(data["analysis"][k])
-                for k in ["ref_period", "fut_period"]
-                if k in data["analysis"]
-            } | {
-                k: dict(zip(uuids, data["analysis"][k]))
-                for k in ["metric", "dist"]
-                if k in data["analysis"]
+            params = {k: tuple(data["analysis"][k]) for k in ["ref_period", "fut_period"] if k in data["analysis"]} | {
+                k: dict(zip(uuids, data["analysis"][k])) for k in ["metric", "dist"] if k in data["analysis"]
             }
             self.analysis.update_params(**params)
 
@@ -1937,9 +1820,7 @@ class Application(pn.viewable.Viewer):
             hazarddict = dict(zip(uuids, data["hazards"]))
             self.hazmat.from_dict(hazarddict)
         except Exception:
-            pn.state.notifications.error(
-                "L'importation de la requête a échoué. Désolé."
-            )
+            pn.state.notifications.error("L'importation de la requête a échoué. Désolé.")
             print(traceback.format_exc())
         finally:
             self.layout.loading = False

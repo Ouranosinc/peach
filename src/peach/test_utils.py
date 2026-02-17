@@ -12,7 +12,6 @@ from pyextremes import get_extremes
 
 
 def synthetic_ds():
-
     ds = xr.Dataset()
     time = xr.cftime_range(start="1950-01-01", end="2020-12-31", freq="YE")
 
@@ -83,14 +82,10 @@ def synthetic_ds_daily():
     source_ids = ["INM-CM4-8", "HadGEM3-GC31-MM"]
     experiment_ids = ["ssp245", "ssp370", "ssp585"]
 
-    realization_tuples = list(
-        itertools.product(variant_labels, source_ids, experiment_ids)
-    )
+    realization_tuples = list(itertools.product(variant_labels, source_ids, experiment_ids))
     # Add a realization for one but not the others
     realization_tuples.append(("r1i1p1f1", "HadGEM3-GC31-MM", "ssp126"))
-    realization_index = pd.MultiIndex.from_tuples(
-        realization_tuples, names=["variant_label", "source_id", "experiment_id"]
-    )
+    realization_index = pd.MultiIndex.from_tuples(realization_tuples, names=["variant_label", "source_id", "experiment_id"])
 
     max_values = 200 + (100 * (np.arange(len(time_range)) / len(time_range)))
     random_data = np.random.rand(len(realization_index), len(time_range)) * max_values
@@ -156,9 +151,7 @@ def synthetic_ewl_ds():
         "params": {"thresh": "1.0 mm/d"},
         "history": "[2024-11-18 20:37:17] wl_pot: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
     }
-    wl = xr.DataArray(
-        data=wl_data, coords={"time": time_wl}, dims=["time"], name="wl", attrs=attrs
-    )
+    wl = xr.DataArray(data=wl_data, coords={"time": time_wl}, dims=["time"], name="wl", attrs=attrs)
     wl_pot_series = get_extremes(ts=wl.to_series(), method="POT", threshold=stn_thresh)
     wl_pot = xr.DataArray(
         data=wl_pot_series,
@@ -181,9 +174,7 @@ def synthetic_ewl_ds():
 
     time_daily = pd.date_range(start="2020-01-01", end="2150-01-01", freq="D")
     base_q = np.arange(0, 1.05, 0.05)
-    extra_q = np.array(
-        [0.001, 0.005, 0.01, 0.02, 0.03, 0.04, 0.96, 0.97, 0.98, 0.99, 0.995, 0.999]
-    )
+    extra_q = np.array([0.001, 0.005, 0.01, 0.02, 0.03, 0.04, 0.96, 0.97, 0.98, 0.99, 0.995, 0.999])
     quantiles = np.sort(np.concatenate((base_q, extra_q)))
 
     experiment_id = [
@@ -194,13 +185,7 @@ def synthetic_ewl_ds():
     ]
 
     slopes = [2, 3, 4, 5]
-    orig_data = np.array(
-        [
-            slope * (time_daily.year - 2020) / 1000
-            + np.random.randn(len(time_daily)) * 0.001
-            for slope in slopes
-        ]
-    )
+    orig_data = np.array([slope * (time_daily.year - 2020) / 1000 + np.random.randn(len(time_daily)) * 0.001 for slope in slopes])
 
     da_daily = xr.DataArray(
         orig_data,
@@ -209,16 +194,12 @@ def synthetic_ewl_ds():
     )
 
     def quantile_calculation(da_decadal, da_daily, quantiles):
-        quantile_results = np.full(
-            (len(da_decadal.experiment_id), len(da_decadal.time), len(quantiles)), np.nan
-        )
+        quantile_results = np.full((len(da_decadal.experiment_id), len(da_decadal.time), len(quantiles)), np.nan)
         for i, real in enumerate(da_decadal.experiment_id):
             for j, time in enumerate(da_decadal.time):
                 decade_start = time.values
                 decade_end = decade_start + pd.DateOffset(years=10)
-                data_slice = da_daily.sel(
-                    experiment_id=real, time=slice(decade_start, decade_end)
-                )
+                data_slice = da_daily.sel(experiment_id=real, time=slice(decade_start, decade_end))
                 quantile_values = np.quantile(data_slice, quantiles, axis=0)
                 quantile_results[i, j, :] = quantile_values
         return quantile_results
@@ -316,12 +297,8 @@ def synthetic_jp_ds(ind="wl_prcond"):
             obs_pot.attrs["long_name_fr"] = "Pics de niveaux d'eau au-dessus du seuil"
             obs_pot.attrs["description"] = "Dummy description"
             obs_pot.attrs["description_fr"] = "Description bidon"
-            obs_cond.attrs["long_name"] = (
-                "Precipitation extremes conditional on water level extremes"
-            )
-            obs_cond.attrs["long_name_fr"] = (
-                "Précipitations extrêmes conditionnelles aux extrêmes de niveaux d'eau"
-            )
+            obs_cond.attrs["long_name"] = "Precipitation extremes conditional on water level extremes"
+            obs_cond.attrs["long_name_fr"] = "Précipitations extrêmes conditionnelles aux extrêmes de niveaux d'eau"
             obs_cond.attrs["description"] = "Dummy description"
             obs_cond.attrs["description_fr"] = "Description bidon"
     elif ind == "pr_wlcond":
@@ -335,12 +312,8 @@ def synthetic_jp_ds(ind="wl_prcond"):
             obs_pot.attrs["long_name_fr"] = "Pics de précipitations au-dessus du seuil"
             obs_pot.attrs["description"] = "Dummy description"
             obs_pot.attrs["description_fr"] = "Description bidon"
-            obs_cond.attrs["long_name"] = (
-                "Water level extremes conditional on precipitation extremes"
-            )
-            obs_cond.attrs["long_name_fr"] = (
-                "Extrêmes de niveaux d'eau conditionnels aux extrêmes de précipitation"
-            )
+            obs_cond.attrs["long_name"] = "Water level extremes conditional on precipitation extremes"
+            obs_cond.attrs["long_name_fr"] = "Extrêmes de niveaux d'eau conditionnels aux extrêmes de précipitation"
             obs_cond.attrs["description"] = "Dummy description"
             obs_cond.attrs["description_fr"] = "Description bidon"
     with xr.set_options(keep_attrs=True):

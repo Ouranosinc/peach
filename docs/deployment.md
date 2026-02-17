@@ -36,7 +36,7 @@ The user interface documentation (factsheets) are rebuilt entirely whenever the 
 ```shell
 make build-docs
 ```
-This launches a docker container running Quarto, which converts the source files into HTML. 
+This launches a docker container running Quarto, which converts the source files into HTML.
 
 On the production PAVICS server, it is rebuilt on changes to files in `docs/factsheets` every 15 minutes.
 

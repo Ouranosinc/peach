@@ -10,9 +10,9 @@ from datetime import datetime
 
 import numpy as np
 import param
+import scipy.stats
 import xarray as xr
 import xclim as xc
-import scipy.stats
 from lmoments3.distr import gpa
 from xclim.core.formatting import update_history
 
@@ -42,7 +42,8 @@ scipy_dists = ["norm", "t", "gamma", "genextreme", "lognorm", "uniform"]
 
 
 class IndicatorObsWLCOND(IndicatorObsDA):
-    """Class for observed water level conditional extremes.
+    """
+    Class for observed water level conditional extremes.
 
     The backend indicator (wl_cond) is selected in relation to precipitation extremes.
     This class inherits logic to pick the best scipy distribution.
@@ -57,16 +58,14 @@ class IndicatorObsWLCOND(IndicatorObsDA):
         doc="DataArray time series of detrended observed conditional extremes, normalized to the reference period.",
         constant=True,
     )
-    long_name = param.Parameter(
-        "Water level extremes conditional on precipitation extremes"
-    )
+    long_name = param.Parameter("Water level extremes conditional on precipitation extremes")
 
     @param.depends("data", watch=True, on_init=True)
     def _update_attrs(self) -> None:
         """Obtain attributes from the data."""
         for key in ["sl_mm_yr"]:
             setattr(self, key, self.data.attrs[key])
-        setattr(self, "ref_period", tuple(self.data.attrs["ref_period"]))
+        self.ref_period = tuple(self.data.attrs["ref_period"])
 
     @param.depends("data", "ref_period", "sl_mm_yr", watch=True, on_init=True)
     def _update_ts(self) -> None:
@@ -85,15 +84,11 @@ class IndicatorObsWLCOND(IndicatorObsDA):
     def _dist_method(self, name: str, arg) -> xr.DataArray:
         """Call distrisbution method on the data."""
         with xr.set_options(keep_attrs=True):
-            out = xc.indices.stats.dist_method(
-                function=name, fit_params=self.dparams, arg=arg
-            )
+            out = xc.indices.stats.dist_method(function=name, fit_params=self.dparams, arg=arg)
             out.name = name
         return out
 
-    def fit(
-        self, dist: str, period: tuple, size: int = None, iteration: int = 1
-    ) -> xr.DataArray:
+    def fit(self, dist: str, period: tuple, size: int = None, iteration: int = 1) -> xr.DataArray:
         """Fit the distribution to the data (normalized for period) over the full period."""
         # TODO v2: Account for parametric uncertainty in the observations.
 
@@ -103,9 +98,7 @@ class IndicatorObsWLCOND(IndicatorObsDA):
             if size is None:
                 size = len(sample)
 
-            sample = bootstrap.resample(
-                sample, size=size, iteration=iteration, replace=True
-            )
+            sample = bootstrap.resample(sample, size=size, iteration=iteration, replace=True)
 
         try:
             return xc.indices.stats.fit(sample, dist=dist, dim="time", method="PWM")
@@ -122,15 +115,14 @@ class IndicatorObsWLCOND(IndicatorObsDA):
 
 
 class IndicatorObsPRPOT(IndicatorDA):
-    """Class for observed precipitation peaks-over-threshold extremes (pr_pot).
+    """
+    Class for observed precipitation peaks-over-threshold extremes (pr_pot).
 
     The precipitation extremes are fit with the generalized pareto distribution.
     """
 
     dist = param.Selector(default="genpareto", objects=["genpareto"])
-    stn_thresh = param.Number(
-        doc="Station threshold used to compute peaks-over-threshold values."
-    )
+    stn_thresh = param.Number(doc="Station threshold used to compute peaks-over-threshold values.")
     peaks_per_yr = param.Number(doc="Number of peaks per year.")
     long_name = param.Parameter("Precipitation peaks over threshold")
 
@@ -146,32 +138,25 @@ class IndicatorObsPRPOT(IndicatorDA):
 
     def pdf(self, x) -> xr.DataArray:
         """Return the probability density function."""
-        pdf = lambda x: xc.indices.stats.dist_method(
-            function="pdf", fit_params=self.dparams, arg=x
-        )
-        sf = lambda x: xc.indices.stats.dist_method(
-            function="sf", fit_params=self.dparams, arg=x
-        )
+        pdf = lambda x: xc.indices.stats.dist_method(function="pdf", fit_params=self.dparams, arg=x)
+        sf = lambda x: xc.indices.stats.dist_method(function="sf", fit_params=self.dparams, arg=x)
         n = self.peaks_per_yr
 
         return n * (1 - sf(x)) ** (n - 1) * pdf(x)
 
     def _dist_method(self, name: str, arg) -> xr.DataArray:
-        """Adjust argument or results for the fact that the pareto parameters describe events that may
+        """
+        Adjust argument or results for the fact that the pareto parameters describe events that may
         occur more than once per year on average. If there are 2 event per year, then the return period is halved.
         """
-        func = lambda x: xc.indices.stats.dist_method(
-            function=name, fit_params=self.dparams, arg=x
-        )
+        func = lambda x: xc.indices.stats.dist_method(function=name, fit_params=self.dparams, arg=x)
 
         with xr.set_options(keep_attrs=True):
             out = scale_pareto(func, name, arg, self.peaks_per_yr)
             out.name = name
         return out
 
-    def fit(
-        self, dist: str, period: tuple, size: int = None, iteration: int = 1
-    ) -> xr.DataArray:
+    def fit(self, dist: str, period: tuple, size: int = None, iteration: int = 1) -> xr.DataArray:
         """Fit the distribution to the data over the full period."""
         # TODO v2: Account for parametric uncertainty in the observations.
 
@@ -184,9 +169,7 @@ class IndicatorObsPRPOT(IndicatorDA):
             if size is None:
                 size = len(sample)
 
-            sample = bootstrap.resample(
-                sample, size=size, iteration=iteration, replace=True
-            )
+            sample = bootstrap.resample(sample, size=size, iteration=iteration, replace=True)
 
         # Fit the parameters
         # TODO: floc or not ?
@@ -201,23 +184,20 @@ class IndicatorObsPRPOT(IndicatorDA):
 
 
 class IndicatorObsPRCOND(IndicatorObsDA):
-    """Class for observed precipitation conditional extremes.
+    """
+    Class for observed precipitation conditional extremes.
 
     The backend indicator (pr_pot) is selected in relation to water level extremes.
     This class inherits logic to pick the best scipy distribution.
     """
 
-    long_name = param.Parameter(
-        "Precipitation extremes conditional on water level extremes"
-    )
+    long_name = param.Parameter("Precipitation extremes conditional on water level extremes")
 
     def _sample(self, period: tuple) -> xr.DataArray:
         """Return the full time series as-is (no slicing or normalization)."""
         return self.data
 
-    def fit(
-        self, dist: str, period: tuple, size: int = None, iteration: int = 1
-    ) -> xr.DataArray:
+    def fit(self, dist: str, period: tuple, size: int = None, iteration: int = 1) -> xr.DataArray:
         """Fit the distribution to the data over the full period."""
         # TODO v2: Account for parametric uncertainty in the observations.
 
@@ -227,9 +207,7 @@ class IndicatorObsPRCOND(IndicatorObsDA):
             if size is None:
                 size = len(sample)
 
-            sample = bootstrap.resample(
-                sample, size=size, iteration=iteration, replace=True
-            )
+            sample = bootstrap.resample(sample, size=size, iteration=iteration, replace=True)
         try:
             return xc.indices.stats.fit(sample, dist=dist, dim="time", method="PWM")
         except ValueError:
@@ -240,7 +218,8 @@ class IndicatorObsPRCOND(IndicatorObsDA):
 
 
 class IndicatorSimWLCOND(IndicatorSimWL):
-    """Class for simulated water level conditional extremes.
+    """
+    Class for simulated water level conditional extremes.
 
     A simulation delta is added to the water level extremes.
     IndicatorObsWLCOND is an input to this class.
@@ -260,7 +239,7 @@ class IndicatorSimWLCOND(IndicatorSimWL):
         """Update attributes based on data attributes."""
         for key in ["sl_mm_yr"]:
             setattr(self, key, self.data.attrs[key])
-        setattr(self, "ref_period", tuple(self.data.attrs["ref_period"]))
+        self.ref_period = tuple(self.data.attrs["ref_period"])
 
     @param.depends("obs", watch=True, on_init=True)
     def _update_title(self):
@@ -287,7 +266,8 @@ class IndicatorSimWLCOND(IndicatorSimWL):
 
 
 class IndicatorSimPRPOT(IndicatorDA):
-    """Class for simulated precipitation peaks-over-threshold extremes.
+    """
+    Class for simulated precipitation peaks-over-threshold extremes.
 
     A simulation delta is added to the precipitation extremes.
     IndicatorObsPRPOT is an input to this class.
@@ -311,15 +291,12 @@ class IndicatorSimPRPOT(IndicatorDA):
     def _sample(self, fut_period: tuple) -> xr.DataArray:
         """Return the precip simulation delta relative to the obs period."""
         uncropped_obs_period = (1960, 2014)
-        ref = self.data.sel(time=self._slice(uncropped_obs_period)).quantile(
-            0.95, dim="time"
-        )
+        ref = self.data.sel(time=self._slice(uncropped_obs_period)).quantile(0.95, dim="time")
         fut = self.data.sel(time=self._slice(fut_period)).quantile(0.95, dim="time")
         pr_delta = fut / ref
         pr_delta.attrs = self.data.attrs.copy()
         pr_delta.attrs["long_name"] = (
-            f"Daily precipitation flux at surface (delta between "
-            f"{fut_period[0]}-{fut_period[1]} and {self.obs.period[0]}-{self.obs.period[1]})"
+            f"Daily precipitation flux at surface (delta between {fut_period[0]}-{fut_period[1]} and {self.obs.period[0]}-{self.obs.period[1]})"
         )
         pr_delta.attrs["long_name_fr"] = (
             f"Flux de précipitation journalière à la surface (delta entre "
@@ -328,13 +305,12 @@ class IndicatorSimPRPOT(IndicatorDA):
         return pr_delta
 
     def fit(self, dist: str, period: tuple) -> xr.DataArray:
-        """Fit the distribution to the data, creating a bootstrap sample combining parametric uncertainty for the
+        """
+        Fit the distribution to the data, creating a bootstrap sample combining parametric uncertainty for the
         observation data, and scenario/model uncertainty for the future data.
         """
         # Bootstrapped distribution parameters for the observations.
-        dparams = self.obs.fit(
-            dist, self.obs.period, size=self.sample_size, iteration=self.num_samples
-        )
+        dparams = self.obs.fit(dist, self.obs.period, size=self.sample_size, iteration=self.num_samples)
         pr_delta = self._sample(period).dropna(dim="realization", how="all")
         pr_delta = pr_delta.unstack("realization")
 
@@ -344,20 +320,14 @@ class IndicatorSimPRPOT(IndicatorDA):
         new_coords["dparams"] = dparams.dparams.values
         new_coords["sample"] = dparams.coords["sample"]
         da = xr.DataArray(
-            data=np.zeros(
-                (len(new_coords["dparams"]),)
-                + (pr_delta.source_id.size, pr_delta.experiment_id.size)
-                + (len(new_coords["sample"]),)
-            ),
+            data=np.zeros((len(new_coords["dparams"]),) + (pr_delta.source_id.size, pr_delta.experiment_id.size) + (len(new_coords["sample"]),)),
             coords=new_coords,
             dims=("dparams",) + new_dims + ("sample",),
         )
         # da.loc["loc", ...] = pr_delta.squeeze("variant_label") * dparams.sel(
         #     dparams="loc"
         # )
-        da.loc["loc", ...] = pr_delta.mean(dim="variant_label") * dparams.sel(
-            dparams="loc"
-        )
+        da.loc["loc", ...] = pr_delta.mean(dim="variant_label") * dparams.sel(dparams="loc")
         for dparam in dparams.dparams.values:
             if dparam != "loc":
                 da.loc[dparam, ...] = dparams.sel(dparams=dparam).values
@@ -390,14 +360,10 @@ class IndicatorSimPRPOT(IndicatorDA):
             scen_w = scen_w.fillna(0.25)
 
         # Sample weights
-        sample_w = xr.DataArray(
-            np.ones(self.num_samples) / self.num_samples, dims=("sample")
-        )
+        sample_w = xr.DataArray(np.ones(self.num_samples) / self.num_samples, dims=("sample"))
 
         # Model weights
-        model_w = model_weights_from_sherwood(
-            self.dparams.source_id.values, method="L2Var", lambda_=0.5
-        ).sel(source_id=self.dparams.source_id)
+        model_w = model_weights_from_sherwood(self.dparams.source_id.values, method="L2Var", lambda_=0.5).sel(source_id=self.dparams.source_id)
 
         # Combined weights
         w = scen_w * sample_w * model_w
@@ -405,9 +371,7 @@ class IndicatorSimPRPOT(IndicatorDA):
         # Account for misaligned indices
         if self.dparams.sel(dparams="loc").isnull().sum() != 0:
             aligned_w = w.transpose(*self.dparams.sel(dparams="loc").dims)
-            masked_w = aligned_w.where(
-                ~self.dparams.sel(dparams="loc").isnull(), other=np.nan
-            )
+            masked_w = aligned_w.where(~self.dparams.sel(dparams="loc").isnull(), other=np.nan)
             missing_w_ratio = 1 / ((masked_w).sum())
             w = masked_w * missing_w_ratio
             w = w.fillna(0)
@@ -420,7 +384,8 @@ class IndicatorSimPRPOT(IndicatorDA):
 
 
 class IndicatorSimPRCOND(IndicatorSimPRPOT):
-    """Class for simulated precipitation conditional extremes.
+    """
+    Class for simulated precipitation conditional extremes.
 
     A simulation delta is added to the precipitation extremes.
     IndicatorObsPRCOND is an input to this class.
@@ -434,9 +399,7 @@ class IndicatorSimPRCOND(IndicatorSimPRPOT):
         doc="Statistical distribution",
         allow_refs=True,
     )
-    wl_pot = param.Parameter(
-        doc="Water level peaks-over-threshold extremes use to calculate precipitation simulation delta."
-    )
+    wl_pot = param.Parameter(doc="Water level peaks-over-threshold extremes use to calculate precipitation simulation delta.")
 
     def __init__(self, wl_pot: xr.DataArray, **kwargs):
         """Initialize the indicator."""
@@ -450,7 +413,8 @@ class IndicatorSimPRCOND(IndicatorSimPRPOT):
             self.long_name = self.obs.long_name
 
     def _sample(self, period: tuple) -> xr.DataArray:
-        """Calculate precipitation simulation delta relative to the reference period.
+        """
+        Calculate precipitation simulation delta relative to the reference period.
 
         The delta is calculated as a ratio between subsets of the reference and future periods.
         These subsets, representing conditional extremes, are identified in the reference period
@@ -507,7 +471,8 @@ class IndicatorSimPRCOND(IndicatorSimPRPOT):
 
 
 class IndicatorObsJP(IndicatorObsDA):
-    """Joint probabiliy (copula) analysis for observations.
+    """
+    Joint probabiliy (copula) analysis for observations.
 
     Distribution selection logic is inherited from IndicatorObsDA and applied to copula selection.
     Inputs to this class are either:
@@ -531,15 +496,11 @@ class IndicatorObsJP(IndicatorObsDA):
         class_=(IndicatorObsWLCOND, IndicatorObsPRCOND),
         doc="Conditional marginal (observations)",
     )
-    data = param.Parameter(
-        doc="Pseudo-observations from the marginals (2D).", constant=False
-    )
+    data = param.Parameter(doc="Pseudo-observations from the marginals (2D).", constant=False)
 
     level = param.Number(0.05, doc="Significance level for the Sn test.")
 
-    def __init__(
-        self, obs_pot: xr.DataArray, obs_cond: xr.DataArray, period: tuple, **kwargs
-    ):
+    def __init__(self, obs_pot: xr.DataArray, obs_cond: xr.DataArray, period: tuple, **kwargs):
         """Initialize the indicator with the marginals"""
         self.obs_pot = obs_pot
         self.obs_cond = obs_cond
@@ -558,32 +519,16 @@ class IndicatorObsJP(IndicatorObsDA):
         if self.long_name == "":
             if self.obs_pot.data.name == "wl_pot":
                 self.long_name = "Joint water level peaks over threshold and conditional precipitation extremes"
-                self.data.attrs["long_name"] = (
-                    "Joint water level peaks over threshold and conditional precipitation extremes"
-                )
-                self.data.attrs["long_name_fr"] = (
-                    "Pics conjoints de niveau d'eau au-dessus du seuil et de précipitations extrêmes conditionnelles"
-                )
-                self.data.attrs["description"] = (
-                    "Joint water level peaks over threshold and conditional precipitation extremes"
-                )
-                self.data.attrs["description_fr"] = (
-                    "Pics conjoints de niveau d'eau au-dessus du seuil et de précipitations extrêmes conditionnelles"
-                )
+                self.data.attrs["long_name"] = "Joint water level peaks over threshold and conditional precipitation extremes"
+                self.data.attrs["long_name_fr"] = "Pics conjoints de niveau d'eau au-dessus du seuil et de précipitations extrêmes conditionnelles"
+                self.data.attrs["description"] = "Joint water level peaks over threshold and conditional precipitation extremes"
+                self.data.attrs["description_fr"] = "Pics conjoints de niveau d'eau au-dessus du seuil et de précipitations extrêmes conditionnelles"
             elif self.obs_pot.data.name == "pr_pot":
                 self.long_name = "Joint precipitation peaks over threshold and conditional water extremes"
-                self.data.attrs["long_name"] = (
-                    "Joint precipitation peaks over threshold and conditional water extremes"
-                )
-                self.data.attrs["long_name_fr"] = (
-                    "Pics conjoints de précipitations au-dessus du seuil et d'extrêmes de niveau d'eau conditionnels"
-                )
-                self.data.attrs["description"] = (
-                    "Joint precipitation peaks over threshold and conditional water extremes"
-                )
-                self.data.attrs["description_fr"] = (
-                    "Pics conjoints de précipitations au-dessus du seuil et d'extrêmes de niveau d'eau conditionnels"
-                )
+                self.data.attrs["long_name"] = "Joint precipitation peaks over threshold and conditional water extremes"
+                self.data.attrs["long_name_fr"] = "Pics conjoints de précipitations au-dessus du seuil et d'extrêmes de niveau d'eau conditionnels"
+                self.data.attrs["description"] = "Joint precipitation peaks over threshold and conditional water extremes"
+                self.data.attrs["description_fr"] = "Pics conjoints de précipitations au-dessus du seuil et d'extrêmes de niveau d'eau conditionnels"
 
     def _update_ts(self) -> None:
         """Set the time series to be displayed."""
@@ -621,9 +566,7 @@ class IndicatorObsJP(IndicatorObsDA):
         """Fit the distribution to the data."""
         sample = self._sample(period)
         if dist == "indep":
-            dparams = xr.DataArray(
-                [np.nan], dims=["dparams"], coords={"dparams": ["param"]}
-            )
+            dparams = xr.DataArray([np.nan], dims=["dparams"], coords={"dparams": ["param"]})
         else:
             cop = copulae_copula(dist)
             cop.fit(sample.data, method="ml", verbose=0, optim_options=optim_options)
@@ -635,9 +578,7 @@ class IndicatorObsJP(IndicatorObsDA):
                     coords={"dparams": ["df", "rho"]},
                 )
             else:
-                dparams = xr.DataArray(
-                    cop.params, dims=["dparams"], coords={"dparams": "param"}
-                )
+                dparams = xr.DataArray(cop.params, dims=["dparams"], coords={"dparams": "param"})
 
         if not check_param(dparams, dist):
             raise ValueError("Invalid parameter for ", dist)
@@ -655,7 +596,7 @@ class IndicatorObsJP(IndicatorObsDA):
             "scipy_dist": {dist},
             "units": "",
             "history": (
-                f'{datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")} '
+                f"{datetime.now().strftime('[%Y-%m-%d %H:%M:%S]')} "
                 "fit: Estimate copula parameters by maximum likelihood method "
                 "along dimension time. - copulae version: 0.7.9"
             ),
@@ -664,7 +605,8 @@ class IndicatorObsJP(IndicatorObsDA):
         return dparams
 
     def _dist_method(self, name: str, arg: Sequence[float]) -> xr.DataArray:
-        """Apply the distribution method separately to each marginal and the copula.
+        """
+        Apply the distribution method separately to each marginal and the copula.
 
         Pass two values as `arg`, one for each marginal (e.g., thresholds in mm or m CGVD2013).
         """
@@ -686,9 +628,7 @@ class IndicatorObsJP(IndicatorObsDA):
             )
         elif name == "cdf":
             # Keeping this separate as 'cdf' is not implemented in scale_pareto
-            return xr.DataArray(
-                cop.computeCDF([1 - p1, 1 - p2]) * self.obs_pot.peaks_per_yr, name=name
-            )
+            return xr.DataArray(cop.computeCDF([1 - p1, 1 - p2]) * self.obs_pot.peaks_per_yr, name=name)
 
     def pdf(self, x):
         """Return the probability density function."""
@@ -744,7 +684,8 @@ class IndicatorObsJP(IndicatorObsDA):
 
     @param.depends("period", "metric", watch=True)
     def _update_metrics(self) -> None:
-        """Return the metric values for all distributions.
+        """
+        Return the metric values for all distributions.
 
         Parameters
         ----------
@@ -789,9 +730,7 @@ class IndicatorObsJP(IndicatorObsDA):
         if Sn_p >= self.level:
             self.dparams = self.fit(self.dist, self.period)
         else:
-            raise ValueError(
-                "The copula with lowest bic has been rejected by Sn goodness-of-fit test."
-            )
+            raise ValueError("The copula with lowest bic has been rejected by Sn goodness-of-fit test.")
 
     # Placeholder reminder.
     # def _update_ts(self):
@@ -799,7 +738,8 @@ class IndicatorObsJP(IndicatorObsDA):
 
 
 class IndicatorSimJP(param.Parameterized):
-    """Joint probabiliy (copula) analysis for simulations.
+    """
+    Joint probabiliy (copula) analysis for simulations.
 
     Inputs to this class are IndicatorObsJP and either:
         (1) IndicatorSimWL and IndicatorSimPRCOND (indicator wl_prcond), or
@@ -820,15 +760,9 @@ class IndicatorSimJP(param.Parameterized):
         class_=(IndicatorSimWLCOND, IndicatorSimPRCOND),
         doc="Conditional marginal (simulations)",
     )
-    obs_cop = param.ClassSelector(
-        class_=IndicatorObsJP, doc="Copula derived from observations"
-    )
-    data = param.Parameter(
-        doc="Pseudo-observations from the marginals (2D).", constant=False
-    )
-    period = param.Range(
-        allow_refs=True, doc="Period for statistical analysis", allow_None=False
-    )
+    obs_cop = param.ClassSelector(class_=IndicatorObsJP, doc="Copula derived from observations")
+    data = param.Parameter(doc="Pseudo-observations from the marginals (2D).", constant=False)
+    period = param.Range(allow_refs=True, doc="Period for statistical analysis", allow_None=False)
     title = param.String("", doc="Indicator name")
     long_name = param.String("", doc="Short indicator name")
     description = param.String("", doc="Indicator description")
@@ -855,35 +789,20 @@ class IndicatorSimJP(param.Parameterized):
         if self.long_name == "":
             if self.sim_pot.obs.data.name == "wl_pot":
                 self.long_name = "Joint water level peaks over threshold and conditional precipitation extremes"
-                self.data.attrs["long_name"] = (
-                    "Joint water level peaks over threshold and conditional precipitation extremes"
-                )
-                self.data.attrs["long_name_fr"] = (
-                    "Pics conjoints de niveau d'eau au-dessus du seuil et de précipitations extrêmes conditionnelles"
-                )
-                self.data.attrs["description"] = (
-                    "Joint water level peaks over threshold and conditional precipitation extremes"
-                )
-                self.data.attrs["description_fr"] = (
-                    "Pics conjoints de niveau d'eau au-dessus du seuil et de précipitations extrêmes conditionnelles"
-                )
+                self.data.attrs["long_name"] = "Joint water level peaks over threshold and conditional precipitation extremes"
+                self.data.attrs["long_name_fr"] = "Pics conjoints de niveau d'eau au-dessus du seuil et de précipitations extrêmes conditionnelles"
+                self.data.attrs["description"] = "Joint water level peaks over threshold and conditional precipitation extremes"
+                self.data.attrs["description_fr"] = "Pics conjoints de niveau d'eau au-dessus du seuil et de précipitations extrêmes conditionnelles"
             elif self.sim_pot.obs.data.name == "pr_pot":
                 self.long_name = "Joint precipitation peaks over threshold and conditional water extremes"
-                self.data.attrs["long_name"] = (
-                    "Joint precipitation peaks over threshold and conditional water extremes"
-                )
-                self.data.attrs["long_name_fr"] = (
-                    "Pics conjoints de précipitations au-dessus du seuil et d'extrêmes de niveau d'eau conditionnels"
-                )
-                self.data.attrs["description"] = (
-                    "Joint precipitation peaks over threshold and conditional water extremes"
-                )
-                self.data.attrs["description_fr"] = (
-                    "Pics conjoints de précipitations au-dessus du seuil et d'extrêmes de niveau d'eau conditionnels"
-                )
+                self.data.attrs["long_name"] = "Joint precipitation peaks over threshold and conditional water extremes"
+                self.data.attrs["long_name_fr"] = "Pics conjoints de précipitations au-dessus du seuil et d'extrêmes de niveau d'eau conditionnels"
+                self.data.attrs["description"] = "Joint precipitation peaks over threshold and conditional water extremes"
+                self.data.attrs["description_fr"] = "Pics conjoints de précipitations au-dessus du seuil et d'extrêmes de niveau d'eau conditionnels"
 
     def _dist_method(self, name: str, arg: Sequence[float]) -> xr.DataArray:
-        """Apply the distribution method separately to each marginal and the copula.
+        """
+        Apply the distribution method separately to each marginal and the copula.
 
         Pass two values as `arg`, one for each marginal (e.g., thresholds in mm or m CGVD2013).
         """
@@ -897,9 +816,7 @@ class IndicatorSimJP(param.Parameterized):
         # Apply scale_paereto to copula output.
         if name == "sf":
             return xr.DataArray(
-                scale_pareto(
-                    map[name], name, [1 - p1, 1 - p2], self.sim_pot.obs.peaks_per_yr
-                ),
+                scale_pareto(map[name], name, [1 - p1, 1 - p2], self.sim_pot.obs.peaks_per_yr),
                 name=name,
             )
         elif name == "cdf":

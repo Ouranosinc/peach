@@ -6,7 +6,8 @@ from xclim.core.formatting import unprefix_attrs, update_history
 
 
 def parametric_pdf(p, v):
-    """Return the cumulative distribution function corresponding to the given distribution parameters and value.
+    """
+    Return the cumulative distribution function corresponding to the given distribution parameters and value.
 
     Parameters
     ----------
@@ -64,7 +65,8 @@ def parametric_pdf(p, v):
 
 
 def parametric_logpdf(p, v):
-    """Return the cumulative distribution function corresponding to the given distribution parameters and value.
+    """
+    Return the cumulative distribution function corresponding to the given distribution parameters and value.
 
     Parameters
     ----------

@@ -72,7 +72,7 @@ def worker_int(worker):
     """Called when a worker receives an INT or QUIT signal."""
     worker.log.info("worker received INT or QUIT signal")
 
-    ## get traceback info
+    # get traceback info
     import sys
     import threading
     import traceback

@@ -64,10 +64,7 @@ def check_param(dparams: xr.DataArray, family: str) -> bool:
     if family == "gaussian":
         return -1 < dparams.item() < 1
     elif family == "student":
-        return (
-            dparams.sel(dparams="df").item() > 0
-            and -1 < dparams.sel(dparams="rho").item() < 1
-        )
+        return dparams.sel(dparams="df").item() > 0 and -1 < dparams.sel(dparams="rho").item() < 1
     elif family == "clayton":
         return dparams.item() >= -1 and dparams.item() != 0
     elif family == "frank":

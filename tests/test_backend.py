@@ -5,10 +5,9 @@ import xarray as xr
 
 # This is just testing the import. The backend computations are included in some of the pytest fixtures.
 
+
 @pytest.mark.online
-@pytest.mark.skipif(
-    os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
-)
+@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI")
 def test_translation(idf_obs, idf_sim):
     # idf_sim is fairly long to run, do not abandon hope
     da = xr.open_dataarray(idf_obs, engine="zarr")
@@ -27,9 +26,7 @@ def test_hdd(hdd_series):
 
 
 @pytest.mark.online
-@pytest.mark.skipif(
-    os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
-)
+@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI")
 def test_wl_pot(wl_pot_obs, wl_pot_sim):
     da = xr.open_dataarray(wl_pot_obs, engine="zarr")
     assert da.attrs["id"] == "WL_POT"

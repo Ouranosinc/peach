@@ -159,7 +159,8 @@ class ComputeHazardThreshold(BaseProcessor):
 
     @classmethod
     def hash_request(cls, indicators: list, sids: dict, hazards: dict):
-        """Generate a hash for the given input parameters.
+        """
+        Generate a hash for the given input parameters.
 
         Parameters
         ----------
@@ -174,8 +175,7 @@ class ComputeHazardThreshold(BaseProcessor):
         """
         xcver = xclim.__version__.replace(".", "-")
         inds_str = [
-            f"{ind['name'].replace('_', '-')}_{hashlib.md5(str(sorted(ind.get('params', {}).items())).encode()).hexdigest()}"
-            for ind in indicators
+            f"{ind['name'].replace('_', '-')}_{hashlib.md5(str(sorted(ind.get('params', {}).items())).encode()).hexdigest()}" for ind in indicators
         ]
         ids_str = "-".join([f"{v}{i}" for v, i in sorted(sids.items())])
         hazard_str = "-".join([f"{v}{i}" for v, i in sorted(hazards.items())])
@@ -183,7 +183,7 @@ class ComputeHazardThreshold(BaseProcessor):
 
     def execute(self, data):
         """Return indicator time series."""
-        logger.info(f"Execution data: {data}")
+        logger.info("Execution data: %s", data)
 
         t0 = time.perf_counter()
         mimetype = "application/json"
@@ -203,19 +203,9 @@ class ComputeHazardThreshold(BaseProcessor):
             time.sleep(2)
 
         # Analysis
-        an_kwargs = {
-            k: tuple(v)
-            for k, v in data["analysis"].items()
-            if k in ["ref_period", "fut_period"]
-        }
+        an_kwargs = {k: tuple(v) for k, v in data["analysis"].items() if k in ["ref_period", "fut_period"]}
         analysis = params.Analysis(indicators=indicators, **an_kwargs)
-        analysis.update_params(
-            **{
-                k: dict(zip(uuids, data["analysis"][k]))
-                for k in ["metric", "dist"]
-                if k in data["analysis"]
-            }
-        )
+        analysis.update_params(**{k: dict(zip(uuids, data["analysis"][k])) for k in ["metric", "dist"] if k in data["analysis"]})
 
         # Hazards
         matrix = params.HazardMatrix(analysis=analysis)
@@ -226,10 +216,8 @@ class ComputeHazardThreshold(BaseProcessor):
         logger.info(f"Job completed in {t1 - t0} seconds.")
         anaout = analysis.to_dict("short")
         matout = matrix.to_dict()
-        output = {
-            "value": {"analysis": anaout, "hazards": [matout[uuid] for uuid in uuids]}
-        }
-        logger.info(f"Job done : {output}")
+        output = {"value": {"analysis": anaout, "hazards": [matout[uuid] for uuid in uuids]}}
+        logger.info("Job done : %s", output)
         return mimetype, output
 
     def __repr__(self):

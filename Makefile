@@ -1,5 +1,4 @@
-include .env
-.PHONY: clean clean-build clean-pyc clean-test coverage dist docs help install lint lint/flake8 lint/black
+.PHONY: clean clean-build clean-pyc clean-test coverage dist docs help install lint lint/flake8
 .DEFAULT_GOAL := help
 
 define BROWSER_PYSCRIPT
@@ -28,7 +27,7 @@ LOCALES := docs/locales
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-clean: clean-build clean-pyc clean-test clean-envs ## remove all build, test, coverage and Python artifacts
+clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
 
 clean-build: ## remove build artifacts
 	rm -fr build/
@@ -55,30 +54,23 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-clean-envs: ## remove merged envs
-	rm -f environment-backend-full.yml environment-frontend-full.yml environment-full.yml environment-dev-full.yml
-
 lint/flake8: ## check style with flake8
-	ruff peach tests
-	flake8 --config=.flake8 peach tests
+	python -m ruff check src/peach tests
+	python -m flake8 --config=.flake8 src/peach tests
+	python -m numpydoc lint src/peach/**.py
 
-lint/black: ## check style with black
-	black --check peach tests
-	blackdoc --check peach docs
-	isort --check peach tests
-
-lint: lint/flake8 lint/black ## check style
+lint: lint/flake8 ## check style
 
 test: ## run tests quickly with the default Python
 	python -m pytest
 
 test-all: ## run tests on every Python version with tox
-	tox
+	python -m tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source peach -m pytest
-	coverage report -m
-	coverage html
+	python -m coverage run --source src/peach -m pytest
+	python -m coverage report -m
+	python -m coverage html
 	$(BROWSER) htmlcov/index.html
 initialize-translations: clean-docs ## initialize translations, ignoring autodoc-generated files
 	${MAKE} -C docs gettext
@@ -111,49 +103,8 @@ release: dist ## package and upload a release
 	python -m flit publish dist/*
 
 install: clean ## install the package to the active Python's site-packages
-	python -m flit install
+	python -m pip install .
 
 dev: clean ## install the package to the active Python's site-packages
-	python -m flit install --symlink
-
-### DOCKER IMAGES ###
-export MY_USERNAME := $(or $(MY_USERNAME),$(shell whoami))
-export MY_UID := $(or $(MY_UID),$(shell id -u $(MY_USERNAME)))
-export MY_GID := $(or $(MY_GID),$(shell id -g $(MY_USERNAME)))
-
-build-images:
-ifneq ("$(wildcard environment-backend-full.yml)","")
-    # file exists.
-else
-	echo "Missing full.yml environments. Merging environments"
-	$(MAKE) env-merge
-endif
-	$(MAKE) stop-images
-	echo "Building images with MY_USERNAME=$${MY_USERNAME} MY_UID=$${MY_UID} MY_GID=$${MY_GID}"
-	docker compose build frontend-dev backend-dev build-docs
-
-run-images:
-	echo "Starting PEACH servers"
-	docker compose up -d  build-docs frontend-dev backend-dev
-
-follow-logs:
-	docker compose logs -f --tail=50 frontend-dev backend-dev
-
-run-bash-backend-dev:
-	docker compose run --rm -it --entrypoint "/bin/bash" backend-dev
-
-build-docs:
-	docker compose up -d  build-docs & docker exec build-docs bash "/quarto-run/build.sh"
-
-stop-images:
-	docker compose down -v frontend-dev backend-dev build-docs
-
-### CONDA ENVIRONMENTS ###
-env: env-merge env-lock
-
-env-merge: # merge conda environment files into one, for docker dev images.
-	pip install conda-merge
-	conda merge environment.yml environment-backend.yml > environment-backend-full.yml
-	conda merge environment.yml environment-frontend.yml > environment-frontend-full.yml
-	conda merge environment.yml environment-dev.yml > environment-dev-full.yml
-	conda merge environment.yml environment-frontend.yml environment-backend.yml > environment-full.yml
+	python -m pip install --editable .[all]
+	pre-commit install

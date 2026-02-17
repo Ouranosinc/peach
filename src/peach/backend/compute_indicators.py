@@ -1,4 +1,5 @@
-"""OGC API - Processes - Compute Indicators.
+"""
+OGC API - Processes - Compute Indicators.
 
 Requires:
  - pygeoapi
@@ -26,11 +27,7 @@ from peach.risk import idf, wl  # noqa: F401
 # Dask config set in docker-compose.yml
 xclim.set_options(metadata_locales=["fr"])
 logger = logging.getLogger("compind")
-if (
-    config.BUCKET_URL is not None
-    and config.BUCKET_CREDENTIALS
-    and not config.USE_LOCAL_CACHE
-):
+if config.BUCKET_URL is not None and config.BUCKET_CREDENTIALS and not config.USE_LOCAL_CACHE:
     minioFS = s3fs.S3FileSystem(
         use_ssl=config.BUCKET_URL.startswith("https"),
         endpoint_url=config.BUCKET_URL,
@@ -161,7 +158,8 @@ class ComputeIndicatorsProcessor(BaseProcessor):
 
     @classmethod
     def hash_request(cls, base: str, params: dict, sids: dict):
-        """Generate a hash for the given input parameters.
+        """
+        Generate a hash for the given input parameters.
 
         Parameters
         ----------
@@ -182,10 +180,7 @@ class ComputeIndicatorsProcessor(BaseProcessor):
 
     def open_dataset(self, path: str, pattern: str, data: dict):
         """Open remote or local Zarr datasets."""
-        files = [
-            get_file(pattern=pattern, path=path, kwds={"var": var})
-            for var in self.VARIABLES
-        ]
+        files = [get_file(pattern=pattern, path=path, kwds={"var": var}) for var in self.VARIABLES]
 
         try:
             for file in files:
@@ -212,17 +207,13 @@ class ComputeIndicatorsProcessor(BaseProcessor):
                 var = list(set(ds.data_vars.keys()).intersection(self.VARIABLES))[0]
                 self.ds[var] = ds[var]
         except FileNotFoundError as err:
-            raise ProcessorExecuteError(
-                f"Not all input datasets found. Can't find {file}."
-            ) from err
+            raise ProcessorExecuteError(f"Not all input datasets found. Can't find {file}.") from err
         except IndexError:
-            raise ProcessorExecuteError(
-                f"Input datasets {files} do not contain the required variables: {self.VARIABLES}"
-            )
+            raise ProcessorExecuteError(f"Input datasets {files} do not contain the required variables: {self.VARIABLES}")
 
     def execute(self, data):
         """Return indicator time series."""
-        logger.info(f"Execution data: {data}")
+        logger.info("Execution data: %s", data)
 
         if not self.initialized:
             self.open_dataset(self.INPUT_DATASET_PATH, self.INPUT_DATASET_PATTERN, data)
@@ -249,9 +240,7 @@ class ComputeIndicatorsProcessor(BaseProcessor):
             # If another process is processing the request, we wait until it's complete
             lock.acquire(timeout=60)
         except Timeout:
-            logging.error(
-                f"File {cid}.zarr is being written by another process, but it's taking too long. We will forcefully unlock and overwrite."
-            )
+            logging.error("File %s.zarr is being written by another process, but it's taking too long. We will forcefully unlock and overwrite.", cid)
             lock.release(force=True)
             no_cache = True
 
@@ -291,7 +280,8 @@ class ComputeIndicatorsProcessor(BaseProcessor):
 
     @staticmethod
     def compute_indicator(dss, base, kwds, stations, check_missing):
-        """Compute or return cached indicator time series.
+        """
+        Compute or return cached indicator time series.
 
         Parameters
         ----------
@@ -336,9 +326,7 @@ class ComputeIndicatorsProcessor(BaseProcessor):
 
 
 class ComputeIndicatorsProcessorOBS(ComputeIndicatorsProcessor):
-    INPUT_DATASET_PATTERN = os.environ.get(
-        "OBS_PATTERN", "AHCCD_{var}_stations-ping.zarr"
-    )
+    INPUT_DATASET_PATTERN = os.environ.get("OBS_PATTERN", "AHCCD_{var}_stations-ping.zarr")
     SOURCE = "obs"
     CHECK_MISSING = "pct"
 
@@ -364,9 +352,7 @@ class ComputeWaterLevelProcessorOBS(ComputeIndicatorsProcessor):
         var = self.VARIABLES[0]  # Variable name in station dictionary
         station_id = data["stations"][var]
 
-        fs = get_file(
-            pattern=pattern, path=path, kwds={"var": var, "station_id": station_id}
-        )
+        fs = get_file(pattern=pattern, path=path, kwds={"var": var, "station_id": station_id})
         ds = xr.open_dataset(fs)
 
         logger.debug(f"Data vars: {ds.data_vars.keys()}")
@@ -387,9 +373,7 @@ class ComputeWaterLevelProcessorSIM(ComputeWaterLevelProcessorOBS):
         var = self.VARIABLES[0]  # Variable name in station dictionary
         station_id = data["stations"][var]
 
-        fs = get_file(
-            pattern=pattern, path=path, kwds={"var": "sl", "station_id": station_id}
-        )
+        fs = get_file(pattern=pattern, path=path, kwds={"var": "sl", "station_id": station_id})
         ds = xr.open_dataset(fs)
 
         logger.debug(f"Data vars: {ds.data_vars.keys()}")
@@ -415,7 +399,8 @@ class ComputeIDFProcessorSIM(ComputeIndicatorsProcessorSIM):
 
     @staticmethod
     def compute_indicator(dss, base, kwds, stations, check_missing):
-        """Compute or return cached indicator time series.
+        """
+        Compute or return cached indicator time series.
 
         Parameters
         ----------
@@ -434,9 +419,7 @@ class ComputeIDFProcessorSIM(ComputeIndicatorsProcessorSIM):
         kwds.pop("duration")
         logger.debug("Computing mean annual temperature for IDF scaling.")
 
-        out = ComputeIndicatorsProcessorSIM.compute_indicator(
-            dss, base, kwds, stations, check_missing
-        ).rename("idf")
+        out = ComputeIndicatorsProcessorSIM.compute_indicator(dss, base, kwds, stations, check_missing).rename("idf")
         # TODO Override more metadata ??
         # out.name = "idf"
         return out
@@ -448,9 +431,7 @@ def get_file(pattern: str, path: str, kwds: dict):
         # minio / s3fs
         url = urlparse(pattern[5:])
 
-        s3r = s3fs.S3FileSystem(
-            anon=True, use_ssl=False, endpoint_url=f"{url.scheme}://{url.netloc}"
-        )
+        s3r = s3fs.S3FileSystem(anon=True, use_ssl=False, endpoint_url=f"{url.scheme}://{url.netloc}")
         link = url.path.format(**kwds)
         if link.endswith(".zarr"):
             return s3fs.S3Map(root=link, s3=s3r, check=False)

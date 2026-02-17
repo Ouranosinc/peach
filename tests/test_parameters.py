@@ -1,5 +1,6 @@
 # ruff: noqa: D103
 """Tests for peach.src.parameters."""
+
 import os
 import time
 
@@ -96,7 +97,6 @@ def test_Indicator():
 
 
 def test_IndicatorBase_IDF():
-
     iid = "IDF"
     config = {
         "args": {
@@ -119,11 +119,7 @@ def test_IndicatorBase_IDF():
 
 
 def test_IndicatorList():
-    config = {
-        "HEATING_DEGREE_DAYS": {
-            "args": {"thresh": {"default_units": "degC", "vmin": 10, "vmax": 30}}
-        }
-    }
+    config = {"HEATING_DEGREE_DAYS": {"args": {"thresh": {"default_units": "degC", "vmin": 10, "vmax": 30}}}}
 
     iid = "HEATING_DEGREE_DAYS"
     indl = p.IndicatorList(config=config, locale="fr", station_id={"tas": "7028442"})
@@ -149,11 +145,7 @@ def test_IndicatorList_compute():
     except requests.exceptions.ConnectionError:
         pytest.skip("Backend not running")
 
-    config = {
-        "WETDAYS": {
-            "args": {"thresh": {"default_units": "mm/d", "vmin": 0, "vmax": 10}}
-        }
-    }
+    config = {"WETDAYS": {"args": {"thresh": {"default_units": "mm/d", "vmin": 0, "vmax": 10}}}}
 
     iid = "WETDAYS"
     indl = p.IndicatorList(
@@ -182,9 +174,7 @@ def test_analysis_hdd(hdd_series, station_data):
 
 
 @pytest.mark.online
-@pytest.mark.skipif(
-    os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
-)
+@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI")
 def test_analysis_type_map(idf_obs, idf_sim, wl_pot_obs, wl_pot_sim):
     """Make sure analysis creates the right type of Indicator instance."""
     obs = {
@@ -253,9 +243,7 @@ def test_IndicatorDA(synthetic_dataset):
 def test_IndicatorObsDA(synthetic_dataset, station_data):
     ds = synthetic_dataset
 
-    ida = p.IndicatorObsDA(
-        data=ds["00"], name="Var_0", period=(1960, 2010), dist="norm"
-    )
+    ida = p.IndicatorObsDA(data=ds["00"], name="Var_0", period=(1960, 2010), dist="norm")
 
     assert isinstance(ida.dparams, xr.DataArray)
     assert len(ida.dparams) == 2
@@ -323,15 +311,12 @@ def test_IndicatorRefDA(synthetic_dataset_fut, synthetic_dataset):
 
 
 def test_HazardThreshold(synthetic_dataset, synthetic_dataset_fut):
-
     obs_da = synthetic_dataset["00"]
     sim_da = synthetic_dataset_fut["00"]
 
     obs_ind = p.IndicatorObsDA(data=obs_da, period=(1960, 2010), dist="uniform")
     ref_ind = p.IndicatorRefDA(data=sim_da, dist=obs_ind.dist, obs=obs_ind, level=0.005)
-    fut_ind = p.IndicatorSimDA(
-        data=sim_da, period=(2021, 2050), dist=obs_ind.dist, weights=ref_ind.weights
-    )
+    fut_ind = p.IndicatorSimDA(data=sim_da, period=(2021, 2050), dist=obs_ind.dist, weights=ref_ind.weights)
 
     ht = p.HazardThreshold(obs=obs_ind, ref=ref_ind, fut=fut_ind, input="X", value=0.9)
 

@@ -51,9 +51,7 @@ def make_request(payload):
                 if resd["status"] == "failed":
                     raise ValueError(resd["message"])
             else:
-                print(
-                    f"ERROR : Request for {payload['inputs']['params']['base']} is taking more than 120s to complete. See {loc}"
-                )
+                print(f"ERROR : Request for {payload['inputs']['params']['base']} is taking more than 120s to complete. See {loc}")
                 t1 = time.perf_counter()
                 return {
                     "payload": payload,
@@ -82,11 +80,7 @@ def make_payload(i, notsync, israndom):
         func = random.choice(funcs)
         xcind = xc.core.indicator.registry[func].get_instance()
         params = {"freq": random.choice(list(names.keys()))}
-        stns = {
-            varname: random.choice(stations)
-            for varname, param in xcind.parameters.items()
-            if param.kind == 0
-        }
+        stns = {varname: random.choice(stations) for varname, param in xcind.parameters.items() if param.kind == 0}
     else:
         case = i % 3
         func = funcs[(i // 3) % len(funcs)]
@@ -98,11 +92,7 @@ def make_payload(i, notsync, israndom):
         else:
             params = {"freq": "YS-JUL", "month": [7, 8, 9, 10]}
 
-        stns = {
-            varname: stations[i // (len(funcs) * 3)]
-            for varname, param in xcind.parameters.items()
-            if param.kind == 0
-        }
+        stns = {varname: stations[i // (len(funcs) * 3)] for varname, param in xcind.parameters.items() if param.kind == 0}
     return {
         "inputs": {"name": func, "params": params, "stations": stns, "no_cache": True},
         "async": notsync,
@@ -119,20 +109,10 @@ def log_docker_stats(closer, logfile):
             try:
                 # Calculate the change for the cpu usage of the container in between readings
                 # Taking in to account the amount of cores the CPU has
-                cpuDelta = (
-                    status["cpu_stats"]["cpu_usage"]["total_usage"]
-                    - status["precpu_stats"]["cpu_usage"]["total_usage"]
-                )
-                systemDelta = (
-                    status["cpu_stats"]["system_cpu_usage"]
-                    - status["precpu_stats"]["system_cpu_usage"]
-                )
+                cpuDelta = status["cpu_stats"]["cpu_usage"]["total_usage"] - status["precpu_stats"]["cpu_usage"]["total_usage"]
+                systemDelta = status["cpu_stats"]["system_cpu_usage"] - status["precpu_stats"]["system_cpu_usage"]
                 # print("systemDelta: "+str(systemDelta)+" cpuDelta: "+str(cpuDelta))
-                cpuPercent = (
-                    (cpuDelta / systemDelta)
-                    * (status["cpu_stats"]["online_cpus"])
-                    * 100
-                )
+                cpuPercent = (cpuDelta / systemDelta) * (status["cpu_stats"]["online_cpus"]) * 100
                 cpuPercent = cpuPercent
                 # print("cpuPercent: "+str(cpuPercent)+"%")
                 # Fetch the memory consumption for the container
@@ -155,16 +135,10 @@ if __name__ == "__main__":
         default=1,
         help="Nombre de requêtes simultanées",
     )
-    parser.add_argument(
-        "-m", "--num-requests", type=int, default=10, help="Nombre de requêtes totales"
-    )
+    parser.add_argument("-m", "--num-requests", type=int, default=10, help="Nombre de requêtes totales")
     parser.add_argument("-a", "--notsync", action="store_true", help="Faire en async")
-    parser.add_argument(
-        "-o", "--output", type=str, default="backend_stats", help="Fichier de stats."
-    )
-    parser.add_argument(
-        "-r", "--random", action="store_true", help="Choix des requêtes aléatoire"
-    )
+    parser.add_argument("-o", "--output", type=str, default="backend_stats", help="Fichier de stats.")
+    parser.add_argument("-r", "--random", action="store_true", help="Choix des requêtes aléatoire")
     args = parser.parse_args()
 
     closer = Event()
@@ -172,9 +146,7 @@ if __name__ == "__main__":
     plog.start()
     time.sleep(1)
 
-    payloads = [
-        make_payload(i, args.notsync, args.random) for i in range(args.num_requests)
-    ]
+    payloads = [make_payload(i, args.notsync, args.random) for i in range(args.num_requests)]
     stats = []
     with Pool(args.num_workers) as p:
         for i, res in enumerate(p.imap_unordered(make_request, payloads)):
@@ -183,9 +155,7 @@ if __name__ == "__main__":
             reqg = sum(res["requests"]) / len(res["requests"])
             reqstr = f"{res['requests'][0]:.0f} ms {reqn:.0f} < {reqg:.0f} < {reqx:.0f} ({len(res['requests'])})"
             func = f"{res['payload']['inputs']['name']}-{names[res['payload']['inputs']['params']['freq']]}"
-            print(
-                f"{i:02d} Func: {func:40s} Compute: {res['compute']: 5.1f} Wall: {res['wall']: 5.1f} Requests: {reqstr}"
-            )
+            print(f"{i:02d} Func: {func:40s} Compute: {res['compute']: 5.1f} Wall: {res['wall']: 5.1f} Requests: {reqstr}")
 
             stats.append(
                 {
@@ -208,9 +178,7 @@ if __name__ == "__main__":
     print("Average request times :")
     print(mean_times.sort_values().tail())
 
-    df = pd.read_csv(
-        Path(args.output).with_suffix(".system.csv"), parse_dates=["temps"]
-    ).set_index("temps")
+    df = pd.read_csv(Path(args.output).with_suffix(".system.csv"), parse_dates=["temps"]).set_index("temps")
 
     fig, axs = plt.subplots(2, 1, sharex=True)
     df.mem.plot(ax=axs[0])

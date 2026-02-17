@@ -29,7 +29,8 @@ class AsyncJob(Parameterized):
     active = Boolean(False)
 
     def __init__(self, headers: dict = None, max_retries: int = 0):
-        r"""Create an empty async request to a backend.
+        r"""
+        Create an empty async request to a backend.
 
         Send the request by calling py:meth:`post(data)`.
 
@@ -59,7 +60,7 @@ class AsyncJob(Parameterized):
         try:
             resp.raise_for_status()
         except requests.exceptions.RequestException as e:
-            logger.error(f"Job submission failed with {url} : {e}")
+            logger.error("Job submission failed with %s : %s", url, e)
             self.state = JobState.submit_failed
             self.active = False
             raise
@@ -81,7 +82,8 @@ class AsyncJob(Parameterized):
         return urlparse(self.monitor_url).path.split("/")[-1]
 
     def monitor(self):
-        """Check the request's progress.
+        """
+        Check the request's progress.
 
         Returns the state of the Job.
         """
@@ -111,9 +113,7 @@ class AsyncJob(Parameterized):
                 self.state = JobState.unsent
                 self.post(**self.last_job)
             else:
-                logger.warning(
-                    f"Job {self.jobid} failed. Max retries reached, stopping. {r}"
-                )
+                logger.warning(f"Job {self.jobid} failed. Max retries reached, stopping. {r}")
                 self.state = JobState.failed
                 self.active = False
 
@@ -125,7 +125,8 @@ class AsyncJob(Parameterized):
         return self.state
 
     def wait(self, interval: float = 5, timeout: float = 0):
-        """Wait for a job to complete or fail.
+        """
+        Wait for a job to complete or fail.
 
         Parameters
         ----------
@@ -156,7 +157,8 @@ class AsyncJob(Parameterized):
 
 
 def check_backend(backend):
-    """Check if the backend is available.
+    """
+    Check if the backend is available.
 
     Input is the backend's hostname.
 

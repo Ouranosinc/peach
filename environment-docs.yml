@@ -2,17 +2,19 @@ channels:
   - conda-forge
   - nodefaults
 dependencies:
+  - python >=3.12,<3.13
+  # Docs
   - figanos
-  - sphinx
-  - sphinx-codeautolink
-  - sphinx-copybutton
-  - sphinx-intl
-  - sphinx-book-theme
-  - nbsphinx
-  - ipython
   - ipykernel
+  - ipython
   - jupyter_client
   - myst-nb
+  - nbsphinx
+  - sphinx >=7.1.0,<8.2
+  - sphinx-book-theme
+  - sphinx-codeautolink >=0.16.2
+  - sphinx-copybutton
+  - sphinx-intl
   # For notebooks
   - s3fs
   - h5py

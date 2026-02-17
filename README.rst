@@ -4,7 +4,7 @@
 ===================================================================
 PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v0.1.0
 ===================================================================
- 
+
 +----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
 | Versions                   | |pypi| |versions|                                                                                                                 |
 +----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
@@ -19,12 +19,12 @@ PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v0.1.0
 
 
 
-PEACH is an online calculations services and python package that offers calculation for climate hazard likelihood. 
+PEACH is an online calculations services and python package that offers calculation for climate hazard likelihood.
 Peach can be used to deploy calculation services and graphical interface or as traditional python package to estimate climate hazard likelihood.
 
 Features
 --------
-- relies on more than 500 biasadjusted climate model simulations from CMIP6, please consult the `FRDR repositary <https://www.frdr-dfdr.ca/repo/dataset/876e9380-63fc-4eaa-987b-aa16c3770941>`_ and `Pre-Workflow folder <pre_workflow_data/>`_;
+- relies on more than 500 biasadjusted climate model simulations from CMIP6, please consult the `FRDR repository <https://www.frdr-dfdr.ca/repo/dataset/876e9380-63fc-4eaa-987b-aa16c3770941>`_ and `Pre-Workflow folder <pre_workflow_data/>`_;
 - applies weights to SSPs (experiment_id) and models (source_id) to provide a probabilistic estimate of the hazard;
 - provides a computational backend with an OGCAPI-Processes interface;
 - provides a web interface prototype to run the analysis;
