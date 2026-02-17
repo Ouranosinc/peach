@@ -326,7 +326,7 @@ class StationViewer(Viewer):
         else:
             raise ValueError(f"Could not find param.Parameterized {param_name}")
 
-    def site_toggle_changed(self, issuer):
+    def site_toggle_changed(self, issuer):  # noqa: F841
         """Toggle circle visibility."""
         self.site.enabled = not self.site.enabled
 

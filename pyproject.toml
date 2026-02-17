@@ -174,8 +174,8 @@ values = [
 ]
 
 [tool.codespell]
-ignore-words-list = "astroid,ges,ot,socio-economic"
-skip = "*.bib,*.po,*.ts,docs/factsheets/fr/*.md,docs/factsheets/fr/*.yml,docs/notebooks/introduction.md"
+ignore-words-list = "ans,astroid,calculs,celle,comparaison,fonction,ges,lien,objets,ot,socio-economic"
+skip = "*.bib,*.po,*.ts,docs/factsheets/fr/*.md,docs/factsheets/fr/*.yml,docs/notebooks/introduction.md,docs/notebooks/metho_figures.ipynb,src/peach/frontend/data/stations_variables.csv,src/peach/frontend/views.py"
 
 [tool.coverage.paths]
 source = ["src/peach/", "*/site-packages/peach/"]

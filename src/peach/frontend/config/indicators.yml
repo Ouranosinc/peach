@@ -92,7 +92,7 @@ IDF:
   sim_process: compute-indicators-idf-sim
   args:
     duration:
-      choices: ["1h", "2h", "6h", "12h", "24h"]
+      choices: [ "1h", "2h", "6h", "12h", "24h" ]
       label:
         fr: "Durée"
       doc:

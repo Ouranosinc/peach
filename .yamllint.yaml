@@ -6,6 +6,8 @@ rules:
     forbid: false
     min-spaces-inside: 1
     max-spaces-inside: 1
+    ignore: |
+      docker-compose.yml
 
   commas:
     min-spaces-after: 1
@@ -28,7 +30,7 @@ rules:
   line-length:
     allow-non-breakable-words: true
     allow-non-breakable-inline-mappings: true
-    max: 180
+    max: 250
     level: warning
 
   new-lines:

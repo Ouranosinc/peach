@@ -78,17 +78,16 @@ inds = parameters.IndicatorList(
     backend=gl.param.backend,
 )
 
-# To speed up UI testing, set to True
-if False:
-    # station.pr = "8202250"
-    # station.wl = "490"
-    station.tas = "7027725"
-    # station.idf = "7027725"
-    # inds.add("WETDAYS")
-    inds.add("TN_MAX")
-    inds.add("TN_MIN")
-    # inds.add("WL_POT")
-    # inds.add("IDF")
+# To speed up UI testing, uncomment:
+# station.pr = "8202250"
+# station.wl = "490"
+# station.tas = "7027725"
+# station.idf = "7027725"
+# inds.add("WETDAYS")
+# inds.add("TN_MAX")
+# inds.add("TN_MIN")
+# inds.add("WL_POT")
+# inds.add("IDF")
 
 app = views.Application(
     global_=gl,

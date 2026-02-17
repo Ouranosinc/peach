@@ -79,10 +79,10 @@ def test_analysis_WL_viewer(synthetic_ewl_ds, station_data):
     v.IndicatorSimDAViewer(ind=a.fut["123"]).__panel__()
 
 
-def test_hazard_matrix_viewer(synthetic_dataset, synthetic_dataset_fut, station_data):
+def test_hazard_matrix_viewer(synthetic_dataset, synthetic_dataset_fut):
     sim_ds = synthetic_dataset_fut
 
-    for key, val in sim_ds.items():
+    for val in sim_ds.values():
         val.data += 0.01
 
     a = p.Analysis(
@@ -94,7 +94,7 @@ def test_hazard_matrix_viewer(synthetic_dataset, synthetic_dataset_fut, station_
     mv.__panel__()
 
 
-def test_application(station_data, config, synthetic_dataset, synthetic_dataset_fut, tmp_path):
+def test_application(station_data, config, synthetic_dataset, synthetic_dataset_fut):
     gl = p.Global(locale="fr")
 
     site = p.Site(

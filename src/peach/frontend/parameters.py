@@ -251,7 +251,7 @@ class URLParameterized(BaseParameterized):
             "value",
         )
 
-    def set_sync_watchers(self, sync_url=True, is_init=True):
+    def set_sync_watchers(self, sync_url=True, is_init=True):  # noqa: F841
         import panel as pn
 
         self.url_unlisten()
@@ -1179,7 +1179,7 @@ class IndicatorList(BaseParameterized):
         """Check that the backend server is running."""
         return check_backend(self.backend)
 
-    def post_all_requests(self, repost=False, wait=True):
+    def post_all_requests(self, repost=False, wait=True):  # noqa: F841
         for ind in self.selected.values():
             if not ind.computed:
                 ind.post_request(self.backend, repost)
