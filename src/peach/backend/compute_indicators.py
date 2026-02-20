@@ -24,17 +24,18 @@ from peach.common import config
 # Load water level and IDF indicators into xclim registry
 from peach.risk import idf, wl  # noqa: F401
 
+
 # Dask config set in docker-compose.yml
 xclim.set_options(metadata_locales=["fr"])
 logger = logging.getLogger("compind")
 if config.BUCKET_URL is not None and config.BUCKET_CREDENTIALS and not config.USE_LOCAL_CACHE:
-    minioFS = s3fs.S3FileSystem(
+    minioFS = s3fs.S3FileSystem(  # noqa: N816
         use_ssl=config.BUCKET_URL.startswith("https"),
         endpoint_url=config.BUCKET_URL,
         **config.BUCKET_CREDENTIALS,
     )
 else:
-    minioFS = None
+    minioFS = None  # noqa: N816
 
 
 METADATA = {
@@ -134,7 +135,7 @@ class ComputeIndicatorsProcessor(BaseProcessor):
     CHECK_MISSING = "any"
     VARIABLES = ["tas", "tasmin", "tasmax", "pr"]
 
-    def __init__(self, processor_def: dict, process_metadata: dict = None):
+    def __init__(self, processor_def: dict, process_metadata: dict | None = None):
         """
         Initialize the processor
 
@@ -174,7 +175,7 @@ class ComputeIndicatorsProcessor(BaseProcessor):
         """
         xcver = xclim.__version__.replace(".", "-")
         base_str = base.replace("_", "-")
-        params_hash = hashlib.md5(str(sorted(params.items())).encode()).hexdigest()
+        params_hash = hashlib.md5(str(sorted(params.items())).encode()).hexdigest()  # noqa: S324
         ids_str = "-".join([f"{v}{i}" for v, i in sorted(sids.items())])
         return f"{base_str}_{params_hash}_{cls.SOURCE}_{ids_str}_xc{xcver}"
 
@@ -183,9 +184,9 @@ class ComputeIndicatorsProcessor(BaseProcessor):
         files = [get_file(pattern=pattern, path=path, kwds={"var": var}) for var in self.VARIABLES]
 
         try:
-            for file in files:
+            for f in files:
                 ds = xr.open_dataset(
-                    file,
+                    f,
                     # Drop unnecessary stuff
                     drop_variables=[
                         "rotated_pole",
@@ -203,13 +204,14 @@ class ComputeIndicatorsProcessor(BaseProcessor):
                 )
                 for var in ds.variables.keys():
                     ds[var].encoding = {}
-                logger.debug(f"Data vars: {ds.data_vars.keys()}")
+                msg = f"Data vars: {ds.data_vars.keys()}"
+                logger.debug(msg)
                 var = list(set(ds.data_vars.keys()).intersection(self.VARIABLES))[0]
                 self.ds[var] = ds[var]
         except FileNotFoundError as err:
-            raise ProcessorExecuteError(f"Not all input datasets found. Can't find {file}.") from err
-        except IndexError:
-            raise ProcessorExecuteError(f"Input datasets {files} do not contain the required variables: {self.VARIABLES}")
+            raise ProcessorExecuteError(f"Not all input datasets found. Can't find {f}.") from err
+        except IndexError as err:
+            raise ProcessorExecuteError(f"Input datasets {files} do not contain the required variables: {self.VARIABLES}") from err
 
     def execute(self, data):
         """Return indicator time series."""
@@ -266,7 +268,8 @@ class ComputeIndicatorsProcessor(BaseProcessor):
             out.to_zarr(store, mode="w" if no_cache else "w-")
 
         t1 = time.perf_counter()
-        logger.info(f"{cid} job completed in {t1 - t0} seconds.")
+        msg = f"{cid} job completed in {t1 - t0} seconds."
+        logger.info(msg)
         if minioFS is None or config.USE_LOCAL_CACHE:
             output = {"id": "links", "value": f"{cid}.zarr", "time": t1 - t0}
         else:
@@ -308,7 +311,8 @@ class ComputeIndicatorsProcessor(BaseProcessor):
         with xclim.set_options(check_missing=check_missing):
             out = ind(**inputs, **kwds, **indexer)
         if out.attrs["units"] == "K":
-            logger.info(f"Converting indicator {out.name} from K to °C")
+            msg = f"Converting indicator {out.name} from K to °C"
+            logger.info(msg)
             out = xclim.core.units.convert_units_to(out, "°C")
         out.attrs["id"] = base
         out.attrs["params"] = kwds
@@ -355,7 +359,8 @@ class ComputeWaterLevelProcessorOBS(ComputeIndicatorsProcessor):
         fs = get_file(pattern=pattern, path=path, kwds={"var": var, "station_id": station_id})
         ds = xr.open_dataset(fs)
 
-        logger.debug(f"Data vars: {ds.data_vars.keys()}")
+        msg = f"Data vars: {ds.data_vars.keys()}"
+        logger.debug(msg)
 
         # Add station dimension for compatibility with compute_indicator method
         da = ds[var].expand_dims(station=[station_id])
@@ -376,7 +381,8 @@ class ComputeWaterLevelProcessorSIM(ComputeWaterLevelProcessorOBS):
         fs = get_file(pattern=pattern, path=path, kwds={"var": "sl", "station_id": station_id})
         ds = xr.open_dataset(fs)
 
-        logger.debug(f"Data vars: {ds.data_vars.keys()}")
+        msg = f"Data vars: {ds.data_vars.keys()}"
+        logger.debug(msg)
 
         # Add station dimension for compatibility with compute_indicator method
         da = ds["sl_delta"]

@@ -34,7 +34,7 @@ def wl_norm(sl_mm_yr: float, ref_period: tuple):
 
 def matching_events(pot_da: xr.DataArray, timeseries_da: xr.DataArray) -> tuple:
     """Identifies matching extreme events in `timeseries_da` around the timepoints in `pot_da`."""
-    LAG_DAYS = 1
+    LAG_DAYS = 1  # noqa: N806
     max_values, max_times = [], []
     for time in pot_da["time"].values:
         start_time = np.datetime64(time) - np.timedelta64(LAG_DAYS, "D")

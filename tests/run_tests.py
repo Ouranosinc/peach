@@ -12,6 +12,7 @@ import pandas as pd
 import requests as req
 import xclim as xc
 
+
 stations = [
     "6140954",
     "7033650",

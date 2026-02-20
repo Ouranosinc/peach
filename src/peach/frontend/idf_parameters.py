@@ -17,6 +17,7 @@ from peach.frontend.parameters import (
 )
 from peach.risk.priors import members
 
+
 logger = get_logger(__name__)
 
 # Source: Procédure proposée pour estimer les intensités des maxima annuels de

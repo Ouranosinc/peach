@@ -147,7 +147,8 @@ class URLParameterized(BaseParameterized):
     _sync_callbacks = []
     _sync_watchers = []
 
-    def __init__(self, sync_url=True, ignored_queries=[], sync_on_params={}, **kwargs):
+    # FIXME: Do not use mutable data structures for argument defaults
+    def __init__(self, sync_url=True, ignored_queries=[], sync_on_params={}, **kwargs):  # noqa: B006
         """
         Initialize URLParameterized
 
@@ -215,7 +216,8 @@ class URLParameterized(BaseParameterized):
         for parameterized, param_dict in self.sync_on_params.items():
             if not isinstance(parameterized, param.Parameterized):
                 raise ValueError(f"{parameterized} is not of type param.Parameterized")
-            self.logger.info(f"{self.name}: Setting up watchers for {parameterized.name}")
+            msg = f"{self.name}: Setting up watchers for {parameterized.name}"
+            self.logger.info(msg)
             for parameter, val in param_dict.items():
                 if not isinstance(parameter, str):
                     raise ValueError(f"param {parameter} not a string (for .watch)")
@@ -270,7 +272,8 @@ class URLParameterized(BaseParameterized):
         try:
             self.set_sync_watchers(is_init=True)
         except Exception as err:
-            logger.error(f"URL params sync of {self.__class__.__name__} object did not complete with : {err}")
+            msg = f"URL params sync of {self.__class__.__name__} object did not complete with : {err}"
+            logger.error(msg)
 
     def sync_query_from_params(self, **kwargs):
         import panel as pn
@@ -296,9 +299,7 @@ class URLParameterized(BaseParameterized):
         self.url_listen()
 
     def sync_params_from_query(self, **kwargs):
-        """
-        Callback function which is invoked when the URL search parameter changes.
-        """
+        """Callback function which is invoked when the URL search parameter changes."""
         import panel as pn
 
         self.url_unlisten()
@@ -495,7 +496,8 @@ class Station(URLParameterized):
         "northing": {"en": "Northing", "fr": "Northing"},
     }
 
-    def __init__(self, df: pd.DataFrame, variables: list = [], **params):
+    # FIXME: Do not use mutable data structures for argument defaults
+    def __init__(self, df: pd.DataFrame, variables: list = [], **params):  # noqa: B006
         """
         Create a station selector for each variable.
 
@@ -557,7 +559,8 @@ class Station(URLParameterized):
 
     # @param.depends("station_id", "site.radius", "site.x", "site.y",  watch=True, on_init=True)
     def update_tables(self, *events, **kwargs):
-        logger.info(f"update_tables called with change in {[e.name for e in events]}")
+        msg = f"update_tables called with change in {[e.name for e in events]}"
+        logger.info(msg)
         # check if any of the stations have changed, or the site has changed:
         easting = self.site.x
         northing = self.site.y
@@ -678,8 +681,8 @@ class Station(URLParameterized):
         self,
         var,
         distance: float,
-        easting: float = None,
-        northing: float = None,
+        easting: float | None = None,
+        northing: float | None = None,
         p: int = 2,
         return_sorted: bool = True,
         **kwargs,
@@ -1079,7 +1082,7 @@ class IndicatorComputation(BaseParameterized):
     def hash(self) -> str:
         """Return a hash of the indicator and its parameters."""
         s = json.dumps(self.to_dict()).encode()
-        return hashlib.md5(s).hexdigest()
+        return hashlib.md5(s).hexdigest()  # noqa: S324
 
     def post_request(self, backend, repost=False):
         """
@@ -1317,7 +1320,8 @@ class Analysis(BaseParameterized):
 
     @param.depends("ref_period", watch=True)
     def watch_ref_period(self):
-        logger.info(f"watch_ref_period: Triggered with {self.ref_period}")
+        msg = "watch_ref_period: Triggered with {self.ref_period}"
+        logger.info(msg)
 
         update_checks = {}
         for kind in self.ds.keys():
@@ -1349,7 +1353,8 @@ class Analysis(BaseParameterized):
                 self.param.update(**update_checks)
                 self.param.trigger("ds")
 
-    def perform_checks(self, uuid, kind, da, updaters: dict = {}, force=False):
+    # FIXME: Do not use mutable data structures for argument default
+    def perform_checks(self, uuid, kind, da, updaters: dict = {}, force=False):  # noqa: B006
         """
         Performs data checks to data array to ensure params are valid
 
@@ -1454,7 +1459,7 @@ class Analysis(BaseParameterized):
     def _set_ref_period_bounds(self):
         """Set the reference period bounds from the dataset."""
         # TODO: move to perform_checks
-        for uuid, da in self.ds["obs"].items():
+        for da in self.ds["obs"].values():
             years = da.time.dt.year
             start = int(years.isel(time=0).values)
             end = int(years.isel(time=-1).values)
@@ -1466,7 +1471,7 @@ class Analysis(BaseParameterized):
     def _set_fut_period_bounds(self):
         """Set the reference period bounds from the dataset."""
         # TODO: move to perform_checks
-        for uuid, da in self.ds["sim"].items():
+        for da in self.ds["sim"].values():
             years = da.time.dt.year
             start = int(years.isel(time=0).values)
             end = int(years.isel(time=-1).values)
@@ -1747,7 +1752,8 @@ class IndicatorDA(BaseParameterized):
             else:
                 raise e
 
-        logger.info(f"fit: {res.data} ")
+        msg = f"fit: {res.data} "
+        logger.info(msg)
         return res
 
     def pdf(self, x):
@@ -2079,7 +2085,10 @@ class IndicatorSimDA(IndicatorDA):
                 f"permet de contrôler leur visibilité."
             )
         else:
-            return f"Projected time series for `{self.long_name}` at {st}. {self.description} Clicking on legend items allows to control their visibility."
+            return (
+                f"Projected time series for `{self.long_name}` at {st}. {self.description} "
+                "Clicking on legend items allows to control their visibility."
+            )
 
     @property
     def hist_caption(self):
@@ -2175,7 +2184,8 @@ class IndicatorRefDA(IndicatorSimDA):
         """Compute the weights for the dataset."""
         test = self._ks
         if test is None:
-            logger.error(f"{self.xid}: KS is None.")
+            msg = f"{self.xid}: KS is None."
+            logger.error(msg)
             return
 
         # Drop the models that don't match
@@ -2186,7 +2196,8 @@ class IndicatorRefDA(IndicatorSimDA):
         # Compute the weights for valid models
         self.model_weights = model_weights_from_sherwood(ok.source_id.values, method="L2Var", lambda_=0.5).sel(source_id=test.source_id)
 
-        logger.info(f"{self.xid}: Model weights computed")
+        msg = f"{self.xid}: Model weights computed"
+        logger.info(msg)
 
 
 def pievc(sf):
@@ -2316,9 +2327,9 @@ class HazardMatrix(BaseParameterized):
         # Get values
         out = []
         if len(self.matrix) > 0:
-            for key, hts in self.matrix.items():
+            for hts in self.matrix.values():
                 for ht in hts:
-                    out.append(ht.values)
+                    out.append(ht.values)  # noqa: PERF401
 
             df = pd.concat(out, axis=1).T  # .set_index(["long_name", "descr"])
             # df = df.set_axis(ht.index.to_flat_index(), axis=1)
@@ -2346,7 +2357,7 @@ class HazardMatrix(BaseParameterized):
     def get_ht(self, index):
         """Get HazardThreshold instance from index."""
         i = 0
-        for key, hts in self.matrix.items():
+        for hts in self.matrix.values():
             for ht in hts:
                 if i == index:
                     return ht
@@ -2354,10 +2365,11 @@ class HazardMatrix(BaseParameterized):
 
     def on_click(self, event):
         logger.info(str(event))
+        # FIXME: The approach here isn't great. Better algorithms possible.
         if event.column in ["add", "remove"]:
             i = 0
-            for key, hts in self.matrix.items():
-                for index, ht in enumerate(hts):
+            for key, hts in self.matrix.items():  # noqa: B007
+                for _ in len(hts):
                     if i == event.row:
                         break
                     i += 1
@@ -2366,9 +2378,9 @@ class HazardMatrix(BaseParameterized):
                 break
 
             if event.column == "add":
-                self.add(key=key, index=index)
+                self.add(key=key, index=index)  # noqa: F821
             elif event.column == "remove":
-                self.remove(key=key, index=index)
+                self.remove(key=key, index=index)  # noqa: F821
 
             return True
 
@@ -2598,7 +2610,8 @@ class HazardThreshold(BaseParameterized):
 
     def on_edit(self, event):
         """Trigger the edit event."""
-        logger.info(f"{event.column}: {event.value}")
+        msg = f"{event.column}: {event.value}"
+        logger.info(msg)
 
         name = event.column
         if name == "value":

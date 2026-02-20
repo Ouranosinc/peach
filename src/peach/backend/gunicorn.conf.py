@@ -79,8 +79,8 @@ def worker_int(worker):
 
     id2name = {th.ident: th.name for th in threading.enumerate()}
     code = []
-    for threadId, stack in sys._current_frames().items():
-        code.append("\n# Thread: %s(%d)" % (id2name.get(threadId, ""), threadId))
+    for thread_id, stack in sys._current_frames().items():
+        code.append("\n# Thread: %s(%d)" % (id2name.get(thread_id, ""), thread_id))
         for filename, lineno, name, line in traceback.extract_stack(stack):
             code.append('File: "%s", line %d, in %s' % (filename, lineno, name))
             if line:

@@ -12,6 +12,7 @@ import numpy as np
 import openturns as ot
 import xarray as xr
 
+
 optim_options = {
     "tol": 1e-6,
     "options": {
@@ -101,10 +102,10 @@ def ot_marginal(dist: str, dparams: xr.DataArray):
     elif dist == "genpareto":
         return ot_map_marginals[dist](params[2], params[0], params[1])
     elif dist == "lognorm":
-        muLog = np.log(params[2])
-        sigmaLog = params[0]
+        mu_log = np.log(params[2])
+        sigma_log = params[0]
         gamma = params[1]
-        return ot_map_marginals[dist](muLog, sigmaLog, gamma)
+        return ot_map_marginals[dist](mu_log, sigma_log, gamma)
     elif dist == "uniform":
         return ot_map_marginals[dist](params[0], params[0] + params[1])
     return

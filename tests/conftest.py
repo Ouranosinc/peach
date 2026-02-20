@@ -6,6 +6,7 @@ import yaml
 from peach import test_utils as tu
 from peach.common import config as ping_config
 
+
 ROOT = Path(__file__).parent.parent
 CONFIG = ROOT / "src" / "peach" / "frontend" / "config"
 

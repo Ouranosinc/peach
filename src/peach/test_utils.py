@@ -14,6 +14,16 @@ from pyextremes import get_extremes
 
 
 def synthetic_ds():
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Returns
+    -------
+    xr.Dataset.data_vars
+        Dummy description.
+    """
     ds = xr.Dataset()
     time = xr.cftime_range(start="1950-01-01", end="2020-12-31", freq="YE")
 
@@ -38,6 +48,16 @@ def synthetic_ds():
 
 
 def synthetic_ds_fut():
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Returns
+    -------
+    xr.Dataset.data_vars
+        Dummy description.
+    """
     ds = xr.Dataset()
     time = xr.cftime_range(start="1900-01-01", end="2100-12-31", freq="YE")
     source_id = ["INM-CM4-8", "GFDL-CM4", "HadGEM3-GC31-MM", "MIROC6", "TaiESM1"]
@@ -71,7 +91,9 @@ def synthetic_ds_fut():
                 "stations": {"pr": "7028441"},
                 "id": "XIND",
                 "params": {"thresh": "1.0 mm/d"},
-                "history": f"[2024-11-18 20:37:17] {uuid}: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
+                "history": (
+                    f"[2024-11-18 20:37:17] {uuid}: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2"
+                ),
             },
         )
         ds[uuid] = da.stack(realization=("variant_label", "source_id", "experiment_id"))
@@ -80,6 +102,16 @@ def synthetic_ds_fut():
 
 
 def synthetic_ds_daily():
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Returns
+    -------
+    xr.Dataset.data_vars
+        Dummy description.
+    """
     time_range = pd.date_range("1960-01-01", "2100-12-31", freq="D")
     variant_labels = ["r1i1p1f1"]
     source_ids = ["INM-CM4-8", "HadGEM3-GC31-MM"]
@@ -130,6 +162,16 @@ def synthetic_ds_daily():
 
 
 def synthetic_ewl_ds():
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Returns
+    -------
+    xr.Dataset.data_vars
+        Dummy description.
+    """
     time_wl = pd.date_range(start="1960-01-01", end="2012-12-31", freq="h")
     wl_data = np.random.randn(len(time_wl))
     stn_thresh = np.quantile(wl_data, 0.98)
@@ -200,6 +242,25 @@ def synthetic_ewl_ds():
     )
 
     def quantile_calculation(da_decadal, da_daily, quantiles):
+        """
+        Quantile calculations.
+
+        Dummy description
+
+        Parameters
+        ----------
+        da_decadal : xr.DataArray
+            Dummy description.
+        da_daily : xr.DataArray
+            Dummy description.
+        quantiles :  : xr.DataArray
+            Dummy description.
+
+        Returns
+        -------
+        np.ndarray
+            Dummy description.
+        """
         quantile_results = np.full((len(da_decadal.experiment_id), len(da_decadal.time), len(quantiles)), np.nan)
         for i, real in enumerate(da_decadal.experiment_id):
             for j, time in enumerate(da_decadal.time):
@@ -227,7 +288,9 @@ def synthetic_ewl_ds():
         "stations": {"wl": "00490"},
         "id": "XIND",
         "params": {"thresh": "1.0 mm/d"},
-        "history": "[2024-11-18 20:37:17] sl_delta: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
+        "history": (
+            "[2024-11-18 20:37:17] sl_delta: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2"
+        ),
     }
 
     sl = xr.DataArray(
@@ -245,7 +308,22 @@ def synthetic_ewl_ds():
     return wl, wl_pot, sl, stn_thresh
 
 
-def synthetic_jp_ds(ind="wl_prcond"):
+def synthetic_jp_ds(ind: str = "wl_prcond"):
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Parameters
+    ----------
+    ind : str
+         Dummy description.
+
+    Returns
+    -------
+    xr.Dataset.data_vars
+        Dummy description.
+    """
     joint_dist = ot.ComposedDistribution(
         [ot.GeneralizedPareto(1.0, 0.0, 5.0), ot.Normal(1.0, 1.0)],
         ot.ClaytonCopula(2),
@@ -331,6 +409,16 @@ def synthetic_jp_ds(ind="wl_prcond"):
 
 
 def tas_obs():
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Returns
+    -------
+    xr.DataArray
+         Dummy description.
+    """
     time = pd.date_range(start="1950-01-01", end="2020-12-31", freq="D")
     tas = np.random.randn(len(time), 1) * 50 + 273
     attrs = {
@@ -349,6 +437,16 @@ def tas_obs():
 
 
 def tas_sim():
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Returns
+    -------
+    xr.DataArray
+         Dummy description.
+    """
     time = xr.cftime_range(start="1960-01-01", end="2100-12-31", freq="D")
     source_id = ["INM-CM4-8", "GFDL-CM4", "HadGEM3-GC31-MM", "MIROC6", "TaiESM1"]
     experiment_id = ["ssp126", "ssp245", "ssp370", "ssp585"]
@@ -405,14 +503,12 @@ else:
 
 
 class MemoryZarrStore(zipclass):
-    """
-    store=MemoryZarrStore()
-    ds.to_zarr(store=store)
-    """
+    """Dummy dosctring."""
 
+    # store=MemoryZarrStore()
+    # ds.to_zarr(store=store)
     def __init__(self):
-        # store properties
-
+        """Store properties."""
         self.path = io.BytesIO()
         self.compression = zipfile.ZIP_STORED
         self.allowZip64 = True

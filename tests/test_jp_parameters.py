@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 import xclim as xc
 
+
 pytest.importorskip("copulae")
 
 from peach.frontend.jp_parameters import (  # noqa: E402

@@ -31,6 +31,7 @@ import time
 
 from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 
+
 LOGGER = logging.getLogger(__name__)
 
 #: Process metadata and description

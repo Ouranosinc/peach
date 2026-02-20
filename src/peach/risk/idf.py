@@ -1,9 +1,12 @@
+"""IDF tools for risk module."""
+
 from __future__ import annotations
 
 import xarray as xr
 from xclim.core.locales import load_locale
 from xclim.core.units import declare_units
 from xclim.indicators.generic._stats import Generic
+
 
 __all__ = ["idf"]
 

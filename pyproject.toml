@@ -174,7 +174,7 @@ values = [
 ]
 
 [tool.codespell]
-ignore-words-list = "ans,astroid,calculs,celle,comparaison,fonction,ges,lien,objets,ot,socio-economic"
+ignore-words-list = "ans,astroid,calculs,celle,comparaison,fonction,ges,lien,objets,ot,sn_p,socio-economic"
 skip = "*.bib,*.po,*.ts,docs/factsheets/fr/*.md,docs/factsheets/fr/*.yml,docs/notebooks/introduction.md,docs/notebooks/metho_figures.ipynb,src/peach/frontend/data/stations_variables.csv,src/peach/frontend/views.py"
 
 [tool.coverage.paths]
@@ -321,7 +321,13 @@ extend-select = [
   "RUF022" # unsorted-dunder-all
 ]
 ignore = [
+  "BLE001", # blind-except
   "COM", # commas
+  "D100", # undocumented-public-module
+  "D101", # undocumented-public-class
+  "D102", # undocumented-public-method
+  "D103", # undocumented-public-function
+  "D105", # undocumented-magic-method
   "D205", # blank-line-after-summary
   "D400", # ends-in-period
   "D401", # non-imperative-mood
@@ -347,6 +353,7 @@ select = [
   "UP", # python version conventions
   "W" # pycodestyle warnings
 ]
+exclude = ["*.ipynb"]
 
 [tool.ruff.lint.flake8-bandit]
 check-typed-exception = true
@@ -355,16 +362,19 @@ check-typed-exception = true
 known-first-party = ["peach"]
 case-sensitive = true
 detect-same-package = false
-lines-after-imports = 1
+lines-after-imports = 2
 no-lines-before = ["future", "standard-library"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 15
 
 [tool.ruff.lint.per-file-ignores]
-"docs/**" = ["E402"]
+"docs/**/*.py" = ["E402"]
 "src/peach/**/__init__.py" = ["F401", "F403"]
-"tests/**" = ["D100", "D101", "D102", "D103", "N802", "N806", "S101"]
+"src/peach/frontend/**/*.py" = ["D102"]
+"tests/**/*.py" = ["D100", "D101", "D102", "D103", "N802", "N806", "S101"]
+"src/peach/test_utils.py" = ["D103"]
+"src/peach/backend/gunicorn.conf.py" = ["N999", "UP031"]
 
 [tool.ruff.lint.pycodestyle]
 max-doc-length = 180

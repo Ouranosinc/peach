@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
+
 """
 Parse the IDF_Additional_Additionnel_v3-30/idfm0018.txt file from
 https://collaboration.cmc.ec.gc.ca/cmc/climate/Engineer_Climate/IDF/idf_v3-30_2022_10_31/IDF_Files_Fichiers/
@@ -40,24 +41,22 @@ duration_hr = {
 
 
 def parse(fh):
-    """
-    Generator parsing lines from a file handle.
-    """
+    """Generator parsing lines from a file handle."""
     f = np.float32
 
     # This is not pretty, but it's fast
-    parse_line = lambda l: (
-        l[0:7],
-        int(l[7:11]),
-        f(l[11:16]),
-        f(l[16:21]),
-        f(l[21:26]),
-        f(l[26:31]),
-        f(l[31:36]),
-        f(l[36:41]),
-        f(l[41:46]),
-        f(l[46:51]),
-        f(l[51:56]),
+    parse_line = lambda line: (
+        line[0:7],
+        int(line[7:11]),
+        f(line[11:16]),
+        f(line[16:21]),
+        f(line[21:26]),
+        f(line[26:31]),
+        f(line[31:36]),
+        f(line[36:41]),
+        f(line[41:46]),
+        f(line[46:51]),
+        f(line[51:56]),
     )
 
     for line in fh:
@@ -192,10 +191,7 @@ def load_meta(path):
 
 
 def save_idf_regions(path):
-    """
-    Load regions from INRS netCDF file, find the region for each IDF station, then save this region to a json file.
-
-    """
+    """Load regions from INRS netCDF file, find the region for each IDF station, then save this region to a json file."""
     import json
 
     from scipy.spatial import KDTree

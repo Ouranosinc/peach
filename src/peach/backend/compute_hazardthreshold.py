@@ -12,6 +12,7 @@ from peach.common import config
 # TODO move params to common
 from peach.frontend import parameters as params
 
+
 # Load water level and IDF indicators into xclim registry
 
 # Dask config set in docker-compose.yml
@@ -77,8 +78,14 @@ METADATA = {
         "analysis": {
             "title": {"en": "Analysis Parameters", "fr": "Paramètres de l'analyse"},
             "description": {
-                "en": "Can contain: ref_period (int tuple), fut_period (int tuple), dist (list of strings, same length as 'indicators'), metric (pareil que dist).",
-                "fr": "Peut contenir: ref_period (int tuple), fut_period (int tuple), dist (liste de strings de même longueur que 'indicators'), metric (pareil que dist).",
+                "en": (
+                    "Can contain: ref_period (int tuple), fut_period (int tuple), "
+                    "dist (list of strings, same length as 'indicators'), metric (pareil que dist)."
+                ),
+                "fr": (
+                    "Peut contenir: ref_period (int tuple), fut_period (int tuple), "
+                    "dist (liste de strings de même longueur que 'indicators'), metric (pareil que dist)."
+                ),
             },
             "schema": {
                 "type": "object",
@@ -140,7 +147,7 @@ ind_config = config.read_indicator_config()
 class ComputeHazardThreshold(BaseProcessor):
     """ComputeHazardThreshold"""
 
-    def __init__(self, processor_def: dict, process_metadata: dict = None):
+    def __init__(self, processor_def: dict, process_metadata: dict | None = None):
         """
         Initialize the processor
 
@@ -174,8 +181,10 @@ class ComputeHazardThreshold(BaseProcessor):
             A dictionary of variable names and station IDs.
         """
         xcver = xclim.__version__.replace(".", "-")
+        # FIXME: Reduce the complexity here
         inds_str = [
-            f"{ind['name'].replace('_', '-')}_{hashlib.md5(str(sorted(ind.get('params', {}).items())).encode()).hexdigest()}" for ind in indicators
+            f"{ind['name'].replace('_', '-')}_{hashlib.md5(str(sorted(ind.get('params', {}).items())).encode()).hexdigest()}"  # noqa: S324
+            for ind in indicators
         ]
         ids_str = "-".join([f"{v}{i}" for v, i in sorted(sids.items())])
         hazard_str = "-".join([f"{v}{i}" for v, i in sorted(hazards.items())])
@@ -213,7 +222,8 @@ class ComputeHazardThreshold(BaseProcessor):
         matrix.from_dict(hazard_dict)
 
         t1 = time.perf_counter()
-        logger.info(f"Job completed in {t1 - t0} seconds.")
+        msg = f"Job completed in {t1 - t0} seconds."
+        logger.info(msg)
         anaout = analysis.to_dict("short")
         matout = matrix.to_dict()
         output = {"value": {"analysis": anaout, "hazards": [matout[uuid] for uuid in uuids]}}

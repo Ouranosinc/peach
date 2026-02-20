@@ -6,6 +6,7 @@ import pytest
 import peach.frontend.parameters as p
 import peach.frontend.views as v
 
+
 # For now these tests are just smoke tests
 # TODO: Save the plots and compare them to reference images
 

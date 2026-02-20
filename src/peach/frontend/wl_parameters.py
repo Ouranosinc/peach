@@ -23,6 +23,7 @@ from peach.frontend.parameters import (
 from peach.risk import bootstrap
 from peach.risk.xmixture import XMixtureDistribution
 
+
 """
 # Design considerations
 
@@ -437,7 +438,7 @@ def scale_pareto(func, name, arg, peaks_per_yr):
 
     try:
         out.name = name
-    except AttributeError:
+    except AttributeError:  # noqa: S110
         pass
     return out
 

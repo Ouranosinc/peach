@@ -1,9 +1,13 @@
+"""Peach risk priors module."""
+
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import xarray as xr
 from scipy import optimize, special, stats
+
 
 DATADIR = Path(__file__).parent.parent / "data"
 
@@ -59,7 +63,7 @@ def model_weights_from_sherwood(models=None, method="L2", lambda_=100):
     -----
     L2 seems to struggle with low number of models (3)
 
-    """  # noqa: RST306
+    """
     # Load prior distribution from Sherwood et al. (2020)
     prior_ = load_sherwood_ecs()
     pdf = xr.DataArray(prior_["pdf"], dims="ecs", coords={"ecs": prior_["ECS"]})

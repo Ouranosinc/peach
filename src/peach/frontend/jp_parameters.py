@@ -37,6 +37,7 @@ from peach.risk import bootstrap
 from peach.risk.priors import model_weights_from_sherwood
 from peach.risk.xmixture import XMixtureDistribution
 
+
 copulas = ["gaussian", "student", "clayton", "frank", "gumbel", "indep"]
 scipy_dists = ["norm", "t", "gamma", "genextreme", "lognorm", "uniform"]
 
@@ -88,7 +89,7 @@ class IndicatorObsWLCOND(IndicatorObsDA):
             out.name = name
         return out
 
-    def fit(self, dist: str, period: tuple, size: int = None, iteration: int = 1) -> xr.DataArray:
+    def fit(self, dist: str, period: tuple, size: int | None = None, iteration: int = 1) -> xr.DataArray:
         """Fit the distribution to the data (normalized for period) over the full period."""
         # TODO v2: Account for parametric uncertainty in the observations.
 
@@ -156,7 +157,7 @@ class IndicatorObsPRPOT(IndicatorDA):
             out.name = name
         return out
 
-    def fit(self, dist: str, period: tuple, size: int = None, iteration: int = 1) -> xr.DataArray:
+    def fit(self, dist: str, period: tuple, size: int | None = None, iteration: int = 1) -> xr.DataArray:
         """Fit the distribution to the data over the full period."""
         # TODO v2: Account for parametric uncertainty in the observations.
 
@@ -197,7 +198,7 @@ class IndicatorObsPRCOND(IndicatorObsDA):
         """Return the full time series as-is (no slicing or normalization)."""
         return self.data
 
-    def fit(self, dist: str, period: tuple, size: int = None, iteration: int = 1) -> xr.DataArray:
+    def fit(self, dist: str, period: tuple, size: int | None = None, iteration: int = 1) -> xr.DataArray:
         """Fit the distribution to the data over the full period."""
         # TODO v2: Account for parametric uncertainty in the observations.
 
@@ -715,10 +716,10 @@ class IndicatorObsJP(IndicatorObsDA):
         self.obs_pot.period = self.period
         self.obs_cond.period = self.period
 
-    def _Sn(self) -> float:
+    def _Sn(self) -> float:  # noqa: N802
         """Get Sn and p_val goodness-of-fit copula test (Genest et al. 2009) from copulae package."""
         # Placeholder.
-        Sn_p = self.level
+        Sn_p = self.level  # noqa: N806
         return Sn_p
 
     @param.depends("dist", "period", watch=True, on_init=True)
@@ -726,7 +727,7 @@ class IndicatorObsJP(IndicatorObsDA):
         """Update the distribution parameters."""
         if self.dist is None:
             self.dist = self.best_dist()
-        Sn_p = self._Sn()
+        Sn_p = self._Sn()  # noqa: N806
         if Sn_p >= self.level:
             self.dparams = self.fit(self.dist, self.period)
         else:

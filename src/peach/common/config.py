@@ -1,6 +1,4 @@
-"""
-# Functions to interact with the config.
-"""
+"""Functions to interact with the config."""
 
 import json
 import os
@@ -9,6 +7,7 @@ from pathlib import Path
 
 import pandas as pd
 import yaml
+
 
 SERVICE = os.environ.get("SERVICE")
 # LOCAL DIR is the root of the python source (src/peach/)
@@ -37,7 +36,9 @@ if BUCKET_CREDENTIALS_FILE and not USE_LOCAL_CACHE:
         cre = json.load(f)
     if (cre.get("accessKey") is None) or (cre.get("secretKey") is None):
         USE_LOCAL_CACHE = True
-        warnings.warn(f"Using Local Cache despite BUCKET_CREDENTIALS_FILE={BUCKET_CREDENTIALS_FILE} and not USE_LOCAL_CACHE={USE_LOCAL_CACHE}")
+        warnings.warn(
+            f"Using Local Cache despite BUCKET_CREDENTIALS_FILE={BUCKET_CREDENTIALS_FILE} and not USE_LOCAL_CACHE={USE_LOCAL_CACHE}", stacklevel=2
+        )
     else:
         BUCKET_CREDENTIALS["key"] = cre.get("accessKey")
         BUCKET_CREDENTIALS["secret"] = cre.get("secretKey")

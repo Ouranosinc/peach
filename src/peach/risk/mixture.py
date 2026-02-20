@@ -1,3 +1,5 @@
+"""Mixture utils for risk module."""
+
 import numpy as np
 import xarray as xr
 import xclim as xc
@@ -123,7 +125,8 @@ def parametric_logpdf(p, v):
     return out
 
 
-def values_cdf(p, qmin=0.00001, qmax=0.99999, pts=10000):  # returns CDF values
+def values_cdf(p, qmin=0.00001, qmax=0.99999, pts=10000):
+    """Returns CDF values."""
     mmin = xc.indices.stats.parametric_quantile(p, qmin).min(dim="sims")
     mmax = xc.indices.stats.parametric_quantile(p, qmax).max(dim="sims")
     return np.squeeze(np.linspace(mmin, mmax, pts))

@@ -6,6 +6,7 @@ import peach.frontend.parameters as parameters
 import peach.frontend.views as views
 from peach.common import config
 
+
 pn.extension(
     "terminal",
     "tabulator",

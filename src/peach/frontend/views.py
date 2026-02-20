@@ -18,7 +18,6 @@ import json
 import os
 import textwrap
 import time
-import traceback
 import zipfile
 from functools import partial
 from pathlib import Path
@@ -52,6 +51,7 @@ from peach.common import config as global_config
 from peach.common.logger import get_logger
 
 from . import parameters as p
+
 
 logger = get_logger("app")
 
@@ -444,7 +444,7 @@ class StationViewer(Viewer):
             if layergroup is None:
                 continue
             layergroup.clear()
-            for ind, row in table.iterrows():
+            for _ind, row in table.iterrows():
                 icon_opts = self._conf["icon"][var].copy()
                 zind = 0
                 if row.station == station_id:
@@ -778,7 +778,8 @@ class StationViewer(Viewer):
 
     @param.depends("station.locale", watch=True)
     def _translate(self):
-        logger.debug(f"Updating StationViewer with locale {self.station.locale}.")
+        msg = f"Updating StationViewer with locale {self.station.locale}."
+        logger.debug(msg)
         self.map_container.loading = True
         self.table_container.loading = True
         if hasattr(self, "legend"):
@@ -902,7 +903,7 @@ class IndicatorListViewer(Viewer):
     def indicator_list_view(self):
         """Return a panel with the indicators available and a button to add them to the selection."""
         top_rows = []
-        for cname, conf in self._conf.items():
+        for conf in self._conf.values():
             rows = []
             for iid in conf["items"]:
                 ind = self.inds.indicators[iid]
@@ -1135,7 +1136,8 @@ class ObsAnalysisViewer(AbstractAnalysisViewer):
 
     @param.depends("analysis.obs", watch=True)
     def results_view(self):
-        logger.debug(f"Observations updated {self.name}")
+        msg = f"Observations updated {self.name}"
+        logger.debug(msg)
         if self.analysis is not None:
             self.results_update(self.analysis.obs, IndicatorDAViewer)
 
@@ -1158,7 +1160,8 @@ class FutAnalysisViewer(AbstractAnalysisViewer):
 
     @param.depends("analysis.fut", watch=True)
     def results_view(self):
-        logger.debug(f"Futures updated {self.name}")
+        msg = f"Futures updated {self.name}"
+        logger.debug(msg)
         if self.analysis is not None:
             self.results_update(self.analysis.fut, IndicatorSimDAViewer)
 
@@ -1334,7 +1337,7 @@ class HazardMatrixViewer(Viewer):
     @param.depends("hm.locale")
     def draw_table(self):
         """Draw a table."""
-        NF = NumberFormatter
+        NF = NumberFormatter  # noqa: N806
         fmt = {
             "obs_sf": NF(format="0.%"),
             "ref_sf": NF(format="0.%"),
@@ -1515,8 +1518,8 @@ class Application(pn.viewable.Viewer):
 
     def make_menu(self):
         steps = []
-        for key, conf in self.config["steps"].items():
-            steps.append(
+        for conf in self.config["steps"].values():
+            steps.append(  # noqa: PERF401
                 (
                     conf["name"][self.global_.locale],
                     f"*{conf['description'][self.global_.locale]}*" + "\n\n" + conf["help"][self.global_.locale],
@@ -1543,7 +1546,8 @@ class Application(pn.viewable.Viewer):
 
     @pn.depends("layout.active", watch=True)
     def tab_changed(self):
-        logger.debug(f"Tab changed: {self.layout.active}")
+        msg = f"Tab changed: {self.layout.active}"
+        logger.debug(msg)
         tab_index = self.layout.active
         tab_name = self.global_.ind_to_tab(tab_index)
 
@@ -1608,7 +1612,10 @@ class Application(pn.viewable.Viewer):
             pn.Row(
                 import_request,
                 pn.widgets.TooltipIcon(
-                    value="Charger une requête JSON telle que sauvée par le bouton plus haut pour reprendre ou revoir les calculs d'une session précédente.",
+                    value=(
+                        "Charger une requête JSON telle que sauvée par le bouton plus haut "
+                        "pour reprendre ou revoir les calculs d'une session précédente."
+                    ),
                     max_width=25,
                 ),
             ),
@@ -1649,7 +1656,6 @@ class Application(pn.viewable.Viewer):
 
         except Exception as err:
             logger.error("make_dash_item failed for step %s with %s", step, err)
-            print(traceback.format_exc())
             raise
 
     def dash_init(self):
@@ -1707,7 +1713,6 @@ class Application(pn.viewable.Viewer):
         )
 
     def docs(self):
-        styles = {"text-decoration": "none"}
         stylesheet = """
         <style>
         a {
@@ -1790,7 +1795,6 @@ class Application(pn.viewable.Viewer):
             data = json.loads(event.new.decode())
         except Exception:
             pn.state.notifications.error("Le fichier de requête semble invalide.")
-            print(traceback.format_exc())
             self.layout.loading = False
             event.obj.clear()
             return
@@ -1832,7 +1836,6 @@ class Application(pn.viewable.Viewer):
             self.hazmat.from_dict(hazarddict)
         except Exception:
             pn.state.notifications.error("L'importation de la requête a échoué. Désolé.")
-            print(traceback.format_exc())
         finally:
             self.layout.loading = False
             event.obj.clear()

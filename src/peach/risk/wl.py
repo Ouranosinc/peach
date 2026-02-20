@@ -10,6 +10,7 @@ from xclim.core.locales import load_locale
 from xclim.core.units import declare_units
 from xclim.indicators.generic._stats import Generic
 
+
 """
 # Water level indicators
 

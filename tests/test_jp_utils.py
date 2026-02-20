@@ -10,6 +10,7 @@ import pytest
 import scipy
 import xarray as xr
 
+
 pytest.importorskip("copulae")
 
 from peach.frontend.cbcl_utils import define_q, matching_events  # noqa: E402
