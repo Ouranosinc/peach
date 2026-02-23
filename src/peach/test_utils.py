@@ -10,6 +10,7 @@ import openturns as ot
 import pandas as pd
 import xarray as xr
 import zarr
+from importlib_metadata import version
 from pyextremes import get_extremes
 
 
@@ -496,7 +497,7 @@ def tas_sim():
     return da.assign_coords(**coords)
 
 
-if zarr.__version__.startswith("3"):
+if version("zarr").startswith("3"):
     zipclass = zarr.storage.ZipStore
 else:
     zipclass = zarr.ZipStore

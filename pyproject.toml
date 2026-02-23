@@ -1,6 +1,55 @@
 [build-system]
-requires = ["flit_core >=3.11.0,<4"]
+requires = ["flit_core >=3.12.0,<4"]
 build-backend = "flit_core.buildapi"
+
+[dependency-groups]
+lint = [
+  # Linting tools
+  "codespell >=2.4.1",
+  "deptry >=0.24.0",
+  "flake8 >=7.3.0",
+  "flake8-rst-docstrings >=0.4.0",
+  "mypy >=1.19.1",
+  "numpydoc >=1.10.0",
+  "pylint >=4.0.4",
+  "ruff >=0.15.0",
+  "vulture >=2.14",
+  "yamllint >=1.38.0"
+]
+test = [
+  # Base testing support
+  "coverage[toml] >=7.13.4",
+  "pytest >=9.0.2",
+  "pytest-cov >=7.0.0"
+]
+docs = [
+  # Documentation and example support
+  "figanos",
+  "ipykernel",
+  "ipython >=8.10.0",
+  "jupyter_client",
+  "nbsphinx >=0.9.8",
+  "sphinx >=8.0.0",
+  "sphinx-book-theme >=1.1.4",
+  "sphinx-codeautolink >=0.16.2",
+  "sphinx-copybutton >=0.5.2",
+  "sphinx-intl"
+]
+tox = [
+  "tox >=4.41.0",
+  "tox-gh >=1.6.1"
+]
+dev = [
+  # Development and testing tools
+  "bump-my-version >=1.2.6",
+  "pip >=26.0.1",
+  "prek >=0.3.0",
+  "watchdog >=6.0.0",
+  {include-group = "docs"},
+  {include-group = "lint"},
+  {include-group = "test"},
+  {include-group = "tox"}
+]
 
 [project]
 name = "peach"
@@ -37,14 +86,14 @@ dynamic = ["description", "version"]
 dependencies = [
   "copulae",
   "dask",
-  "flexparser<0.5",
+  "flexparser <0.5",
   "geopandas",
   "h5netcdf",
   "h5py",
   "lmoments3",
-  "numcodecs<=0.15.1", # Zarr < 3 is not compatible with latest numcodecs
+  "numcodecs <=0.15.1", # Zarr < 3 is not compatible with latest numcodecs
   "numpy",
-  "openturns>=1.24",
+  "openturns >=1.24",
   "pandas",
   "pyextremes",
   "pygeoapi",
@@ -75,38 +124,6 @@ pre = [
   "h5py",
   "netCDF4",
   "xesmf"
-]
-dev = [
-  # Dev tools and testing
-  "bump-my-version >=1.2.3",
-  "coverage >=7.5.0",
-  "deptry >=0.23.1",
-  "flake8 >=7.3.0",
-  "flake8-rst-docstrings >=0.4.0",
-  "flit >=3.11.0,<4.0",
-  "mypy >=1.18.2",
-  "numpydoc >=1.9.0",
-  "pip >=25.2",
-  "pre-commit >=3.5.0",
-  "pytest >=8.3.2",
-  "pytest-cov >=5.0.0",
-  "ruff >=0.14.3",
-  "tox >=4.30.3",
-  "vulture >=2.14",
-  "watchdog >=4.0.0"
-]
-docs = [
-  # Documentation and examples
-  "figanos",
-  "ipykernel",
-  "ipython",
-  "jupyter_client",
-  "nbsphinx >=0.9.5",
-  "sphinx-book-theme",
-  "sphinx-codeautolink >=0.16.2",
-  "sphinx-copybutton",
-  "sphinx-intl",
-  "sphinx >=7.1.0,<8.2"
 ]
 
 [project.urls]
@@ -174,7 +191,7 @@ values = [
 ]
 
 [tool.codespell]
-ignore-words-list = "ans,astroid,calculs,celle,comparaison,fonction,ges,lien,objets,ot,sn_p,socio-economic"
+ignore-words-list = "ans,astroid,calculs,celle,comparaison,fonction,ges,lien,objets,ot,sn_p,socio-economic,thirdparty"
 skip = "*.bib,*.po,*.ts,docs/factsheets/fr/*.md,docs/factsheets/fr/*.yml,docs/notebooks/introduction.md,docs/notebooks/metho_figures.ipynb,src/peach/frontend/data/stations_variables.csv,src/peach/frontend/views.py"
 
 [tool.coverage.paths]
@@ -186,8 +203,6 @@ relative_files = true
 source = ["peach"]
 
 [tool.deptry]
-extend_exclude = ["docs"]
-pep621_dev_dependency_groups = ["dev", "docs"]
 
 [tool.flit.sdist]
 include = [
@@ -282,7 +297,8 @@ override_SS05 = [
   '^Access '
 ]
 
-[tool.pytest.ini_options]
+[tool.pytest]
+minversion = "9.0"
 addopts = [
   "-ra",
   "--color=yes",
