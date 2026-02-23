@@ -31,12 +31,14 @@ test = [
 docs = [
   # Documentation and example support
   "figanos",
+  "h5py",
   "ipykernel",
   "ipython >=8.10.0",
   "ipywidgets",
   "jupyter_client",
   "myst_nb",
   "nbsphinx >=0.9.8",
+  "s3fs",
   "sphinx >=8.0.0",
   "sphinx-book-theme >=1.1.4",
   "sphinx-codeautolink >=0.16.2",
@@ -92,6 +94,7 @@ classifiers = [
 ]
 dynamic = ["description", "version"]
 dependencies = [
+  "aiofiles",
   "copulae",
   "dask",
   "filelock",
@@ -106,7 +109,7 @@ dependencies = [
   "lmoments3",
   "matplotlib",
   "numcodecs <=0.15.1", # Zarr < 3 is not compatible with latest numcodecs
-  "numpy",
+  "numpy >=2.0",
   "openturns >=1.24",
   "pandas",
   "param",
@@ -119,7 +122,7 @@ dependencies = [
   "scipy",
   "statsmodels",
   "xarray",
-  "xclim",
+  "xclim ==0.60.0",
   "zarr"
 ]
 
@@ -131,10 +134,10 @@ app = [
   "ipykernel",
   "ipyleaflet",
   "ipywidgets",
+  "ipywidgets_bokeh",
   "jupyter_client",
   "notebook",
-  "panel",
-  "param"
+  "panel >=1.5.5"
 ]
 
 [project.urls]
@@ -203,7 +206,7 @@ values = [
 
 [tool.codespell]
 ignore-words-list = "ans,astroid,calculs,celle,comparaison,fonction,ges,lien,objets,ot,sn_p,socio-economic,thirdparty"
-skip = "*.bib,*.po,*.ts,docs/factsheets/fr/*.md,docs/factsheets/fr/*.yml,docs/notebooks/introduction.md,docs/notebooks/metho_figures.ipynb,src/peach/frontend/data/stations_variables.csv,src/peach/frontend/views.py"
+skip = "*.bib,*.po,*.ts,docs/_build,docs/factsheets/fr/*.md,docs/factsheets/fr/*.yml,docs/notebooks/introduction.md,docs/notebooks/metho_figures.ipynb,src/peach/frontend/data/stations_variables.csv,src/peach/frontend/views.py"
 
 [tool.coverage.paths]
 source = ["src/peach/", "*/site-packages/peach/"]
