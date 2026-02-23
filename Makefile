@@ -125,3 +125,46 @@ development: clean ## install the package to the active Python's site-packages
 	python -m pip install --group dev
 	python -m pip install --no-user --editable .[extras]
 	prek install
+
+### DOCKER IMAGES ###
+
+export MY_USERNAME := $(or $(MY_USERNAME),$(shell whoami))
+export MY_UID := $(or $(MY_UID),$(shell id -u $(MY_USERNAME)))
+export MY_GID := $(or $(MY_GID),$(shell id -g $(MY_USERNAME)))
+
+build-images:
+ifneq ("$(wildcard environment-backend-full.yml)","")
+    # file exists.
+else
+	echo "Missing full.yml environments. Merging environments"
+	$(MAKE) env-merge
+endif
+	$(MAKE) stop-images
+	echo "Building images with MY_USERNAME=$${MY_USERNAME} MY_UID=$${MY_UID} MY_GID=$${MY_GID}"
+	docker compose build frontend-dev backend-dev build-docs
+
+run-images:
+	echo "Starting PEACH servers"
+	docker compose up -d  build-docs frontend-dev backend-dev
+
+follow-logs:
+	docker compose logs -f --tail=50 frontend-dev backend-dev
+
+run-bash-backend-dev:
+	docker compose run --rm -it --entrypoint "/bin/bash" backend-dev
+
+build-docs:
+	docker compose up -d  build-docs & docker exec build-docs bash "/quarto-run/build.sh"
+
+stop-images:
+	docker compose down -v frontend-dev backend-dev build-docs
+
+### CONDA ENVIRONMENTS ###
+env: env-merge env-lock
+
+env-merge: # merge conda environment files into one, for docker dev images.
+	pip install conda-merge
+	conda merge environment.yml environment-backend.yml > environment-backend-full.yml
+	conda merge environment.yml environment-frontend.yml > environment-frontend-full.yml
+	conda merge environment.yml environment-dev.yml > environment-dev-full.yml
+	conda merge environment.yml environment-frontend.yml environment-backend.yml > environment-full.yml
