@@ -1,3 +1,4 @@
+name: peach-full
 channels:
 - conda-forge
 - nodefaults

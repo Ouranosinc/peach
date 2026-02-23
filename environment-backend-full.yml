@@ -1,3 +1,4 @@
+name: peach-backend-full
 channels:
 - conda-forge
 - nodefaults

@@ -1,3 +1,4 @@
+name: peach-dev
 channels:
   - conda-forge
   - nodefaults
