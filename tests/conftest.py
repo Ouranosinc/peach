@@ -87,6 +87,7 @@ def idf_obs(tmp_workspace):
     return tmp_workspace / output["value"]
 
 
+# FIXME: This fixture is causing a threading lock locally
 @pytest.fixture(scope="session")
 def idf_sim(tmp_workspace, pytestconfig):
     from peach.backend.compute_indicators import ComputeIDFProcessorSIM
@@ -103,7 +104,7 @@ def idf_sim(tmp_workspace, pytestconfig):
             "params": {"duration": "1h"},
             "stations": {"tas": "7033650"},
         }
-        mimetype, output = p.execute(data)
+        _mimetype, output = p.execute(data)
 
         pytestconfig.cache.set("minio/idf_sim", str(tmp_workspace / output["value"]))
 
