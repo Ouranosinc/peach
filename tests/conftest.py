@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from peach import test_utils as tu
+import peach.testing.utils as tu
 from peach.common import config as ping_config
 
 

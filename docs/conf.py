@@ -41,7 +41,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx_codeautolink',
     'sphinx_copybutton',
-    "myst_nb"
+    "myst_nb",
 ]
 myst_enable_extensions = ["colon_fence", "deflist", "fieldlist"]
 
@@ -79,7 +79,7 @@ templates_path = ['_templates']
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-source_suffix = {'.rst': 'restructuredtext', '.md': 'markdown'}
+source_suffix = {'.rst': 'restructuredtext'}
 
 # The master toctree document.
 master_doc = 'index'

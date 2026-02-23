@@ -1,5 +1,3 @@
-"""Testing Utilities for PEACH."""
-
 import io
 import itertools
 import threading

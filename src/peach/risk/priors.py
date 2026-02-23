@@ -292,7 +292,7 @@ def calcul_des_poids_pour_guillaume():
     return pd.concat(out, axis=1)
 
 
-def graph_model_weights(w) -> plt.fi:
+def graph_model_weights(w) -> plt.figure:
     """Create graphic showing the theoretical and empirical distribution of the PDF, CDF, and the weights."""
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec
