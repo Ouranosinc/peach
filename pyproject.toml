@@ -86,11 +86,14 @@ dynamic = ["description", "version"]
 dependencies = [
   "copulae",
   "dask",
+  "filelock",
   "flexparser <0.5",
   "geopandas",
   "h5netcdf",
   "h5py",
+  "ipywebrtc",
   "lmoments3",
+  "matplotlib",
   "numcodecs <=0.15.1", # Zarr < 3 is not compatible with latest numcodecs
   "numpy",
   "openturns >=1.24",
@@ -98,6 +101,8 @@ dependencies = [
   "pyextremes",
   "pygeoapi",
   "pyyaml",
+  "requests",
+  "shapely",
   "s3fs",
   "scipy",
   "statsmodels",
@@ -203,6 +208,21 @@ relative_files = true
 source = ["peach"]
 
 [tool.deptry]
+known_first_party = ["peach"]
+ignore_notebooks = true
+pep621_dev_dependency_groups = ["pre"]
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "flexparser",
+  "h5netcdf",
+  "h5py",
+  "ipykernel",
+  "jupyter_client",
+  "notebook",
+  "numcodecs",
+  "statsmodels"
+]
 
 [tool.flit.sdist]
 include = [

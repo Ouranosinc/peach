@@ -4,13 +4,13 @@ import io
 import itertools
 import threading
 import zipfile
+from importlib import metadata as ilm
 
 import numpy as np
 import openturns as ot
 import pandas as pd
 import xarray as xr
 import zarr
-from importlib_metadata import version
 from pyextremes import get_extremes
 
 
@@ -497,7 +497,7 @@ def tas_sim():
     return da.assign_coords(**coords)
 
 
-if version("zarr").startswith("3"):
+if ilm.version("zarr").startswith("3"):
     zipclass = zarr.storage.ZipStore
 else:
     zipclass = zarr.ZipStore

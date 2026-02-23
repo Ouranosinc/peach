@@ -53,7 +53,8 @@ steps:
 
            2. Cliquer sur le bouton `Ajouter` pour inclure cet indicateur dans l'analyse de risque. Le bouton `Ajouter` est activé uniquement lorsque toutes les variables d'entrée requises pour son calcul ont une station correspondante sélectionnée.
 
-           3. Pour chaque indicateur sélectionné, définir les valeurs des arguments. Vous pouvez ajouter le même indicateur plusieurs fois pour le calculer avec différents seuils ou saisons, ou le supprimer de la liste en cliquant sur le bouton `Supprimer`.
+           3. Pour chaque indicateur sélectionné, définir les valeurs des arguments. Vous pouvez ajouter le même indicateur plusieurs fois pour le calculer avec différents seuils ou saisons,
+              ou le supprimer de la liste en cliquant sur le bouton `Supprimer`.
 
            4. Une fois que tous les indicateurs ont été paramétrés, cliquer sur le bouton `Calculer` pour lancer les calculs, dont l'avancement est indiqué avec des barres de progression. "
     view_config: "indicator_select.yml"
