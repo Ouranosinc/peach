@@ -153,8 +153,8 @@ follow-logs:
 run-bash-backend-dev:
 	docker compose run --rm -it --entrypoint "/bin/bash" backend-dev
 
-build-docs:
-	docker compose up -d  build-docs & docker exec build-docs bash "/quarto-run/build.sh"
+build-docs-docker:
+	docker compose up -d build-docs & docker exec build-docs bash "/quarto-run/build.sh"
 
 stop-images:
 	docker compose down -v frontend-dev backend-dev build-docs

@@ -222,10 +222,12 @@ ignore_notebooks = true
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [
+  "aiofiles",
   "flexparser",
   "h5netcdf",
   "h5py",
   "ipykernel",
+  "ipywidgets_bokeh",
   "jupyter_client",
   "notebook",
   "numcodecs",
