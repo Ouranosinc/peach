@@ -24,7 +24,7 @@ def synthetic_ds():
         Dummy description.
     """
     ds = xr.Dataset()
-    time = xr.cftime_range(start="1950-01-01", end="2020-12-31", freq="YE")
+    time = xr.date_range(start="1950-01-01", end="2020-12-31", freq="YE", use_cftime=True)
 
     for i, uuid in enumerate(["00", "11"]):
         ds[uuid] = xr.DataArray(
@@ -58,7 +58,7 @@ def synthetic_ds_fut():
         Dummy description.
     """
     ds = xr.Dataset()
-    time = xr.cftime_range(start="1900-01-01", end="2100-12-31", freq="YE")
+    time = xr.date_range(start="1900-01-01", end="2100-12-31", freq="YE", use_cftime=True)
     source_id = ["INM-CM4-8", "GFDL-CM4", "HadGEM3-GC31-MM", "MIROC6", "TaiESM1"]
     experiment_id = ["ssp126", "ssp245", "ssp370", "ssp585"]
     variant_label = ["r1i1p1f1", "r2i1p1f1"]
@@ -330,7 +330,7 @@ def synthetic_jp_ds(ind: str = "wl_prcond"):
     sample = joint_dist.getSample(500)
     pot_data = [x[0] for x in sample]
     cond_data = [x[1] for x in sample]
-    times = xr.cftime_range(start="1960-01-01", end="2011-12-31", freq="D")
+    times = xr.date_range(start="1960-01-01", end="2011-12-31", freq="D", use_cftime=True)
 
     time = np.sort(np.random.choice(times, size=500, replace=False))
     wl_attrs = {
@@ -446,7 +446,7 @@ def tas_sim():
     xr.DataArray
          Dummy description.
     """
-    time = xr.cftime_range(start="1960-01-01", end="2100-12-31", freq="D")
+    time = xr.date_range(start="1960-01-01", end="2100-12-31", freq="D", use_cftime=True)
     source_id = ["INM-CM4-8", "GFDL-CM4", "HadGEM3-GC31-MM", "MIROC6", "TaiESM1"]
     experiment_id = ["ssp126", "ssp245", "ssp370", "ssp585"]
     variant_label = ["r1i1p1f1", "r2i1p1f1"]
