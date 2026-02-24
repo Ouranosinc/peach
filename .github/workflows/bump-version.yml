@@ -1,40 +1,11 @@
-# This workflow requires a personal access token named `BUMP_VERSION_TOKEN` with the following privileges:
-# - Contents: Read and Write
-# - Metadata: Read-Only
-# - Pull Requests: Read and Write
-
 name: "Bump Patch Version"
 
 on:
   push:
     branches:
       - main
-    paths-ignore:
-      - .cruft.json
-      - .editorconfig
-      - .github/**.yml
-      - .gitignore
-      - .pre-commit-config.yaml
-      - .yamllint.yaml
-      - .zenodo.json
-      - AUTHORS.rst
-      - CHANGELOG.rst
-      - CI/**/*.in
-      - CI/**/*.py
-      - CI/**/*.txt
-      - CITATION.cff
-      - CODE_OF_CONDUCT.md
-      - CONTRIBUTING.rst
-      - Makefile
-      - .readthedocs.yml
-      - docs/*.py
-      - docs/*.rst
-      - environment-docs.yml
-      - environment-dev.yml
-      - pyproject.toml
-      - tests/**.py
-      - tox.toml
-      - src/peach/__init__.py
+    paths:
+      - src/**.py
   workflow_dispatch:
 
 permissions:
