@@ -55,13 +55,14 @@ jobs:
         run: |
           python -m tox -e lint
 
-  test-original:
+  test-pypi:
+    name: Test with Python${{ matrix.python-version }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     needs: lint
     strategy:
       matrix:
-        python-version: [ "3.11" ]
         os: [ 'ubuntu-latest' ]
+        python-version: [ "3.11" ]
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -72,15 +73,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip setuptools
-          python -m pip install numpy cython scipy
-          python -m pip install -e '.[app]'
-          python -m pip install pytest setuptools  # Why reinstall setuptools again?
+          python -m pip install --no-user --editable ".[app]"
+          python -m pip install pytest
       - name: Test with pytest
         run: |
           pytest
 
-  test-pypi:
+  test-tox:
     name: Test with Python${{ matrix.python-version }} (tox, ${{ matrix.os }})
     needs: lint
     runs-on: ${{ matrix.os }}
