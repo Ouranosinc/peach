@@ -13,12 +13,12 @@ from peach.risk.priors import (
 from peach.risk.xmixture import XMixtureDistribution
 from peach.frontend.parameters import pievc
 
-# This code is based on the peach.front.parameters without GUI parts 
+# This code is based on the peach.front.parameters without GUI parts
 
 class metrics_da:
-    
+
     """Class to fit and test metrics distribution for observations.
-    
+
     Parameters
     ----------
     da : xr.DataArary
@@ -28,10 +28,10 @@ class metrics_da:
     period: list of strings
         Period for analysis (ex: ['1980', '2010'])
     metric: str
-        'aic' or 'bic' to find the best fit for distribution. 
+        'aic' or 'bic' to find the best fit for distribution.
     """
     def __init__(self, da, scipy_dists, period, metric):
-        
+
         self.scipy_dists = scipy_dists
         self.period = period
         self.sample = da.sel(time=slice(*self.period))
@@ -44,15 +44,15 @@ class metrics_da:
             dist: getattr(self, f"_{self.metric}")(dist)
             for dist in self.scipy_dists
         }
-        
+
     def _ll(self, params) -> xr.DataArray:
         """Return the log-likelihood of the distribution."""
         return logpdf(params, v=self.sample).sum(dim="logpdf")
-    
+
     def fit(self, dist) -> xr.DataArray:
         """Fit the distribution to the data."""
         return xc.indices.stats.fit(self.sample, dist=dist, dim="time", method="ML")
-    
+
     def _aic(self, dist) -> xr.DataArray:
         dparams = self.fit(dist)
         ll = self._ll(dparams)
@@ -61,15 +61,15 @@ class metrics_da:
             "long_name": "Akaike Information Criterion",
             "description": "AIC = 2 k - 2 log(L)",
             "history": update_history(
-                "AIC", new_name="aic", 
-                parameters=dparams, 
+                "AIC", new_name="aic",
+                parameters=dparams,
                 sample=self.sample,
             ),
             "scipy_dist": dist,
             "period": self.period,
         }
         return out
-        
+
     def _bic(self, dist: str) -> xr.DataArray:
         """Return the Bayesian Information Criterion.
 
@@ -82,9 +82,9 @@ class metrics_da:
             "long_name": "Bayesian Information Criterion",
             "description": "BIC = log(n) k - 2 log(L)",
             "history": update_history(
-                "BIC", 
-                new_name="bic", 
-                parameters=dparams, 
+                "BIC",
+                new_name="bic",
+                parameters=dparams,
                 sample=self.sample,
             ),
             "scipy_dist": dist,
@@ -113,7 +113,7 @@ class metrics_da:
           Information criterion that we seek to minimize.
         """
         return self.metrics_da.idxmin("scipy_dist").item()
-    
+
     def _dist_method(self, name, arg: xr.DataArray | float):
         self.dparams = self.fit(self.best_dist())
         with xr.set_options(keep_attrs=True):
@@ -161,10 +161,10 @@ def ks(obs, sim, period, level, rdim) -> xr.DataArray:
     xr.DataArray
         1 if both distributions are similar over the reference period, 0 otherwise.
     """
-    
+
     obs = obs.sel(time=slice(period[0], period[1]))
     ref = sim.sel(time=slice(period[0], period[1]))
-    
+
     # Do we want to stack by source_id and member or only source?
     #ref = ref.stack(tr=["time", "variant_label"]).isel(experiment_id=0)
 
@@ -206,45 +206,45 @@ def scenario_weights(period):
 
 def model_weights(ks_da, dim='realization', method ='L2Var', lambda_=0.5):
     """Model (source_id) weights based on ECS (Zelinka)"""
-    
+
     ok = ks_da.where(ks_da).dropna(dim).groupby('source_id')
-    
-    #check if enough models with ks test    
+
+    #check if enough models with ks test
     if len(ok)<2:
        raise ValueError("Not enough models to compute weights.")
-    
+
     models  = list(ok.groups.keys())
     w = model_weights_from_sherwood(
             models, method=method, lambda_=lambda_
         )
-    return w 
+    return w
 
 def combined_weights(da, ks_da, scen_weights, model_weights, dim='realization', w_w = True):
     """Combine KS, experiment and source weights for all realization in da"""
-    
+
     variant_label_counts = da.sel(realization=ks_da.dropna(dim=dim)[dim].values).isel(time=0).drop_vars('time').groupby("source_id").count(dim=dim)
     varl_weights = 1 / variant_label_counts
-    
+
     weights = {}
     for rea in da[dim].values:
         w1 = scen_weights.sel(experiment_id=rea.split('_')[1])
         w2 = model_weights.sel(source_id=rea.split('_')[0])
         w3 = varl_weights.sel(source_id=rea.split('_')[0])
         weights[rea] =  w1 * w2 * w3
-    
+
     concatenated = xr.concat(weights.values(), dim=dim)
     concatenated[dim] = list(weights.keys())
-    
+
     concatenated = concatenated.drop_vars(['source_id', 'ecs'])
-        
+
     if w_w == False:
         concatenated[:] = 1
-        
-    return concatenated / concatenated.sum(dim='realization') 
 
-class mixture:    
+    return concatenated / concatenated.sum(dim='realization')
+
+class mixture:
     """Class to create mixture and add weights.
-    
+
     Parameters
     -----------
     da: xr.DataArray
@@ -257,11 +257,11 @@ class mixture:
         Kolmogorov-Smirnov two sample test.
     w_w: bool
         True: with weights; ks_da, models and scenarios weights will be combined and added to the mxiture
-        False: no weights; all simulations are equal 
-    
+        False: no weights; all simulations are equal
+
     """
-     
-    def __init__(self, da, dist, period, ks_da, w_w=True):        
+
+    def __init__(self, da, dist, period, ks_da, w_w=True):
         self.dist = dist
         self.period = period
         if w_w:
@@ -281,7 +281,7 @@ class mixture:
                 model_weights(ks_da),
                 w_w=False,
             )
-        
+
     def fit(self) -> xr.DataArray:
         """Fit the distribution to the data."""
         return xc.indices.stats.fit(self.sample, dist=self.dist, dim="time", method="ML")
@@ -310,26 +310,26 @@ class mixture:
     def isf(self, value):
         """Inverse survival function."""
         return self._dist_method("isf", value)
-    
+
 class exceedance(): # j'ai enlever la section élément à risque... devrait peut être ajouter
     """ Class Class for hazards thresholds.
 
     Facilitate going from values to return periods and vice-versa.
 
     `sf` stands for survival function (1-CDF)
-    
+
     Parameters
     ----------
     obs: class
         metrics_da class for reference period.
-    ref: class 
+    ref: class
         mixture class for reference period.
-    fut: class  
+    fut: class
         mixture class for futur period.
     input: str
         'X' or 'T'. If 'T', value will be a return period and 'X' a threshold.
     input_value: float
-        Value associated to type. 
+        Value associated to type.
     locale: str
         'en' or 'fr'. Language to be used for likelihood talbe.
     """
@@ -344,7 +344,7 @@ class exceedance(): # j'ai enlever la section élément à risque... devrait peu
         "fut_sf",
         "ratio",
     ]
-    
+
     _doc = {
         "xid": {"en": "Climate hazard", "fr": "Aléa climatique"},
         #"descr": {
@@ -373,7 +373,7 @@ class exceedance(): # j'ai enlever la section élément à risque... devrait peu
             "fr": "Ratio de probabilité de dépassement future vs référence",
         },
     }
-        
+
     def __init__(self, obs, ref, fut, input, input_value, locale='fr'):
         self.obs = obs
         self.ref = ref
@@ -388,11 +388,11 @@ class exceedance(): # j'ai enlever la section élément à risque... devrait peu
             self.xid = obs.sample.attrs['description_fr']
         elif locale=='en':
             self.xid = obs.sample.attrs['description']
-        
+
         self._update_from_value()
         self._update_from_obs_t()
         self._update_sim()
-        
+
     def _update_from_value(self):
         """Compute return period from value."""
         if self.input == "X":
@@ -422,18 +422,11 @@ class exceedance(): # j'ai enlever la section élément à risque... devrait peu
         return {key: getattr(key, "label") for key in self._keys}
 
     def docs(self):
-        return {self._doc[key][self.locale]: self.values().loc[[key]].item() for key in self._keys}   
-    
+        return {self._doc[key][self.locale]: self.values().loc[[key]].item() for key in self._keys}
+
     def pievc(self):
         if self.locale=='fr':
             k = ['Score historique', 'Score futur']
         elif self.locale=='en':
             k = ['Historical Score', 'Futur Score']
         return dict(zip(k, [pievc(self.ref_sf).item(), pievc(self.fut_sf).item()]))
-    
-
-    
-    
-    
-    
-

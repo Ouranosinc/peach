@@ -56,8 +56,12 @@ def test_get_matching_events(synthetic_ewl_ds, synthetic_ds_daily):
     )
     pot_da_clean, pr_cond = matching_events(wl_pot, pr_timeseries)
 
-    assert (pr_cond.time.values >= pr_timeseries.time.values.min() - np.timedelta64(1, 'D')).all()
-    assert (pr_cond.time.values <= pr_timeseries.time.values.max() + np.timedelta64(1, 'D')).all()
+    assert (
+        pr_cond.time.values >= pr_timeseries.time.values.min() - np.timedelta64(1, "D")
+    ).all()
+    assert (
+        pr_cond.time.values <= pr_timeseries.time.values.max() + np.timedelta64(1, "D")
+    ).all()
     assert (pr_cond.values >= pr_timeseries.values.min()).all()
     assert (pr_cond.values <= pr_timeseries.values.max()).all()
     assert len(pr_cond) == len(pot_da_clean)

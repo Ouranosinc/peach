@@ -24,7 +24,7 @@ if [ -n "`echo "$GIT_CHANGED_FILES" | grep -e docs/factsheets/ -e src/ -e run.sh
         fi
         docker restart "$CONTAINER_NAME_TO_RESTART"
     fi
-    
+
 fi
 
 # backend does not need docs:

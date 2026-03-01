@@ -1806,8 +1806,12 @@ class Application(pn.viewable.Viewer):
         }
         </style>
         """
-        en = pn.pane.HTML(f"""{stylesheet}<h1><a href="docs/en/index.html">Documentation (en)</a></h1>""")
-        fr = pn.pane.HTML(f"""{stylesheet}<h1><a href="docs/fr/index.html">Documentation (fr)</a></h1>""")
+        en = pn.pane.HTML(
+            f"""{stylesheet}<h1><a href="docs/en/index.html">Documentation (en)</a></h1>"""
+        )
+        fr = pn.pane.HTML(
+            f"""{stylesheet}<h1><a href="docs/fr/index.html">Documentation (fr)</a></h1>"""
+        )
         return en, fr
 
     @staticmethod

@@ -14,10 +14,7 @@ from peach.frontend.jp_parameters import (  # noqa: E402
     IndicatorSimPRPOT,
     IndicatorSimWLCOND,
 )
-from peach.frontend.wl_parameters import (  # noqa: E402
-    IndicatorObsWL,
-    IndicatorSimWL,
-)
+from peach.frontend.wl_parameters import IndicatorObsWL, IndicatorSimWL  # noqa: E402
 from peach.risk.xmixture import XMixtureDistribution  # noqa: E402
 
 

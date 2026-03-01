@@ -4,7 +4,7 @@
 ===================================================================
 PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v0.1.0
 ===================================================================
- 
+
 +----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
 | Versions                   | |pypi| |versions|                                                                                                                 |
 +----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
@@ -19,7 +19,7 @@ PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v0.1.0
 
 
 
-PEACH is an online calculations services and python package that offers calculation for climate hazard likelihood. 
+PEACH is an online calculations services and python package that offers calculation for climate hazard likelihood.
 Peach can be used to deploy calculation services and graphical interface or as traditional python package to estimate climate hazard likelihood.
 
 Features

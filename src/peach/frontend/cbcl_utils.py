@@ -65,10 +65,12 @@ def matching_events(pot_da: xr.DataArray, timeseries_da: xr.DataArray) -> tuple:
     )
 
     da_cond.attrs["ex_type"] = "Conditional extremes"
-    
+
     if timeseries_da.name in {"pr_sim_daily", "pr"}:
         # Remove events where precipitation < 1 mm
-        mask = ~np.isnan(pot_da.values) & ~np.isnan(da_cond.values) & (da_cond.values >= 1)
+        mask = (
+            ~np.isnan(pot_da.values) & ~np.isnan(da_cond.values) & (da_cond.values >= 1)
+        )
     else:
         mask = ~np.isnan(pot_da.values) & ~np.isnan(da_cond.values)
     pot_da_cleaned = pot_da.sel(time=pot_da.time.values[mask])

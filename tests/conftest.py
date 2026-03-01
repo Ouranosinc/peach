@@ -76,9 +76,7 @@ def idf_obs(tmp_workspace):
 
     # Make IDF Obs
     p = ComputeIDFProcessorOBS({"name": "Test-IDF-Obs"})
-    p.INPUT_DATASET_PATTERN = (
-        "s3://https://minio.ouranos.ca/portail-ing/IDF3.30.zarr"
-    )
+    p.INPUT_DATASET_PATTERN = "s3://https://minio.ouranos.ca/portail-ing/IDF3.30.zarr"
 
     data = {
         "name": "IDF",
@@ -92,7 +90,7 @@ def idf_obs(tmp_workspace):
 @pytest.fixture(scope="session")
 def idf_sim(tmp_workspace, pytestconfig):
     from peach.backend.compute_indicators import ComputeIDFProcessorSIM
-    
+
     val = pytestconfig.cache.get("minio/idf_sim", None)
 
     if val is None:
@@ -118,7 +116,9 @@ def wl_pot_obs(tmp_workspace):
 
     # Make IDF Obs
     p = ComputeWaterLevelProcessorOBS({"name": "Test-WL-Obs"})
-    p.INPUT_DATASET_PATTERN = "s3://https://minio.ouranos.ca/portail-ing/WL/{station_id}_{var}.nc"
+    p.INPUT_DATASET_PATTERN = (
+        "s3://https://minio.ouranos.ca/portail-ing/WL/{station_id}_{var}.nc"
+    )
 
     data = {
         "name": "WL_POT",
@@ -135,7 +135,9 @@ def wl_pot_sim(tmp_workspace):
 
     # Make IDF Obs
     p = ComputeWaterLevelProcessorSIM({"name": "Test-WL-Sim"})
-    p.INPUT_DATASET_PATTERN = "s3://https://minio.ouranos.ca/portail-ing/SL/{station_id}_{var}.nc"
+    p.INPUT_DATASET_PATTERN = (
+        "s3://https://minio.ouranos.ca/portail-ing/SL/{station_id}_{var}.nc"
+    )
 
     data = {
         "name": "WL_POT",

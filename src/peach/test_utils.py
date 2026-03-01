@@ -210,7 +210,8 @@ def synthetic_ewl_ds():
 
     def quantile_calculation(da_decadal, da_daily, quantiles):
         quantile_results = np.full(
-            (len(da_decadal.experiment_id), len(da_decadal.time), len(quantiles)), np.nan
+            (len(da_decadal.experiment_id), len(da_decadal.time), len(quantiles)),
+            np.nan,
         )
         for i, real in enumerate(da_decadal.experiment_id):
             for j, time in enumerate(da_decadal.time):

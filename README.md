@@ -10,7 +10,7 @@
 | Development Status | ![status](https://www.repostatus.org/badges/latest/active.svg) ![build](https://github.com/Ouranosinc/peach/actions/workflows/main.yml/badge.svg) ![coveralls](https://coveralls.io/repos/github/Ouranosinc/peach/badge.svg) |
 
 
-PEACH is an online calculation service and Python package that offers calculation for climate hazard likelihood. 
+PEACH is an online calculation service and Python package that offers calculation for climate hazard likelihood.
 Peach can be used to deploy calculation services and graphical interface or as a traditional Python package to estimate climate hazard likelihood.
 
 The code

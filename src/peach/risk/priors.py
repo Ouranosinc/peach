@@ -7,6 +7,7 @@ from scipy import optimize, special, stats
 
 DATADIR = Path(__file__).parent.parent / "data"
 
+
 def load_sherwood_ecs():
     return pd.read_json(DATADIR / "sherwood_ecs.json").reindex()
 
@@ -72,7 +73,9 @@ def model_weights_from_sherwood(models=None, method="L2", lambda_=100):
     ecs = xr.DataArray(zelinka_, dims="source_id")
 
     # Endpoints to reduce border effects
-    endpoints = xr.DataArray([1.5, 7], dims="source_id", coords={"source_id": ["LOWER", "UPPER"]})
+    endpoints = xr.DataArray(
+        [1.5, 7], dims="source_id", coords={"source_id": ["LOWER", "UPPER"]}
+    )
 
     # Initialize the weights
     w = xr.zeros_like(ecs)
@@ -223,7 +226,9 @@ def scenario_weights_from_iams(weights=None):
     out = da.weighted(weights).mean("source")
 
     # Likelihoods are estimated every 10 years. Interpolate at yearly frequency to avoid jumps.
-    t = xr.date_range("2015", "2101", freq="YE", use_cftime=True).to_datetimeindex(time_unit="us")
+    t = xr.date_range("2015", "2101", freq="YE", use_cftime=True).to_datetimeindex(
+        time_unit="us"
+    )
     return out.interp(time=t)
 
 
@@ -325,7 +330,7 @@ def graph_model_weights(w):
     ax = fig.add_subplot(gs[0, 1:])
     ax.set_ylabel("CDF")
     ax.plot(cdf.ecs, cdf, color="k", label="Prior - Sherwood")
-    #u = xr.DataArray(np.arange(0.025, 1, 0.025), dims="quantile")
+    # u = xr.DataArray(np.arange(0.025, 1, 0.025), dims="quantile")
     u = xr.DataArray(np.arange(0.001, 1, 0.001), dims="quantile")
     q_est = (
         xr.DataArray(w.ecs, dims="source_id", coords={"source_id": w.source_id})

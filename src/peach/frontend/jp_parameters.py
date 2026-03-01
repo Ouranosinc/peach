@@ -10,9 +10,9 @@ from datetime import datetime
 
 import numpy as np
 import param
+import scipy.stats
 import xarray as xr
 import xclim as xc
-import scipy.stats
 from lmoments3.distr import gpa
 from xclim.core.formatting import update_history
 

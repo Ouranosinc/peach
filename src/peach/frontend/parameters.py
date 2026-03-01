@@ -83,7 +83,16 @@ locales = {"Français": "fr", "English": "en"}
 
 
 # Allowed scipy distributions
-scipy_dists = ["norm", "t", "gamma", "genextreme", "lognorm", "uniform", "weibull_min", "expon"]
+scipy_dists = [
+    "norm",
+    "t",
+    "gamma",
+    "genextreme",
+    "lognorm",
+    "uniform",
+    "weibull_min",
+    "expon",
+]
 
 # Load the scenario weights as a function of time
 scen_weights = scenario_weights_from_iams()
@@ -2243,14 +2252,15 @@ class IndicatorSimDA(IndicatorDA):
 
 class IndicatorRefDA(IndicatorSimDA):
     obs = param.ClassSelector(class_=IndicatorObsDA, doc="Observed indicator")
-    level = param.Number(0.1, allow_refs=True, doc="Significance level for the KS test", allow_None=True)
+    level = param.Number(
+        0.1, allow_refs=True, doc="Significance level for the KS test", allow_None=True
+    )
 
     _ks = param.Parameter(None, doc="Weights for the models")
 
     @property
     def period(self):
         return self.obs.period
-
 
     @staticmethod
     def ks(obs, ref, level=0.05, rdim="tr") -> xr.DataArray:
@@ -2280,7 +2290,7 @@ class IndicatorRefDA(IndicatorSimDA):
                 input_core_dims=[[rdim]],
                 vectorize=True,
                 dask="parallelized",
-        )
+            )
 
         # We assume that over the reference period, the values are the same for all the experiments.
         def func(r):

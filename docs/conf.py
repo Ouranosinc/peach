@@ -51,14 +51,14 @@ if os.getenv("READTHEDOCS_VERSION_NAME"):
     nb_execution_mode = "auto"
 else:
     nb_execution_mode = "cache"
-        
+
 nb_execution_timeout = 60 * 5
 
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
-    
+
 # To ensure that underlined fields (e.g. `_field`) are shown in the docs.
 autodoc_default_options = {
     "members": True,
@@ -176,10 +176,10 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 
+    (master_doc,
      'peach.tex',
      'peach Documentation',
-     'David Huard', 
+     'David Huard',
      'manual'
     ),
 ]

@@ -19,7 +19,9 @@ def test_station_and_indicator_list_viewer(station_data, config):
     site = p.Site(lat=44.5, lon=-65.9)
     map_param = p.Map(clat=44.5, clon=-65.9, z=7)
 
-    s = p.Station(station_data, variables=["pr", "tas"], site=site, locale=gl.param.locale)
+    s = p.Station(
+        station_data, variables=["pr", "tas"], site=site, locale=gl.param.locale
+    )
     il = p.IndicatorList(
         config=config[0], locale=gl.param.locale, station_id=s.param.station_id
     )
@@ -119,7 +121,9 @@ def test_application(
         locale=gl.param.locale,
     )
     # Station viewer
-    s = p.Station(station_data, variables=["pr", "tas"], site=site, locale=gl.param.locale)
+    s = p.Station(
+        station_data, variables=["pr", "tas"], site=site, locale=gl.param.locale
+    )
 
     # Indicator list viewer
     il = p.IndicatorList(

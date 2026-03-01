@@ -4,4 +4,4 @@ This folder contains notebooks to access and process data required for water lev
 
 The module `idf.py` constructs extreme precipitation indicators coded by David Huard @huard from the methodology developed by Alain Mailhot's team at INRS (for more information refer to their report on the  [project website](https://www.ouranos.ca/fr/projets-publications/outils-analyses-risques-infrastructures)).
 
-For information on the the production of datasets used to produce general indicators, please consult the FRDR repository : https://www.frdr-dfdr.ca/repo/dataset/876e9380-63fc-4eaa-987b-aa16c3770941 
+For information on the the production of datasets used to produce general indicators, please consult the FRDR repository : https://www.frdr-dfdr.ca/repo/dataset/876e9380-63fc-4eaa-987b-aa16c3770941
