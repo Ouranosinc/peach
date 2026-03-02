@@ -2365,24 +2365,25 @@ class HazardMatrix(BaseParameterized):
 
     def on_click(self, event):
         logger.info(str(event))
-        # FIXME: The approach here isn't great. Better algorithms possible.
-        if event.column in ["add", "remove"]:
-            i = 0
-            for key, hts in self.matrix.items():  # noqa: B007
-                for _ in len(hts):
-                    if i == event.row:
-                        break
-                    i += 1
-                else:  # Finish without break, skip to next iteration
-                    continue
+        # WIP
+        if event.column not in {"add", "remove"}:
+            return False
+
+        row = event.row
+        offset = 0
+        for key, hts in self.matrix.items():  # noqa: B007
+            if row < offset + len(hts):
+                index = row - offset
                 break
+            offset += len(hts)
+        else:
+            return False  # row out of range
 
-            if event.column == "add":
-                self.add(key=key, index=index)  # noqa: F821
-            elif event.column == "remove":
-                self.remove(key=key, index=index)  # noqa: F821
-
-            return True
+        if event.column == "add":
+            self.add(key=key, index=index)
+        elif event.column == "remove":  # remove
+            self.remove(key=key, index=index)
+        return True
 
     def to_dict(self, mode="results"):
         if mode == "results":
