@@ -6,6 +6,8 @@
 - IndicatorRefWL: Same but returns the reference period.
 """
 
+import logging
+
 import numpy as np
 import param
 import xarray as xr
@@ -23,6 +25,8 @@ from peach.frontend.parameters import (
 from peach.risk import bootstrap
 from peach.risk.xmixture import XMixtureDistribution
 
+
+logger = logging.getLogger("frontend-wl-parameters")
 
 """
 # Design considerations
@@ -438,7 +442,8 @@ def scale_pareto(func, name, arg, peaks_per_yr):
 
     try:
         out.name = name
-    except AttributeError:  # noqa: S110
+    except AttributeError as err:
+        logger.error(err)
         pass
     return out
 

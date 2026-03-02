@@ -144,7 +144,7 @@ class TestIndicatorList:
 class TestIndicatorListCompute:
     def test_compute(self):
         try:
-            requests.get("http://localhost:8081/api/openapi", timeout=20)
+            requests.get("http://localhost:8081/api/openapi", timeout=5)
         except requests.exceptions.ConnectionError:
             pytest.skip("Backend not running")
 

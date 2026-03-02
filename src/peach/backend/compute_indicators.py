@@ -240,7 +240,7 @@ class ComputeIndicatorsProcessor(BaseProcessor):
         lock = FileLock(config.WORKSPACE / f"{cid}.lock")
         try:
             # If another process is processing the request, we wait until it's complete
-            lock.acquire(timeout=60)
+            lock.acquire(timeout=5)
         except Timeout:
             logging.error("File %s.zarr is being written by another process, but it's taking too long. We will forcefully unlock and overwrite.", cid)
             lock.release(force=True)

@@ -42,7 +42,7 @@ def make_request(payload):
             loc = res.headers["location"]
             for _i in range(120):
                 time.sleep(1)
-                res = req.get(loc, timeout=20)
+                res = req.get(loc, timeout=5)
                 elapsed.append(res.elapsed.total_seconds() * 1000)
                 resd = res.json()
                 if "status" not in resd:
@@ -60,7 +60,7 @@ def make_request(payload):
                     "compute": -1,
                     "wall": t1 - t0,
                 }
-            res = req.get(loc + "/results?f=json", timeout=20)
+            res = req.get(loc + "/results?f=json", timeout=5)
             elapsed.append(res.elapsed.total_seconds() * 1000)
         resd = res.json()
         print(resd)

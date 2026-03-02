@@ -57,7 +57,7 @@ class AsyncJob(Parameterized):
     def post(self, backend, process, data):
         """Make the post request to the given process, with the given data."""
         url = urljoin(backend, f"processes/{process}/execution")
-        resp = requests.post(url, json=data, headers=self.headers, timeout=60)
+        resp = requests.post(url, json=data, headers=self.headers, timeout=5)
         try:
             resp.raise_for_status()
         except requests.exceptions.RequestException as e:
@@ -97,7 +97,7 @@ class AsyncJob(Parameterized):
         ]:
             return self.state
         # offset=0 is only to squash a warning of Pygeoapi.
-        r = requests.get(self.monitor_url + "?f=json&offset=0", timeout=20).json()
+        r = requests.get(self.monitor_url + "?f=json&offset=0", timeout=5).json()
         if r["progress"] != self.progress:
             self.progress = r["progress"]
 
@@ -160,7 +160,7 @@ class AsyncJob(Parameterized):
         if self.state is not JobState.successful:
             raise AttributeError(f"Job has no result yet. State is {self.state}.")
 
-        return requests.get(self.response_url, timeout=20).json()["value"]
+        return requests.get(self.response_url, timeout=5).json()["value"]
 
 
 def check_backend(backend):
@@ -173,7 +173,7 @@ def check_backend(backend):
     """
     url = urljoin(backend, "processes")
     try:
-        resp = requests.get(url, timeout=20)
+        resp = requests.get(url, timeout=5)
         resp.raise_for_status()
     except requests.exceptions.RequestException as e:
         msg = f"Backend server ({backend}) not available: {e}"
