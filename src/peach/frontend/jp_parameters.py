@@ -64,7 +64,7 @@ class IndicatorObsWLCOND(IndicatorObsDA):
     @param.depends("data", watch=True, on_init=True)
     def _update_attrs(self) -> None:
         """Obtain attributes from the data."""
-        self.sl_mm_yr = tuple(self.data.attrs["sl_mm_yr"])
+        self.sl_mm_yr = self.data.attrs["sl_mm_yr"]
         self.ref_period = tuple(self.data.attrs["ref_period"])
 
     @param.depends("data", "ref_period", "sl_mm_yr", watch=True, on_init=True)
@@ -237,7 +237,7 @@ class IndicatorSimWLCOND(IndicatorSimWL):
     @param.depends("data", watch=True, on_init=True)
     def _update_attrs(self) -> None:
         """Update attributes based on data attributes."""
-        self.sl_mm_yr = tuple(self.data.attrs["sl_mm_yr"])
+        self.sl_mm_yr = self.data.attrs["sl_mm_yr"]
         self.ref_period = tuple(self.data.attrs["ref_period"])
 
     @param.depends("obs", watch=True, on_init=True)
