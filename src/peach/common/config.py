@@ -1,6 +1,7 @@
 """Functions to interact with the config."""
 
 import json
+import logging
 import os
 import warnings
 from pathlib import Path
@@ -8,6 +9,8 @@ from pathlib import Path
 import pandas as pd
 import yaml
 
+
+logger = logging.getLogger("common-config")
 
 SERVICE = os.environ.get("SERVICE")
 # LOCAL DIR is the root of the python source (src/peach/)
@@ -28,7 +31,7 @@ USE_LOCAL_CACHE = str(os.environ.get("USE_LOCAL_CACHE", "1")).lower() in [
     "y",
     "yes",
 ]
-print(f"config.py - Using local cache: {USE_LOCAL_CACHE}, with file {BUCKET_CREDENTIALS_FILE}")
+logger.info("config.py - Using local cache: %s, with file %s", USE_LOCAL_CACHE, BUCKET_CREDENTIALS_FILE)
 
 BUCKET_CREDENTIALS = {}
 if BUCKET_CREDENTIALS_FILE and not USE_LOCAL_CACHE:

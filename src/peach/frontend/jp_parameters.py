@@ -64,8 +64,7 @@ class IndicatorObsWLCOND(IndicatorObsDA):
     @param.depends("data", watch=True, on_init=True)
     def _update_attrs(self) -> None:
         """Obtain attributes from the data."""
-        for key in ["sl_mm_yr"]:
-            setattr(self, key, self.data.attrs[key])
+        self.sl_mm_yr = tuple(self.data.attrs["sl_mm_yr"])
         self.ref_period = tuple(self.data.attrs["ref_period"])
 
     @param.depends("data", "ref_period", "sl_mm_yr", watch=True, on_init=True)
@@ -238,8 +237,7 @@ class IndicatorSimWLCOND(IndicatorSimWL):
     @param.depends("data", watch=True, on_init=True)
     def _update_attrs(self) -> None:
         """Update attributes based on data attributes."""
-        for key in ["sl_mm_yr"]:
-            setattr(self, key, self.data.attrs[key])
+        self.sl_mm_yr = tuple(self.data.attrs["sl_mm_yr"])
         self.ref_period = tuple(self.data.attrs["ref_period"])
 
     @param.depends("obs", watch=True, on_init=True)
@@ -643,7 +641,7 @@ class IndicatorObsJP(IndicatorObsDA):
         """Inverse survival function."""
         raise NotImplementedError("Method not supported in joint probability class.")
 
-    def _ll(self, params, sample) -> xr.DataArray:
+    def _ll(self, params, sample):
         """Log-likelihood."""
         return NotImplementedError("Method not supported in joint probability class.")
 
@@ -847,7 +845,7 @@ class IndicatorSimJP(param.Parameterized):
         """Inverse survival function."""
         raise NotImplementedError("Method not supported in joint probability class.")
 
-    def _ll(self, params, sample) -> xr.DataArray:
+    def _ll(self, params, sample):
         """Log-likelihood."""
         return NotImplementedError("Method not supported in joint probability class.")
 

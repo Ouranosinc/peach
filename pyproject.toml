@@ -377,7 +377,8 @@ ignore = [
   "D205", # blank-line-after-summary
   "D400", # ends-in-period
   "D401", # non-imperative-mood
-  "E731" # lambda-assignment
+  "E731", # lambda-assignment,
+  "S311" # suspicious-non-cryptographic-random-usage
 ]
 preview = true
 select = [

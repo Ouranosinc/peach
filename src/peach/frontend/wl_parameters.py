@@ -113,15 +113,15 @@ class IndicatorObsWL(IndicatorDA):
         thresh = self.data.attrs.get("stn_thresh", self.stn_thresh)
 
         if len(stations) == 1:
-            st = "station " + stations[0]
+            st = f"station {stations[0]}"
         else:
-            st = "stations " + ", ".join(stations)
+            st = f"stations {', '.join(stations)}"
 
         if self.locale == "fr":
             if len(stations) == 1:
-                st = "à la " + st
+                st = f"à la {st}"
             else:
-                st = "aux " + st
+                st = f"aux {st}"
 
             return f"Série observée de `{self.long_name}` {st}, avec un seuil de {thresh} m."
         else:
@@ -299,7 +299,7 @@ class IndicatorSimWL(IndicatorDA):
         # Harmonize outputs with IndicatorSimDA.experiment_percentiles.
         out = out.to_dataset(dim="quantile")
         for p, perc in out.data_vars.items():
-            perc.attrs["description"] = perc.attrs.get("description", "") + f" {p}th percentile of ensemble."
+            perc.attrs["description"] = f"{perc.attrs.get('description', '')} {p}th percentile of ensemble."
             out[p] = perc
             out = out.rename(name_dict={p: f"{self.data.name}_p{int(p * 100):02d}"})
 
@@ -321,23 +321,23 @@ class IndicatorSimWL(IndicatorDA):
         thresh = self.obs.stn_thresh
 
         if len(stations) == 1:
-            st = "station " + stations[0]
+            st = f"station {stations[0]}"
         else:
-            st = "stations " + ", ".join(stations)
+            st = f"stations {', '.join(stations)}"
 
         if self.locale == "fr":
             if len(stations) == 1:
-                st = "à la " + st
+                st = f"à la {st}"
             else:
-                st = "aux " + st
+                st = f"aux {st}"
 
             return (
-                f"Série projetée de `{self.long_name}` {st}, avec un seuil de {thresh} m. Cliquer sur les items de la légende "
-                f"permet de contrôler leur visibilité."
+                f"Série projetée de `{self.long_name}` {st}, avec un seuil de {thresh} m. "
+                "Cliquer sur les items de la légende permet de contrôler leur visibilité."
             )
         else:
             return (
-                f"Projected time series for `{self.long_name}` at {st}, with a threshold of {thresh} m."
+                f"Projected time series for `{self.long_name}` at {st}, with a threshold of {thresh} m. "
                 "Clicking on legend items allows to control their visibility."
             )
 
