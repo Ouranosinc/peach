@@ -216,7 +216,7 @@ def save_idf_regions(path):
 
     # Save the region data to a json file
     out = dict(zip(df[i].station, map(int, r.values)))
-    with Path(Path(frontend.__file__).parent / "data" / "idf_regions.json").open("w") as fh:
+    with (Path(frontend.__file__).parent / "data" / "idf_regions.json").open("w") as fh:
         json.dump(out, fh)
 
     # df.loc[i, "constraints"] = r.values.astype(int).astype(str)
