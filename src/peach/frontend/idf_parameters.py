@@ -46,7 +46,7 @@ regional_coeff = {
 duration_coeff = {"1h": 1.51, "2h": 1.44, "6h": 1.24, "12h": 1.11, "24h": 1.0}
 
 # Load regions file
-regions = json.load(Path(Path(__file__).parent / "data" / "idf_regions.json").open())
+regions = json.load((Path(__file__).parent / "data" / "idf_regions.json").open())
 
 
 class IndicatorObsIDF(IndicatorDA):
