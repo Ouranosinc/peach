@@ -1642,7 +1642,7 @@ class Application(pn.viewable.Viewer):
         try:
             conf = self.config["steps"][step]
             if "view_config" in conf:
-                with Path(CONFIG_DIR / conf["view_config"]).open() as fh:
+                with (CONFIG_DIR / conf["view_config"]).open() as fh:
                     config = yaml.safe_load(fh)
                     kwds["config"] = config
 
