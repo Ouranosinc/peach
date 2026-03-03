@@ -1,33 +1,34 @@
+name: peach-full
 channels:
-- conda-forge
-- nodefaults
-- bokeh
+  - conda-forge
+  - nodefaults
+  - bokeh
 dependencies:
-- aiofiles
-- copulae
-- filelock
-- flit >=3.11.0
-- gunicorn
-- hvplot
-- ipyleaflet
-- ipywidgets_bokeh
-- jupyter
-- lmoments3
-- numpy >=2.0
-- openturns >=1.24
-- pandas
-- panel >=1.5.5
-- param
-- pip >=25.2
-- pyextremes
-- python >=3.12,<3.13
-- s3fs
-- scipy
-- sphinx
-- starlette
-- uvicorn[standard]
-- watchfiles
-- xarray <2025.3.0
-- xclim
-- yaml
-- zarr <3
+  - aiofiles
+  - copulae
+  - filelock
+  - flit >=3.11.0
+  - gunicorn
+  - hvplot
+  - ipyleaflet
+  - ipywidgets_bokeh
+  - jupyter
+  - lmoments3
+  - numpy >=2.0
+  - openturns >=1.24
+  - pandas
+  - panel >=1.5.5
+  - param
+  - pip >=25.2
+  - pyextremes
+  - python >=3.12,<3.13
+  - s3fs
+  - scipy
+  - sphinx
+  - starlette
+  - uvicorn[standard]
+  - watchfiles
+  - xarray <2025.3.0
+  - xclim
+  - yaml
+  - zarr <3

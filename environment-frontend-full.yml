@@ -1,28 +1,29 @@
+name: peach-frontend-full
 channels:
-- conda-forge
-- nodefaults
-- bokeh
+  - conda-forge
+  - nodefaults
+  - bokeh
 dependencies:
-- copulae
-- flit >=3.11.0
-- hvplot
-- ipyleaflet
-- ipywidgets_bokeh
-- jupyter
-- lmoments3
-- numpy >=2.0
-- openturns >=1.24
-- pandas
-- panel >=1.5.5
-- param
-- pip>=25.0
-- pyextremes
-- python >=3.12,<3.13
-- s3fs
-- scipy
-- sphinx
-- watchfiles
-- xarray <2025.3.0
-- xclim
-- yaml
-- zarr <3
+  - copulae
+  - flit >=3.11.0
+  - hvplot
+  - ipyleaflet
+  - ipywidgets_bokeh
+  - jupyter
+  - lmoments3
+  - numpy >=2.0
+  - openturns >=1.24
+  - pandas
+  - panel >=1.5.5
+  - param
+  - pip>=25.0
+  - pyextremes
+  - python >=3.12,<3.13
+  - s3fs
+  - scipy
+  - sphinx
+  - watchfiles
+  - xarray <2025.3.0
+  - xclim
+  - yaml
+  - zarr <3

@@ -1,3 +1,5 @@
+"""Mixture utils for risk module."""
+
 import numpy as np
 import xarray as xr
 import xclim as xc
@@ -6,7 +8,8 @@ from xclim.core.formatting import unprefix_attrs, update_history
 
 
 def parametric_pdf(p, v):
-    """Return the cumulative distribution function corresponding to the given distribution parameters and value.
+    """
+    Return the cumulative distribution function corresponding to the given distribution parameters and value.
 
     Parameters
     ----------
@@ -64,7 +67,8 @@ def parametric_pdf(p, v):
 
 
 def parametric_logpdf(p, v):
-    """Return the cumulative distribution function corresponding to the given distribution parameters and value.
+    """
+    Return the cumulative distribution function corresponding to the given distribution parameters and value.
 
     Parameters
     ----------
@@ -121,7 +125,8 @@ def parametric_logpdf(p, v):
     return out
 
 
-def values_cdf(p, qmin=0.00001, qmax=0.99999, pts=10000):  # returns CDF values
+def values_cdf(p, qmin=0.00001, qmax=0.99999, pts=10000):
+    """Returns CDF values."""
     mmin = xc.indices.stats.parametric_quantile(p, qmin).min(dim="sims")
     mmax = xc.indices.stats.parametric_quantile(p, qmax).max(dim="sims")
     return np.squeeze(np.linspace(mmin, mmax, pts))

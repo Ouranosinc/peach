@@ -62,18 +62,19 @@ Ready to contribute? Here's how to set up `peach` for local development.
 
    This installs `peach` in an "editable" state, meaning that changes to the code are immediately seen by the environment.
 
-4. To ensure a consistent coding style, install the `pre-commit` hooks to your local clone:
+4. To ensure a consistent coding style, install the `pre-commit` hooks (with `prek`) to your local clone:
 
    ```shell
-   pre-commit install
+   prek install
    ```
 
-   On commit, `pre-commit` will check that `black`, `blackdoc`, `isort`, `flake8`, and `ruff` checks are passing, perform automatic fixes if possible, and warn of violations that require intervention. If your commit fails the checks initially, simply fix the errors, re-add the files, and re-commit.
+   On commit, `pre-commit` will check that `flake8`, `ruff` and other code quality checks are passing, perform automatic fixes if possible, and warn of violations that require intervention.
+   If your commit fails the checks initially, simply fix the errors, re-add the files, and re-commit.
 
    You can also run the hooks manually with:
 
    ```shell
-   pre-commit run -a
+   prek run -a
    ```
 
    If you want to skip the `pre-commit` hooks temporarily, you can pass the `--no-verify` flag to `git commit`.
@@ -151,14 +152,11 @@ pytest tests.test_peach
 To run specific code style checks:
 
 ```shell
-black --check peach tests
-isort --check peach tests
-blackdoc --check peach docs
 ruff peach tests
 flake8 peach tests
 ```
 
-To get `black`, `isort`, `blackdoc`, `ruff`, and `flake8` (with plugins `flake8-alphabetize` and `flake8-rst-docstrings`) simply install them with `pip` (or `conda`) into your environment.
+To get `flake8` (with plugins `flake8-alphabetize` and `flake8-rst-docstrings`) and `ruff`, simply install them with `pip` (or `conda`) into your environment.
 
 ## Versioning/Tagging
 

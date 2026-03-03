@@ -18,9 +18,9 @@
 #      - '.yamllint.yml'
 #      - '.github/workflows/*'
 #      - 'docs/Makefile'
-#      - 'tox.ini'
+#      - 'tox.toml'
+#      - 'CI/**/*'
 #      - 'Makefile'
-
 # label 'docs' all documentation-related steps and files
 #'docs':
 #  - changed-files:
