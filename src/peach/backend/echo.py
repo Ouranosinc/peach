@@ -31,6 +31,7 @@ import time
 
 from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 
+
 LOGGER = logging.getLogger(__name__)
 
 #: Process metadata and description
@@ -87,7 +88,6 @@ class EchoProcessor(BaseProcessor):
         super().__init__(processor_def, PROCESS_METADATA)
 
     def execute(self, data):
-
         mimetype = "application/json"
 
         echo = data.get("echoInput", None)
@@ -96,9 +96,7 @@ class EchoProcessor(BaseProcessor):
         if echo is None:
             raise ProcessorExecuteError("Cannot run process without echo value")
         if not isinstance(echo, str):
-            raise ProcessorExecuteError(
-                "Cannot run process with echo not of type String"
-            )
+            raise ProcessorExecuteError("Cannot run process with echo not of type String")
 
         outputs = {"id": "echoOutput", "value": echo}
         if pause is not None and isinstance(pause, float):

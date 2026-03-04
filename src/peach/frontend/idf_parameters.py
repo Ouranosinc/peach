@@ -17,6 +17,7 @@ from peach.frontend.parameters import (
 )
 from peach.risk.priors import members
 
+
 logger = get_logger(__name__)
 
 # Source: Procédure proposée pour estimer les intensités des maxima annuels de
@@ -45,7 +46,7 @@ regional_coeff = {
 duration_coeff = {"1h": 1.51, "2h": 1.44, "6h": 1.24, "12h": 1.11, "24h": 1.0}
 
 # Load regions file
-regions = json.load(open(Path(__file__).parent / "data" / "idf_regions.json"))
+regions = json.load((Path(__file__).parent / "data" / "idf_regions.json").open())
 
 
 class IndicatorObsIDF(IndicatorDA):
@@ -97,8 +98,7 @@ class IndicatorObsIDF(IndicatorDA):
                 f"observée au cours de la période ({period})."
             )
         return (
-            f"Probability density function of the {dist} distribution, overlaid on the histogram of the observed "
-            f"series during the period ({period})."
+            f"Probability density function of the {dist} distribution, overlaid on the histogram of the observed series during the period ({period})."
         )
 
 
@@ -131,20 +131,12 @@ class IndicatorSimIDF(IndicatorSimDA):
         # Compute temperature difference with respect to obs period
         with xr.set_options(keep_attrs=True):
             tg = self.data.rolling(time=30, center=True).mean()
-            delta_tas = tg - self.data.sel(time=self._slice(self.obs.period)).mean(
-                "time"
-            )
+            delta_tas = tg - self.data.sel(time=self._slice(self.obs.period)).mean("time")
         delta_tas.attrs["units_metadata"] = "temperature: difference"
 
-        pr = (
-            self.obs.data.sel(time=self.obs._slice(self.obs.period))
-            .dropna("time")
-            .rename(time="t")
-        )
+        pr = self.obs.data.sel(time=self.obs._slice(self.obs.period)).dropna("time").rename(time="t")
 
-        out = xc.indices.clausius_clapeyron_scaled_precipitation(
-            delta_tas, pr_baseline=pr, cc_scale_factor=self.scaling_factor
-        )
+        out = xc.indices.clausius_clapeyron_scaled_precipitation(delta_tas, pr_baseline=pr, cc_scale_factor=self.scaling_factor)
 
         with xr.set_options(keep_attrs=True):
             out = out * xc.units.units(self.obs.duration).to("h").magnitude * 1000
@@ -153,7 +145,8 @@ class IndicatorSimIDF(IndicatorSimDA):
         self.ts = out
 
     def delta(self, period: tuple) -> xr.DataArray:
-        """Return the temperature difference between a period and the observation period.
+        """
+        Return the temperature difference between a period and the observation period.
 
         Parameters
         ----------
@@ -161,9 +154,7 @@ class IndicatorSimIDF(IndicatorSimDA):
           The period to compute the difference for.
         """
         with xr.set_options(keep_attrs=True):
-            delta = self.data.sel(time=self._slice(period)).mean(
-                dim="time"
-            ) - self.data.sel(time=self._slice(self.obs.period)).mean(dim="time")
+            delta = self.data.sel(time=self._slice(period)).mean(dim="time") - self.data.sel(time=self._slice(self.obs.period)).mean(dim="time")
         return delta.assign_attrs(units_metadata="temperature: difference")
 
     def _sample(self, period: tuple) -> xr.DataArray:
@@ -174,9 +165,7 @@ class IndicatorSimIDF(IndicatorSimDA):
         # Compute the scaled precipitation
         # TODO: Use all the data or just the sample from the reference period?
         pr = self.obs.data.sel(time=self.obs._slice(self.obs.period)).dropna("time")
-        out = xc.indices.clausius_clapeyron_scaled_precipitation(
-            delta_tas, pr_baseline=pr, cc_scale_factor=self.scaling_factor
-        )
+        out = xc.indices.clausius_clapeyron_scaled_precipitation(delta_tas, pr_baseline=pr, cc_scale_factor=self.scaling_factor)
 
         # Update the time coordinate
         ny = float(np.mean(period) - np.mean(self.obs.period))
@@ -190,7 +179,8 @@ class IndicatorSimIDF(IndicatorSimDA):
         return out
 
     def experiment_percentiles(self, per) -> xr.Dataset:
-        """Return the percentiles computed for each year and experiment.
+        """
+        Return the percentiles computed for each year and experiment.
 
         Useful for visualizing the distribution of the ensemble.
 
@@ -207,9 +197,7 @@ class IndicatorSimIDF(IndicatorSimDA):
         # Apply weights on the ensemble percentile calculations
         # Here we need to apply weights related to the number of members, as well as model weights
         w = self.model_weights * members(self.data)
-        w = w.expand_dims(variant_label=self.ts.variant_label, t=self.ts.t).stack(
-            realization=["source_id", "variant_label", "t"]
-        )
+        w = w.expand_dims(variant_label=self.ts.variant_label, t=self.ts.t).stack(realization=["source_id", "variant_label", "t"])
         w = w.fillna(0)
         # Mismatch problem here between realization dimensions (da includes t) and weights (w does not)
         # TODO: I think xclim is buggy when len(per) == 1. Check. If so, we need to fix it.
@@ -217,14 +205,12 @@ class IndicatorSimIDF(IndicatorSimDA):
 
 
 class IndicatorRefIDF(IndicatorSimIDF, IndicatorRefDA):
-
-    level = param.Number(
-        0.1, doc="Significance level for the KS test. Unused here.", allow_refs=True
-    )
+    level = param.Number(0.1, doc="Significance level for the KS test. Unused here.", allow_refs=True)
 
     @param.depends("data", watch=True, on_init=True)
     def _update_ks(self):
-        """Return an array of ones to include all models in computation.
+        """
+        Return an array of ones to include all models in computation.
         TODO: Ideally we'd run a KS test against temperature observations over the reference period.
         """
         self._ks = ~self.data.source_id.isnull()

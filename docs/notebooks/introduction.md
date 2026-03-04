@@ -24,7 +24,7 @@ Dans le cadre du projet, différents [services de calculs](https://pavics.ourano
 : Calcule des indicateurs climatiques sur une série de simulations climatiques (1950–2100) dont les biais par rapport à une station donnée a été corrigé. Retourne un lien vers les résultats en format zarr.
 
 ``compute-hazard-thresholds``
-: Calcule la probabilité de dépassement de seuils climatiques pour différents indicateurs à une station donnée. Retourne un fichier JSON. 
+: Calcule la probabilité de dépassement de seuils climatiques pour différents indicateurs à une station donnée. Retourne un fichier JSON.
 
 
 ## Exemple de calcul d'un indicateur

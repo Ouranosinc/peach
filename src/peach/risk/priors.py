@@ -1,18 +1,25 @@
+"""Peach risk priors module."""
+
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import xarray as xr
 from scipy import optimize, special, stats
 
+
 DATADIR = Path(__file__).parent.parent / "data"
 
+
 def load_sherwood_ecs():
+    """Load sherwood ecs data."""
     return pd.read_json(DATADIR / "sherwood_ecs.json").reindex()
 
 
 def model_weights_from_sherwood(models=None, method="L2", lambda_=100):
-    r"""Return model weights based on their climate sensitivity, weighted by the prior climate sensitivity
+    r"""
+    Return model weights based on their climate sensitivity, weighted by the prior climate sensitivity
     distribution from Sherwood et al. (2020).
 
     The weights are found by a number of different methods, many based on iterative quantile matching estimators.
@@ -42,7 +49,8 @@ def model_weights_from_sherwood(models=None, method="L2", lambda_=100):
         "L2Var" adds to L2 the variance of the weights Var(w), normalized by 1+Var(w).
         "L2SGradient" adds to L2 the squared gradient of the weights , normalized by 1+(∇w)².
         "L2Laplacian" adds to L2 the Laplacian of the weights , normalized by 1+∇²w.
-        "KLVar" minimizes the relative entropy between the theoretical distribution and the KDE estimated from the weighted sample, with a penalty based on the variance of the weights.
+        "KLVar" minimizes the relative entropy between the theoretical distribution and the KDE estimated from the weighted sample,
+        with a penalty based on the variance of the weights.
     lambda : float
         Importance given to the penalty term in the cost function. The higher, the smoother the weights.
 
@@ -55,7 +63,7 @@ def model_weights_from_sherwood(models=None, method="L2", lambda_=100):
     -----
     L2 seems to struggle with low number of models (3)
 
-    """  # noqa: RST306
+    """
     # Load prior distribution from Sherwood et al. (2020)
     prior_ = load_sherwood_ecs()
     pdf = xr.DataArray(prior_["pdf"], dims="ecs", coords={"ecs": prior_["ECS"]})
@@ -64,9 +72,7 @@ def model_weights_from_sherwood(models=None, method="L2", lambda_=100):
 
     # Load model ECS from Zelinka
     # Included ECS value for KIOST-ESM from http://dx.doi.org/10.1007/s12601-021-00001-7
-    zelinka_ = (
-        pd.read_json(DATADIR / "zelinka_ecs.json").reindex().sort_values("ECS")["ECS"]
-    )
+    zelinka_ = pd.read_json(DATADIR / "zelinka_ecs.json").reindex().sort_values("ECS")["ECS"]
 
     # DataArray with ECS values
     ecs = xr.DataArray(zelinka_, dims="source_id")
@@ -150,9 +156,7 @@ def model_weights_from_sherwood(models=None, method="L2", lambda_=100):
     w0 = th / em
     w0 /= w0.sum()
 
-    wi = optimize.minimize(
-        cost, w0, method="SLSQP", bounds=bnds, constraints=cons, args=(lambda_,)
-    )
+    wi = optimize.minimize(cost, w0, method="SLSQP", bounds=bnds, constraints=cons, args=(lambda_,))
     # print("L2: ", l2(wi.x))
     # print("Var: ", lambda_ * np.var(wi.x) / (1 + np.var(wi.x)))
     wi = xr.DataArray(wi.x, dims="source_id", coords={"source_id": subset.source_id})
@@ -183,7 +187,8 @@ def _merge_netcdf_likelihoods():
 
 
 def scenario_weights_from_iams(weights=None):
-    """Use method from Huard et al. (2022) to compute weights for scenarios ssp126, ssp245, ssp370 and ssp585.
+    """
+    Use method from Huard et al. (2022) to compute weights for scenarios ssp126, ssp245, ssp370 and ssp585.
 
     Parameters
     ----------
@@ -215,9 +220,7 @@ def scenario_weights_from_iams(weights=None):
 
     # Convert dict to DataArray
     if isinstance(weights, dict):
-        weights = xr.DataArray(
-            list(weights.values()), coords={"source": list(weights.keys())}
-        )
+        weights = xr.DataArray(list(weights.values()), coords={"source": list(weights.keys())})
 
     # Compute weighted average of likelihoods for each SSP
     out = da.weighted(weights).mean("source")
@@ -262,9 +265,7 @@ def weights(ds) -> xr.Dataset:
     models = list(ds.source_id.values)
     exps = set(ds.experiment_id.values)
     if exps != {"ssp126", "ssp245", "ssp370", "ssp585"}:
-        raise ValueError(
-            "Experiments must be ssp126, ssp245, ssp370 and ssp585, otherwise, the weighting will be off."
-        )
+        raise ValueError("Experiments must be ssp126, ssp245, ssp370 and ssp585, otherwise, the weighting will be off.")
 
     mw = model_weights_from_sherwood(models, method="L2Var", lambda_=0.5)
     ew = scenario_weights_from_iams()
@@ -286,16 +287,12 @@ def calcul_des_poids_pour_guillaume():
     out = []
     for col in df.columns:
         m = list(df[col].dropna().index)
-        out.append(
-            model_weights_from_sherwood(m, method="L2Var", lambda_=0.5).to_dataframe(
-                name=col
-            )[col]
-        )
+        out.append(model_weights_from_sherwood(m, method="L2Var", lambda_=0.5).to_dataframe(name=col)[col])
 
     return pd.concat(out, axis=1)
 
 
-def graph_model_weights(w):
+def graph_model_weights(w) -> plt.figure:
     """Create graphic showing the theoretical and empirical distribution of the PDF, CDF, and the weights."""
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec
@@ -325,13 +322,9 @@ def graph_model_weights(w):
     ax = fig.add_subplot(gs[0, 1:])
     ax.set_ylabel("CDF")
     ax.plot(cdf.ecs, cdf, color="k", label="Prior - Sherwood")
-    #u = xr.DataArray(np.arange(0.025, 1, 0.025), dims="quantile")
+    # u = xr.DataArray(np.arange(0.025, 1, 0.025), dims="quantile")
     u = xr.DataArray(np.arange(0.001, 1, 0.001), dims="quantile")
-    q_est = (
-        xr.DataArray(w.ecs, dims="source_id", coords={"source_id": w.source_id})
-        .weighted(w)
-        .quantile(u)
-    )
+    q_est = xr.DataArray(w.ecs, dims="source_id", coords={"source_id": w.source_id}).weighted(w).quantile(u)
     ax.plot(q_est, u, color="red", label="Weighted CDF")
 
     # x = [-1, 0, 1, *q_est.data.tolist(), 7, 8, 9]

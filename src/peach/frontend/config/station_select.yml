@@ -52,8 +52,8 @@ marker_cluster:
   show_coverage_on_hover: False
   spiderfy_on_max_zoom: False
 initial_bounds:
-  - [44.65, -75.2]
-  - [46.65, -65.2]
+  - [ 44.65, -75.2 ]
+  - [ 46.65, -65.2 ]
 table:
   columns:
     - station

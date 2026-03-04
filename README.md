@@ -1,16 +1,14 @@
-![zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.17187211.svg)
-
 # PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v0.1.0
 
-| Versions | ![pypi](https://img.shields.io/pypi/v/peach.svg) ![versions](https://img.shields.io/pypi/pyversions/peach.svg) |
+| Versions | [![pypi](https://img.shields.io/pypi/v/peach.svg)](https://pypi.python.org/pypi/peach) [![versions](https://img.shields.io/pypi/pyversions/peach.svg)](https://pypi.python.org/pypi/peach) |
 |---|---|
-| Documentation and Support | ![docs](https://readthedocs.org/projects/peach/badge/?version=latest) |
-| Open Source | ![license](https://img.shields.io/pypi/l/peach) ![ossf](https://api.securityscorecards.dev/projects/github.com/Ouranosinc/peach/badge) ![zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.17187211.svg) |
-| Coding Standards | ![black](https://img.shields.io/badge/code%20style-black-000000.svg) ![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json) ![pre-commit](https://results.pre-commit.ci/badge/github/Ouranosinc/peach/main.svg) |
-| Development Status | ![status](https://www.repostatus.org/badges/latest/active.svg) ![build](https://github.com/Ouranosinc/peach/actions/workflows/main.yml/badge.svg) ![coveralls](https://coveralls.io/repos/github/Ouranosinc/peach/badge.svg) |
+| Documentation and Support | [![docs](https://readthedocs.org/projects/peach/badge/?version=latest)]() |
+| Open Source | [![license](https://img.shields.io/pypi/l/peach)](https://github.com/Ouranosinc/peach/blob/main/LICENSE) [![ossf](https://api.securityscorecards.dev/projects/github.com/Ouranosinc/peach/badge)](https://securityscorecards.dev/viewer/?uri=github.com/Ouranosinc/peach) [![zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.17187211.svg)](https://doi.org/10.5281/zenodo.17187211) |
+| Coding Standards | [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![prek](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/j178/prek/master/docs/assets/badge-v0.json)](https://github.com/j178/prek) [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Ouranosinc/peach/main.svg)](https://results.pre-commit.ci/latest/github/Ouranosinc/peach/main) |
+| Development Status | [![status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) [![build](https://github.com/Ouranosinc/peach/actions/workflows/main.yml/badge.svg)](https://github.com/Ouranosinc/peach/actions) [![Coverage Status](https://coveralls.io/repos/github/Ouranosinc/peach/badge.svg?branch=main)](https://coveralls.io/github/Ouranosinc/peach?branch=main) |
 
 
-PEACH is an online calculation service and Python package that offers calculation for climate hazard likelihood. 
+PEACH is an online calculation service and Python package that offers calculation for climate hazard likelihood.
 Peach can be used to deploy calculation services and graphical interface or as a traditional Python package to estimate climate hazard likelihood.
 
 The code

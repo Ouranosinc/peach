@@ -2,6 +2,7 @@ import io
 import itertools
 import threading
 import zipfile
+from importlib import metadata as ilm
 
 import numpy as np
 import openturns as ot
@@ -12,9 +13,18 @@ from pyextremes import get_extremes
 
 
 def synthetic_ds():
+    """
+    Dummy docstring.
 
+    Dummy description.
+
+    Returns
+    -------
+    xr.Dataset.data_vars
+        Dummy description.
+    """
     ds = xr.Dataset()
-    time = xr.cftime_range(start="1950-01-01", end="2020-12-31", freq="YE")
+    time = xr.date_range(start="1950-01-01", end="2020-12-31", freq="YE", use_cftime=True)
 
     for i, uuid in enumerate(["00", "11"]):
         ds[uuid] = xr.DataArray(
@@ -29,15 +39,26 @@ def synthetic_ds():
                 "stations": {"pr": "7028441"},
                 "id": "XIND",
                 "params": {"thresh": "1.0 mm/d"},
-                "history": f"[2024-11-18 20:37:17] {uuid}: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
+                "history": f"[2024-11-18 20:37:17] {uuid}: "
+                "XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
             },
         )
     return ds.data_vars
 
 
 def synthetic_ds_fut():
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Returns
+    -------
+    xr.Dataset.data_vars
+        Dummy description.
+    """
     ds = xr.Dataset()
-    time = xr.cftime_range(start="1900-01-01", end="2100-12-31", freq="YE")
+    time = xr.date_range(start="1900-01-01", end="2100-12-31", freq="YE", use_cftime=True)
     source_id = ["INM-CM4-8", "GFDL-CM4", "HadGEM3-GC31-MM", "MIROC6", "TaiESM1"]
     experiment_id = ["ssp126", "ssp245", "ssp370", "ssp585"]
     variant_label = ["r1i1p1f1", "r2i1p1f1"]
@@ -69,7 +90,9 @@ def synthetic_ds_fut():
                 "stations": {"pr": "7028441"},
                 "id": "XIND",
                 "params": {"thresh": "1.0 mm/d"},
-                "history": f"[2024-11-18 20:37:17] {uuid}: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
+                "history": (
+                    f"[2024-11-18 20:37:17] {uuid}: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2"
+                ),
             },
         )
         ds[uuid] = da.stack(realization=("variant_label", "source_id", "experiment_id"))
@@ -78,19 +101,25 @@ def synthetic_ds_fut():
 
 
 def synthetic_ds_daily():
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Returns
+    -------
+    xr.Dataset.data_vars
+        Dummy description.
+    """
     time_range = pd.date_range("1960-01-01", "2100-12-31", freq="D")
     variant_labels = ["r1i1p1f1"]
     source_ids = ["INM-CM4-8", "HadGEM3-GC31-MM"]
     experiment_ids = ["ssp245", "ssp370", "ssp585"]
 
-    realization_tuples = list(
-        itertools.product(variant_labels, source_ids, experiment_ids)
-    )
+    realization_tuples = list(itertools.product(variant_labels, source_ids, experiment_ids))
     # Add a realization for one but not the others
     realization_tuples.append(("r1i1p1f1", "HadGEM3-GC31-MM", "ssp126"))
-    realization_index = pd.MultiIndex.from_tuples(
-        realization_tuples, names=["variant_label", "source_id", "experiment_id"]
-    )
+    realization_index = pd.MultiIndex.from_tuples(realization_tuples, names=["variant_label", "source_id", "experiment_id"])
 
     max_values = 200 + (100 * (np.arange(len(time_range)) / len(time_range)))
     random_data = np.random.rand(len(realization_index), len(time_range)) * max_values
@@ -121,7 +150,10 @@ def synthetic_ds_daily():
             "stations": {"pr": "7028441"},
             "id": "XIND",
             "params": {"thresh": "1.0 mm/d"},
-            "history": "[2024-11-18 20:37:17] pr_sim_daily: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
+            "history": (
+                "[2024-11-18 20:37:17] pr_sim_daily: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') "
+                "with options check_missing=skip - xclim version: 0.53.2"
+            ),
         },
     )
 
@@ -129,6 +161,16 @@ def synthetic_ds_daily():
 
 
 def synthetic_ewl_ds():
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Returns
+    -------
+    xr.Dataset.data_vars
+        Dummy description.
+    """
     time_wl = pd.date_range(start="1960-01-01", end="2012-12-31", freq="h")
     wl_data = np.random.randn(len(time_wl))
     stn_thresh = np.quantile(wl_data, 0.98)
@@ -156,9 +198,7 @@ def synthetic_ewl_ds():
         "params": {"thresh": "1.0 mm/d"},
         "history": "[2024-11-18 20:37:17] wl_pot: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
     }
-    wl = xr.DataArray(
-        data=wl_data, coords={"time": time_wl}, dims=["time"], name="wl", attrs=attrs
-    )
+    wl = xr.DataArray(data=wl_data, coords={"time": time_wl}, dims=["time"], name="wl", attrs=attrs)
     wl_pot_series = get_extremes(ts=wl.to_series(), method="POT", threshold=stn_thresh)
     wl_pot = xr.DataArray(
         data=wl_pot_series,
@@ -181,9 +221,7 @@ def synthetic_ewl_ds():
 
     time_daily = pd.date_range(start="2020-01-01", end="2150-01-01", freq="D")
     base_q = np.arange(0, 1.05, 0.05)
-    extra_q = np.array(
-        [0.001, 0.005, 0.01, 0.02, 0.03, 0.04, 0.96, 0.97, 0.98, 0.99, 0.995, 0.999]
-    )
+    extra_q = np.array([0.001, 0.005, 0.01, 0.02, 0.03, 0.04, 0.96, 0.97, 0.98, 0.99, 0.995, 0.999])
     quantiles = np.sort(np.concatenate((base_q, extra_q)))
 
     experiment_id = [
@@ -194,13 +232,7 @@ def synthetic_ewl_ds():
     ]
 
     slopes = [2, 3, 4, 5]
-    orig_data = np.array(
-        [
-            slope * (time_daily.year - 2020) / 1000
-            + np.random.randn(len(time_daily)) * 0.001
-            for slope in slopes
-        ]
-    )
+    orig_data = np.array([slope * (time_daily.year - 2020) / 1000 + np.random.randn(len(time_daily)) * 0.001 for slope in slopes])
 
     da_daily = xr.DataArray(
         orig_data,
@@ -209,16 +241,31 @@ def synthetic_ewl_ds():
     )
 
     def quantile_calculation(da_decadal, da_daily, quantiles):
-        quantile_results = np.full(
-            (len(da_decadal.experiment_id), len(da_decadal.time), len(quantiles)), np.nan
-        )
+        """
+        Quantile calculations.
+
+        Dummy description
+
+        Parameters
+        ----------
+        da_decadal : xr.DataArray
+            Dummy description.
+        da_daily : xr.DataArray
+            Dummy description.
+        quantiles :  : xr.DataArray
+            Dummy description.
+
+        Returns
+        -------
+        np.ndarray
+            Dummy description.
+        """
+        quantile_results = np.full((len(da_decadal.experiment_id), len(da_decadal.time), len(quantiles)), np.nan)
         for i, real in enumerate(da_decadal.experiment_id):
             for j, time in enumerate(da_decadal.time):
                 decade_start = time.values
                 decade_end = decade_start + pd.DateOffset(years=10)
-                data_slice = da_daily.sel(
-                    experiment_id=real, time=slice(decade_start, decade_end)
-                )
+                data_slice = da_daily.sel(experiment_id=real, time=slice(decade_start, decade_end))
                 quantile_values = np.quantile(data_slice, quantiles, axis=0)
                 quantile_results[i, j, :] = quantile_values
         return quantile_results
@@ -240,7 +287,9 @@ def synthetic_ewl_ds():
         "stations": {"wl": "00490"},
         "id": "XIND",
         "params": {"thresh": "1.0 mm/d"},
-        "history": "[2024-11-18 20:37:17] sl_delta: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2",
+        "history": (
+            "[2024-11-18 20:37:17] sl_delta: XIND(pr=pr, thresh='1.0 mm/d', freq='YS') with options check_missing=skip - xclim version: 0.53.2"
+        ),
     }
 
     sl = xr.DataArray(
@@ -258,7 +307,22 @@ def synthetic_ewl_ds():
     return wl, wl_pot, sl, stn_thresh
 
 
-def synthetic_jp_ds(ind="wl_prcond"):
+def synthetic_jp_ds(ind: str = "wl_prcond"):
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Parameters
+    ----------
+    ind : str
+         Dummy description.
+
+    Returns
+    -------
+    xr.Dataset.data_vars
+        Dummy description.
+    """
     joint_dist = ot.ComposedDistribution(
         [ot.GeneralizedPareto(1.0, 0.0, 5.0), ot.Normal(1.0, 1.0)],
         ot.ClaytonCopula(2),
@@ -266,7 +330,7 @@ def synthetic_jp_ds(ind="wl_prcond"):
     sample = joint_dist.getSample(500)
     pot_data = [x[0] for x in sample]
     cond_data = [x[1] for x in sample]
-    times = xr.cftime_range(start="1960-01-01", end="2011-12-31", freq="D")
+    times = xr.date_range(start="1960-01-01", end="2011-12-31", freq="D", use_cftime=True)
 
     time = np.sort(np.random.choice(times, size=500, replace=False))
     wl_attrs = {
@@ -316,12 +380,8 @@ def synthetic_jp_ds(ind="wl_prcond"):
             obs_pot.attrs["long_name_fr"] = "Pics de niveaux d'eau au-dessus du seuil"
             obs_pot.attrs["description"] = "Dummy description"
             obs_pot.attrs["description_fr"] = "Description bidon"
-            obs_cond.attrs["long_name"] = (
-                "Precipitation extremes conditional on water level extremes"
-            )
-            obs_cond.attrs["long_name_fr"] = (
-                "Précipitations extrêmes conditionnelles aux extrêmes de niveaux d'eau"
-            )
+            obs_cond.attrs["long_name"] = "Precipitation extremes conditional on water level extremes"
+            obs_cond.attrs["long_name_fr"] = "Précipitations extrêmes conditionnelles aux extrêmes de niveaux d'eau"
             obs_cond.attrs["description"] = "Dummy description"
             obs_cond.attrs["description_fr"] = "Description bidon"
     elif ind == "pr_wlcond":
@@ -335,12 +395,8 @@ def synthetic_jp_ds(ind="wl_prcond"):
             obs_pot.attrs["long_name_fr"] = "Pics de précipitations au-dessus du seuil"
             obs_pot.attrs["description"] = "Dummy description"
             obs_pot.attrs["description_fr"] = "Description bidon"
-            obs_cond.attrs["long_name"] = (
-                "Water level extremes conditional on precipitation extremes"
-            )
-            obs_cond.attrs["long_name_fr"] = (
-                "Extrêmes de niveaux d'eau conditionnels aux extrêmes de précipitation"
-            )
+            obs_cond.attrs["long_name"] = "Water level extremes conditional on precipitation extremes"
+            obs_cond.attrs["long_name_fr"] = "Extrêmes de niveaux d'eau conditionnels aux extrêmes de précipitation"
             obs_cond.attrs["description"] = "Dummy description"
             obs_cond.attrs["description_fr"] = "Description bidon"
     with xr.set_options(keep_attrs=True):
@@ -352,6 +408,16 @@ def synthetic_jp_ds(ind="wl_prcond"):
 
 
 def tas_obs():
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Returns
+    -------
+    xr.DataArray
+         Dummy description.
+    """
     time = pd.date_range(start="1950-01-01", end="2020-12-31", freq="D")
     tas = np.random.randn(len(time), 1) * 50 + 273
     attrs = {
@@ -370,7 +436,17 @@ def tas_obs():
 
 
 def tas_sim():
-    time = xr.cftime_range(start="1960-01-01", end="2100-12-31", freq="D")
+    """
+    Dummy docstring.
+
+    Dummy description.
+
+    Returns
+    -------
+    xr.DataArray
+         Dummy description.
+    """
+    time = xr.date_range(start="1960-01-01", end="2100-12-31", freq="D", use_cftime=True)
     source_id = ["INM-CM4-8", "GFDL-CM4", "HadGEM3-GC31-MM", "MIROC6", "TaiESM1"]
     experiment_id = ["ssp126", "ssp245", "ssp370", "ssp585"]
     variant_label = ["r1i1p1f1", "r2i1p1f1"]
@@ -419,21 +495,19 @@ def tas_sim():
     return da.assign_coords(**coords)
 
 
-if zarr.__version__.startswith("3"):
+if ilm.version("zarr").startswith("3"):
     zipclass = zarr.storage.ZipStore
 else:
     zipclass = zarr.ZipStore
 
 
 class MemoryZarrStore(zipclass):
-    """
-    store=MemoryZarrStore()
-    ds.to_zarr(store=store)
-    """
+    """Dummy dosctring."""
 
+    # store=MemoryZarrStore()
+    # ds.to_zarr(store=store)
     def __init__(self):
-        # store properties
-
+        """Store properties."""
         self.path = io.BytesIO()
         self.compression = zipfile.ZIP_STORED
         self.allowZip64 = True

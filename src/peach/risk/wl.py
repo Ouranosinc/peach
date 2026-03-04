@@ -1,3 +1,5 @@
+"""Water Level Indicators."""
+
 from __future__ import annotations
 
 import xarray as xr
@@ -7,6 +9,7 @@ from xclim.core.indicator import Hourly, Indicator
 from xclim.core.locales import load_locale
 from xclim.core.units import declare_units
 from xclim.indicators.generic._stats import Generic
+
 
 """
 # Water level indicators
@@ -27,12 +30,15 @@ class WaterLevels(Hourly):
 
 
 class WLIndicator(Indicator):
+    """Base Water Level Indicator Class."""
+
     pass
 
 
 @declare_units(wl="[length]")
 def _water_level_max(wl: xr.DataArray, freq: str = "YS") -> xr.DataArray:
-    """Compute the maximum water level.
+    """
+    Compute the maximum water level.
 
     Resample the original hourly water level data to the specified frequency and compute the maximum value.
 
@@ -54,17 +60,18 @@ def _water_level_max(wl: xr.DataArray, freq: str = "YS") -> xr.DataArray:
 @declare_units(wl="[length]")
 def _water_level_pot(
     wl: xr.DataArray,
-    thresh: float = None,
+    thresh: float | None = None,
 ) -> xr.DataArray:
-    """Return water level peaks over threshold.
+    """
+    Return water level peaks over threshold.
 
     Parameters
     ----------
     wl : xarray.DataArray
         Hourly water level values.
-    thresh : float
+    thresh : float, optional
         Threshold to use for computing peaks over threshold.
-        Only used if method != None.
+        Only used if method is not None.
 
     Returns
     -------
@@ -85,14 +92,17 @@ def _water_level_pot(
 @declare_units(wl_pot="[length]")
 def _water_level_pot_lambda(
     wl_pot: xr.DataArray,
-    thresh: float = None,
+    thresh: float | None = None,
 ) -> xr.DataArray:
-    """Return water level peaks over threshold.
+    """
+    Return water level peaks over threshold.
 
     Parameters
     ----------
     wl_pot : xarray.DataArray
         Hourly water level values.
+    thresh : float, optional
+        Unused.
 
     Returns
     -------
