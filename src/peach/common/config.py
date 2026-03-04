@@ -1,21 +1,21 @@
-"""
-# Functions to interact with the config.
-"""
+"""Functions to interact with the config."""
 
 import json
+import logging
 import os
+import warnings
 from pathlib import Path
 
 import pandas as pd
 import yaml
-import warnings
+
+
+logger = logging.getLogger("common-config")
 
 SERVICE = os.environ.get("SERVICE")
 # LOCAL DIR is the root of the python source (src/peach/)
 LOCAL_DIR = Path(__file__).parent.parent.resolve()
-CONFIG_DIR = Path(
-    os.environ.get("FRONTEND_CONFIG_DIR", LOCAL_DIR / "frontend" / "config")
-)
+CONFIG_DIR = Path(os.environ.get("FRONTEND_CONFIG_DIR", LOCAL_DIR / "frontend" / "config"))
 DATA_DIR = Path(os.environ.get("FRONTEND_DATA_DIR", LOCAL_DIR / "frontend" / "data"))
 
 
@@ -31,17 +31,17 @@ USE_LOCAL_CACHE = str(os.environ.get("USE_LOCAL_CACHE", "1")).lower() in [
     "y",
     "yes",
 ]
-print(
-    f"config.py - Using local cache: {USE_LOCAL_CACHE}, with file {BUCKET_CREDENTIALS_FILE}"
-)
+logger.info("config.py - Using local cache: %s, with file %s", USE_LOCAL_CACHE, BUCKET_CREDENTIALS_FILE)
 
 BUCKET_CREDENTIALS = {}
 if BUCKET_CREDENTIALS_FILE and not USE_LOCAL_CACHE:
-    with open(BUCKET_CREDENTIALS_FILE) as f:
+    with Path(BUCKET_CREDENTIALS_FILE).open() as f:
         cre = json.load(f)
     if (cre.get("accessKey") is None) or (cre.get("secretKey") is None):
         USE_LOCAL_CACHE = True
-        warnings.warn(f"Using Local Cache despite BUCKET_CREDENTIALS_FILE={BUCKET_CREDENTIALS_FILE} and not USE_LOCAL_CACHE={USE_LOCAL_CACHE}")
+        warnings.warn(
+            f"Using Local Cache despite BUCKET_CREDENTIALS_FILE={BUCKET_CREDENTIALS_FILE} and not USE_LOCAL_CACHE={USE_LOCAL_CACHE}", stacklevel=2
+        )
     else:
         BUCKET_CREDENTIALS["key"] = cre.get("accessKey")
         BUCKET_CREDENTIALS["secret"] = cre.get("secretKey")
@@ -81,12 +81,12 @@ def get_station_meta(station_id, variable):
 
 
 def read_indicator_config():
-    with open(CONFIG_DIR / "indicators.yml") as f:
+    with Path(CONFIG_DIR / "indicators.yml").open() as f:
         ic = yaml.safe_load(f)
     return ic
 
 
 def read_application_config():
-    with open(CONFIG_DIR / "application.yml") as f:
+    with Path(CONFIG_DIR / "application.yml").open() as f:
         ac = yaml.safe_load(f)
     return ac

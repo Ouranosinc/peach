@@ -4,12 +4,14 @@ import panel as pn
 
 from peach.common.logger import get_logger
 
+
 logger = get_logger("app")
 logger.info("Loading warm.py")
 
 import xclim  # noqa: F401, E402
 
 from peach.common import config as conf  # noqa: E402
+
 
 pn.extension(
     "terminal",

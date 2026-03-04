@@ -1,30 +1,179 @@
-name: Tests
+name: PEACH Testing Suite
 
 on:
-  pull_request:
   push:
-    branches: [master]
+    branches:
+      - main
+    paths-ignore:
+      - .cruft.json
+      - CHANGELOG.rst
+      - README.rst
+      - pyproject.toml
+      - tests/test_peach.py
+      - src/peach/__init__.py
+  pull_request:
+
+concurrency:
+  # For a given workflow, if we push to the same branch, cancel all previous builds on that branch except on master.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
+  lint:
+    name: Lint (Python${{ matrix.python-version }})
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11",]
-        os: [ubuntu-latest]
-
+        python-version: [ "3.14" ]
     steps:
-      - uses: actions/checkout@v6
+      - name: Harden Runner
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+      - name: Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Set up Python${{ matrix.python-version }}
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install CI libraries
+        run: |
+          python -m pip install --require-hashes -r CI/requirements_ci.txt
+      - name: Environment Caching
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: |
+            .tox
+          key: ${{ hashFiles('pyproject.toml', 'tox.toml') }}-lint
+      - name: Run linting suite
+        run: |
+          python -m tox -e lint
+
+  test-pypi:
+    name: Test with Python${{ matrix.python-version }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: lint
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest' ]
+        python-version: [ "3.11" ]
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip setuptools
-          python -m pip install numpy cython scipy
-          python -m pip install -e '.[app]'
-          python -m pip install pytest setuptools
+          python -m pip install --no-user --editable ".[app]"
+          python -m pip install pytest
       - name: Test with pytest
         run: |
           pytest
+
+  test-tox:
+    name: Test with Python${{ matrix.python-version }} (tox, ${{ matrix.os }})
+    needs: lint
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest' ]
+        python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+      - name: Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Set up Python${{ matrix.python-version }}
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install CI libraries
+        run: |
+          python -m pip install --require-hashes -r CI/requirements_ci.txt
+      - name: Environment Caching
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: .tox
+          key: ${{ matrix.os }}-Python${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'tox.toml') }}
+      - name: Test with tox
+        run: |
+          python -m tox
+      - name: Report Coverage
+        uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2.3.6
+        with:
+          flag-name: run-${{ matrix.python-version }}-pypi
+          parallel: true
+
+  # test-conda:
+  #   name: Test with Python${{ matrix.python-version }} (Anaconda, ${{ matrix.os }})
+  #   needs: lint
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ 'ubuntu-latest' ]
+  #       python-version: [ 3.10", "3.11", "3.12", "3.13", "3.14" ]
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: Harden Runner
+  #       uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+  #       with:
+  #         egress-policy: audit
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+  #       with:
+  #         persist-credentials: false
+  #     - name: Setup Conda (Micromamba) with Python${{ matrix.python-version }}
+  #       uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2.0.4
+  #       with:
+  #         cache-downloads: true
+  #         cache-environment: true
+  #         environment-file: environment-dev.yml
+  #         create-args: >-
+  #           python=${{ matrix.python-version }}
+  #     - name: Install PEACH
+  #       run: |
+  #         python -m pip install --no-deps .
+  #     - name: Check versions
+  #       run: |
+  #         micromamba list
+  #         python -m pip check || true
+  #     - name: Test with pytest
+  #       run: |
+  #         python -m pytest --cov peach --cov-report=lcov
+  #     - name: Report Coverage
+  #       uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2.3.6
+  #       with:
+  #         flag-name: run-${{ matrix.python-version }}-conda
+  #         parallel: true
+
+  finish:
+    needs:
+      - test-pypi
+      # - test-conda
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          disable-sudo: true
+          egress-policy: audit
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2.3.6
+        with:
+          parallel-finished: true

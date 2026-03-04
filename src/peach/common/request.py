@@ -8,6 +8,7 @@ from urllib.parse import urljoin, urlparse
 import requests
 from param import Boolean, Integer, Parameterized, Selector, String
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -28,8 +29,9 @@ class AsyncJob(Parameterized):
     response_url = String("")
     active = Boolean(False)
 
-    def __init__(self, headers: dict = None, max_retries: int = 0):
-        r"""Create an empty async request to a backend.
+    def __init__(self, headers: dict | None = None, max_retries: int = 0):
+        r"""
+        Create an empty async request to a backend.
 
         Send the request by calling py:meth:`post(data)`.
 
@@ -55,11 +57,11 @@ class AsyncJob(Parameterized):
     def post(self, backend, process, data):
         """Make the post request to the given process, with the given data."""
         url = urljoin(backend, f"processes/{process}/execution")
-        resp = requests.post(url, json=data, headers=self.headers, timeout=60)
+        resp = requests.post(url, json=data, headers=self.headers, timeout=5)
         try:
             resp.raise_for_status()
         except requests.exceptions.RequestException as e:
-            logger.error(f"Job submission failed with {url} : {e}")
+            logger.error("Job submission failed with %s : %s", url, e)
             self.state = JobState.submit_failed
             self.active = False
             raise
@@ -70,7 +72,8 @@ class AsyncJob(Parameterized):
             url_monit = urljoin(backend, url_monit)
         self.monitor_url = url_monit
         self.last_job = {"backend": backend, "process": process, "data": data}
-        logger.info(f"Job {self.jobid} accepted from computation.")
+        msg = f"Job {self.jobid} accepted from computation."
+        logger.info(msg)
         self.state = JobState.accepted
         self.active = True
 
@@ -81,7 +84,8 @@ class AsyncJob(Parameterized):
         return urlparse(self.monitor_url).path.split("/")[-1]
 
     def monitor(self):
-        """Check the request's progress.
+        """
+        Check the request's progress.
 
         Returns the state of the Job.
         """
@@ -93,39 +97,43 @@ class AsyncJob(Parameterized):
         ]:
             return self.state
         # offset=0 is only to squash a warning of Pygeoapi.
-        r = requests.get(self.monitor_url + "?f=json&offset=0").json()
+        r = requests.get(self.monitor_url + "?f=json&offset=0", timeout=5).json()
         if r["progress"] != self.progress:
             self.progress = r["progress"]
 
         if r["status"] == "successful":
             self.response_url = self.monitor_url + "/results?f=json"
-            logger.info(f"Job {self.jobid} completed. Results at {self.response_url}")
+            msg = f"Job {self.jobid} completed. Results at {self.response_url}"
+            logger.info(msg)
             self.state = JobState.successful
             self.active = False
 
         # Job has failed, maybe try again
         elif r["status"] == "failed":
             if self.retries < self.max_retries:
-                logger.warning(f"Job {self.jobid} failed. Retrying. {r}")
+                msg = f"Job {self.jobid} failed. Retrying. {r}"
+                logger.warning(msg)
                 self.retries += 1
                 self.state = JobState.unsent
                 self.post(**self.last_job)
             else:
-                logger.warning(
-                    f"Job {self.jobid} failed. Max retries reached, stopping. {r}"
-                )
+                msg = f"Job {self.jobid} failed. Max retries reached, stopping. {r}"
+                logger.warning(msg)
                 self.state = JobState.failed
                 self.active = False
 
         elif r["status"] == "accepted" and self.state == JobState.accepted:
-            logger.debug(f"Job {self.jobid} has not started yet.")
+            msg = f"Job {self.jobid} has not started yet."
+            logger.debug(msg)
         else:
-            logger.warning(f"Job {self.jobid} is in an unknown state. Response: {r}")
+            msg = f"Job {self.jobid} is in an unknown state. Response: {r}"
+            logger.warning(msg)
 
         return self.state
 
     def wait(self, interval: float = 5, timeout: float = 0):
-        """Wait for a job to complete or fail.
+        """
+        Wait for a job to complete or fail.
 
         Parameters
         ----------
@@ -152,11 +160,12 @@ class AsyncJob(Parameterized):
         if self.state is not JobState.successful:
             raise AttributeError(f"Job has no result yet. State is {self.state}.")
 
-        return requests.get(self.response_url).json()["value"]
+        return requests.get(self.response_url, timeout=5).json()["value"]
 
 
 def check_backend(backend):
-    """Check if the backend is available.
+    """
+    Check if the backend is available.
 
     Input is the backend's hostname.
 
@@ -164,7 +173,7 @@ def check_backend(backend):
     """
     url = urljoin(backend, "processes")
     try:
-        resp = requests.get(url)
+        resp = requests.get(url, timeout=5)
         resp.raise_for_status()
     except requests.exceptions.RequestException as e:
         msg = f"Backend server ({backend}) not available: {e}"

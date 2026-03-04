@@ -6,7 +6,6 @@ It calls the scipy.stats.rv_continuous.rvs method using xarray.apply_ufunc and r
 Here we're using it to create a class that automatically handles the weights of a mixture model.
 """
 
-
 from collections.abc import Sequence
 
 import numpy as np
@@ -15,7 +14,8 @@ import xclim as xc
 
 
 class _XrRV:
-    """Base random variable wrapper class.
+    """
+    Base random variable wrapper class.
 
     Most methods have a common signature between continuous and
     discrete variables in scipy. We define a base wrapper and
@@ -63,10 +63,9 @@ class _XrRV:
         kwargs = dict(zip(all_keys, all_args[len_args:]))
         return args, kwargs
 
-    def rvs(
-        self, *args, size=1, random_state=None, dims=None, apply_kwargs=None, **kwargs
-    ):
-        """Implement base rvs method.
+    def rvs(self, *args, size=1, random_state=None, dims=None, apply_kwargs=None, **kwargs):
+        """
+        Implement base rvs method.
 
         In scipy, rvs has a common signature that doesn't depend on continuous
         or discrete, so we can define it here.
@@ -117,7 +116,8 @@ class _XrRV:
 
 
 class XrContinuousRV(_XrRV):
-    """Wrapper for subclasses of :py:class:`~scipy.stats.rv_continuous`.
+    """
+    Wrapper for subclasses of :py:class:`~scipy.stats.rv_continuous`.
 
     Usage examples available at :py:ref:`stats_tutorial`
 
@@ -133,7 +133,8 @@ class XrContinuousRV(_XrRV):
 
 
 def _asdataarray(x_or_q, dim_name):
-    """Ensure input is a DataArray.
+    """
+    Ensure input is a DataArray.
 
     This is designed for the x or q arguments in univariate distributions.
     It is also used in multivariate normal distribution but only as a fallback.
@@ -144,13 +145,8 @@ def _asdataarray(x_or_q, dim_name):
     if x_or_q_ary.ndim == 0:
         return xr.DataArray(x_or_q_ary)
     if x_or_q_ary.ndim == 1:
-        return xr.DataArray(
-            x_or_q_ary, dims=[dim_name], coords={dim_name: np.asarray(x_or_q)}
-        )
-    raise ValueError(
-        "To evaluate distribution methods on data with >=2 dims,"
-        " the input needs to be a xarray.DataArray"
-    )
+        return xr.DataArray(x_or_q_ary, dims=[dim_name], coords={dim_name: np.asarray(x_or_q)})
+    raise ValueError("To evaluate distribution methods on data with >=2 dims, the input needs to be a xarray.DataArray")
 
 
 def _wrap_method(method):
@@ -159,9 +155,7 @@ def _wrap_method(method):
         meth = getattr(self.dist, method)
         if args:
             args = (_asdataarray(args[0], dim_name), *args[1:])
-        args, kwargs = self._broadcast_args(
-            args, kwargs
-        )  # pylint: disable=protected-access
+        args, kwargs = self._broadcast_args(args, kwargs)  # pylint: disable=protected-access
         return xr.apply_ufunc(meth, *args, kwargs=kwargs, dask="parallelized")
 
     return aux
@@ -179,12 +173,10 @@ def _add_documented_method(cls, wrapped_cls, methods, extra_docs=None):
             method = cls.rvs
         else:
             method = _wrap_method(method_name)
-        setattr(
-            method,
-            "__doc__",
+        method.__doc__ = (
             f"Method wrapping :meth:`scipy.stats.{wrapped_cls}.{method_name}` "
             "with :func:`xarray.apply_ufunc`\n\nUsage examples available at "
-            f":ref:`stats_tutorial/dists`.\n\n{extra_doc}",
+            f":ref:`stats_tutorial/dists`.\n\n{extra_doc}"
         )
         setattr(cls, method_name, method)
 
@@ -217,9 +209,7 @@ kwargs : dict, optional
 }
 base_methods = ["cdf", "logcdf", "sf", "logsf", "ppf", "isf", "rvs"]
 _add_documented_method(XrContinuousRV, "rv_generic", base_methods, doc_extras)
-_add_documented_method(
-    XrContinuousRV, "rv_continuous", base_methods + ["pdf", "logpdf"], doc_extras
-)
+_add_documented_method(XrContinuousRV, "rv_continuous", base_methods + ["pdf", "logpdf"], doc_extras)
 
 # -------------- End of xarray-einstats code -------------- #
 
@@ -228,7 +218,8 @@ class XMixtureDistribution:
     """Statistical distribution based on a mixture of distributions."""
 
     def __init__(self, params, weights):
-        """Create MixtureModel instance.
+        """
+        Create MixtureModel instance.
 
         Parameters
         ----------
@@ -250,7 +241,8 @@ class XMixtureDistribution:
 
     @classmethod
     def from_data(cls, data, weights, distribution, method="ML"):
-        """Return a MixtureModel instance from sample data.
+        """
+        Return a MixtureModel instance from sample data.
 
         Parameters
         ----------
@@ -262,9 +254,7 @@ class XMixtureDistribution:
             Name of the distribution to fit, from scipy.stats continuous distributions.
         """
         # Fit data for each realization - dask-aware
-        params = xc.indices.stats.fit(
-            data, dist=distribution, dim="time", method=method
-        )
+        params = xc.indices.stats.fit(data, dist=distribution, dim="time", method=method)
         return cls(params=params, weights=weights)
 
 

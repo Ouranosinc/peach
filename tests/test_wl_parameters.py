@@ -17,22 +17,18 @@ from peach.risk import bootstrap
 
 
 @pytest.mark.online
-@pytest.mark.skipif(
-    os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
-)
-def test_IndicatorsWL(wl_pot_obs, wl_pot_sim):
+@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI")
+class TestIndicatorsWL:
+    def test_simple(self, wl_pot_obs, wl_pot_sim):
+        dao = xr.open_dataarray(wl_pot_obs, engine="zarr")
+        o = IndicatorObsWL(data=dao, period=(1970, 2010))
 
-    dao = xr.open_dataarray(wl_pot_obs, engine="zarr")
-    o = IndicatorObsWL(data=dao, period=(1970, 2010))
+        das = xr.open_dataarray(wl_pot_sim, engine="zarr")
+        ref = IndicatorRefWL(data=das, obs=o)
 
-    das = xr.open_dataarray(wl_pot_sim, engine="zarr")
-    ref = IndicatorRefWL(data=das, obs=o)
+        _fut = IndicatorSimWL(data=das, obs=o, period=(2040, 2070), model_weights=ref.param.model_weights)
 
-    fut = IndicatorSimWL(
-        data=das, obs=o, period=(2040, 2070), model_weights=ref.param.model_weights
-    )
-
-    assert ref.isf(0.1) > 0
+        assert ref.isf(0.1) > 0
 
 
 class TestIndicatorObsWL:
@@ -97,9 +93,7 @@ def test_scale_pareto():
     assert scale_pareto(d.sf, "sf", 0, 2) == 1
     assert scale_pareto(d.isf, "isf", 1, 2) == 0
 
-    assert np.isclose(
-        scale_pareto(d.sf, "sf", scale_pareto(d.isf, "isf", 0.1, 2), 2), 0.1, atol=1e-6
-    )
+    assert np.isclose(scale_pareto(d.sf, "sf", scale_pareto(d.isf, "isf", 0.1, 2), 2), 0.1, atol=1e-6)
 
 
 def test_dparams_with_slr(synthetic_ewl_ds):
@@ -111,23 +105,12 @@ def test_dparams_with_slr(synthetic_ewl_ds):
     ind = IndicatorSimWL(obs=obs, data=sl, period=fut_period)
     ind.sample_size = ind.obs.data.size
     dparams = ind.fit("genpareto", period=fut_period)
-    loc = (
-        dparams.sel(experiment_id="ssp585", dparams="loc")
-        .quantile(dim="sample", q=0.5)
-        .item()
-    )
+    loc = dparams.sel(experiment_id="ssp585", dparams="loc").quantile(dim="sample", q=0.5).item()
     loc_diff = loc - obs.dparams.sel(dparams="loc").item()
 
     # Calculate expected difference in loc from slr data.
-    expected_diff = (
-        sl.sel(experiment_id="ssp585")
-        .interp(time=str(int(np.mean(fut_period))))
-        .sel(quantile=0.5, method="nearest")
-        .item()
-    )
-    assert np.isclose(
-        expected_diff, loc_diff, atol=0.01
-    )  # Tolerance for random noise in slr data and sampling with replacement.
+    expected_diff = sl.sel(experiment_id="ssp585").interp(time=str(int(np.mean(fut_period)))).sel(quantile=0.5, method="nearest").item()
+    assert np.isclose(expected_diff, loc_diff, atol=0.01)  # Tolerance for random noise in slr data and sampling with replacement.
 
 
 def test_wl_mixture_replace_weights(synthetic_ewl_ds):
@@ -136,24 +119,14 @@ def test_wl_mixture_replace_weights(synthetic_ewl_ds):
 
     obs = IndicatorObsWL(data=wl_pot, period=(1995, 2014))
     ind = IndicatorSimWL(obs=obs, data=sl, period=(2070, 2100))
-    ind.weights.loc[
-        ind.weights["experiment_id"].isin(["ssp126", "ssp370", "ssp585"])
-    ] = 0
-    ind.weights.loc[ind.weights["experiment_id"] == "ssp245"] = (
-        1 / ind.weights.sizes["sample"]
-    )
+    ind.weights.loc[ind.weights["experiment_id"].isin(["ssp126", "ssp370", "ssp585"])] = 0
+    ind.weights.loc[ind.weights["experiment_id"] == "ssp245"] = 1 / ind.weights.sizes["sample"]
     aep = ind._dist_method("sf", thresh).item()
 
-    sf_check = lambda x: xc.indices.stats.dist_method(
-        function="sf", fit_params=ind.dparams, arg=x
-    )
-    aep_check = scale_pareto(sf_check, "sf", thresh, ind.obs.peaks_per_yr).quantile(
-        dim="sample", q=0.5
-    )
+    sf_check = lambda x: xc.indices.stats.dist_method(function="sf", fit_params=ind.dparams, arg=x)
+    aep_check = scale_pareto(sf_check, "sf", thresh, ind.obs.peaks_per_yr).quantile(dim="sample", q=0.5)
 
-    assert np.all(
-        np.isclose(np.array([0.0, 1.0, 0.0, 0.0]), ind.weights.sum(dim="sample").data)
-    )
+    assert np.all(np.isclose(np.array([0.0, 1.0, 0.0, 0.0]), ind.weights.sum(dim="sample").data))
     assert np.isclose(ind.weights.sum(), 1)
     assert np.isclose(aep, aep_check.sel(experiment_id="ssp245").item(), atol=0.06)
 
@@ -163,62 +136,37 @@ def test_wl_mixture_bounds(synthetic_ewl_ds):
     obs = IndicatorObsWL(data=wl_pot, period=(1995, 2014))
     ind = IndicatorSimWL(obs=obs, data=sl, period=(2070, 2100))
 
-    sf = lambda x: xc.indices.stats.dist_method(
-        function="sf", fit_params=ind.dparams, arg=x
-    )
+    sf = lambda x: xc.indices.stats.dist_method(function="sf", fit_params=ind.dparams, arg=x)
 
     for thresh in [2.5, 3, 4]:
         mix = ind._dist_method("sf", thresh).item()
-        ssps = (
-            scale_pareto(sf, "sf", thresh, ind.obs.peaks_per_yr)
-            .mean(dim="sample")
-            .values
-        )
+        ssps = scale_pareto(sf, "sf", thresh, ind.obs.peaks_per_yr).mean(dim="sample").values
 
         assert np.greater(mix + 1e-2, ssps.min())
         assert np.less(mix - 1e-2, ssps.max())
 
 
 def test_wl_bootstrap(synthetic_ewl_ds):
-
     wl, wl_pot, sl, stn_thresh = synthetic_ewl_ds
     fut_period = (2070, 2100)
     obs = IndicatorObsWL(data=wl_pot, period=(1995, 2014))
     ind = IndicatorSimWL(obs=obs, data=sl, period=fut_period)
 
-    q_fromdata = (
-        sl.sel(experiment_id="ssp585")
-        .sel(quantile=0.5)
-        .interp(time=str(int(np.mean(fut_period))))
-        .item()
-    )
-    q_frombootstrap = (
-        bootstrap.from_quantile(ind._sample(period=fut_period), 2000)
-        .sel(experiment_id="ssp585")
-        .quantile(dim="sample", q=0.5)
-        .item()
-    )
+    q_fromdata = sl.sel(experiment_id="ssp585").sel(quantile=0.5).interp(time=str(int(np.mean(fut_period)))).item()
+    q_frombootstrap = bootstrap.from_quantile(ind._sample(period=fut_period), 2000).sel(experiment_id="ssp585").quantile(dim="sample", q=0.5).item()
 
     assert np.isclose(q_fromdata, q_frombootstrap, atol=5e-4)
 
 
 def test_wl_experiment_percentiles(synthetic_ewl_ds):
-
     wl, wl_pot, sl, stn_thresh = synthetic_ewl_ds
     fut_period = (2070, 2100)
     obs = IndicatorObsWL(data=wl_pot, period=(1995, 2014))
     ind = IndicatorSimWL(obs=obs, data=sl, period=fut_period)
 
-    q_fromdata = (
-        sl.sel(experiment_id="ssp585")
-        .sel(quantile=0.5)
-        .interp(time=str(int(np.mean(fut_period))))
-        .item()
-    )
+    q_fromdata = sl.sel(experiment_id="ssp585").sel(quantile=0.5).interp(time=str(int(np.mean(fut_period)))).item()
     q_experiment_percentiles = (
-        ind.experiment_percentiles([50])[f"{ind.data.name}_p50"]
-        .interp(time=str(int(np.mean(fut_period))))
-        .sel(experiment_id="ssp585")
+        ind.experiment_percentiles([50])[f"{ind.data.name}_p50"].interp(time=str(int(np.mean(fut_period)))).sel(experiment_id="ssp585")
         - ind.obs.stn_thresh
     )
 

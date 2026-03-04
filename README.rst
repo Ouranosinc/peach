@@ -1,30 +1,25 @@
-.. |zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.17187211.svg
-   :target: https://doi.org/10.5281/zenodo.17187211
-
 ===================================================================
 PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v0.1.0
 ===================================================================
- 
-+----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
-| Versions                   | |pypi| |versions|                                                                                                                 |
-+----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
-| Documentation and Support  | |docs|                                                                                                                            |
-+----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
-| Open Source                | |license| |ossf| |zenodo|                                                                                                         |
-+----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
-| Coding Standards           | |black| |ruff| |pre-commit|                                                                                                       |
-+----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
-| Development Status         | |status| |build| |coveralls|                                                                                                      |
-+----------------------------+-----------------------------------------------------------------------------------------------------------------------------------+
 
++----------------------------+---------------------------------------------------+
+| Versions                   | |pypi| |versions|                                 |
++----------------------------+---------------------------------------------------+
+| Documentation and Support  | |docs|                                            |
++----------------------------+---------------------------------------------------+
+| Open Source                | |license| |ossf| |zenodo|                         |
++----------------------------+---------------------------------------------------+
+| Coding Standards           | |ruff| |prek| |pre-commit-ci|                     |
++----------------------------+---------------------------------------------------+
+| Development Status         | |status| |build| |coveralls|                      |
++----------------------------+---------------------------------------------------+
 
-
-PEACH is an online calculations services and python package that offers calculation for climate hazard likelihood. 
+PEACH is an online calculations services and python package that offers calculation for climate hazard likelihood.
 Peach can be used to deploy calculation services and graphical interface or as traditional python package to estimate climate hazard likelihood.
 
 Features
 --------
-- relies on more than 500 biasadjusted climate model simulations from CMIP6, please consult the `FRDR repositary <https://www.frdr-dfdr.ca/repo/dataset/876e9380-63fc-4eaa-987b-aa16c3770941>`_ and `Pre-Workflow folder <pre_workflow_data/>`_;
+- relies on more than 500 biasadjusted climate model simulations from CMIP6, please consult the `FRDR repository <https://www.frdr-dfdr.ca/repo/dataset/876e9380-63fc-4eaa-987b-aa16c3770941>`_ and `Pre-Workflow folder <pre_workflow_data/>`_;
 - applies weights to SSPs (experiment_id) and models (source_id) to provide a probabilistic estimate of the hazard;
 - provides a computational backend with an OGCAPI-Processes interface;
 - provides a web interface prototype to run the analysis;
@@ -105,7 +100,6 @@ It expects some sort of read-write policy looking like this:
 }
 ```
 
-
 Credits
 -------
 
@@ -119,10 +113,6 @@ This package was created with Cookiecutter_ and the `Ouranosinc/cookiecutter-pyp
 .. _Cookiecutter: https://github.com/cookiecutter/cookiecutter
 .. _`Ouranosinc/cookiecutter-pypackage`: https://github.com/Ouranosinc/cookiecutter-pypackage
 
-
-.. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
-        :target: https://github.com/psf/black
-        :alt: Python Black
 
 .. |build| image:: https://github.com/Ouranosinc/peach/actions/workflows/main.yml/badge.svg
         :target: https://github.com/Ouranosinc/peach/actions
@@ -144,9 +134,13 @@ This package was created with Cookiecutter_ and the `Ouranosinc/cookiecutter-pyp
         :target: https://securityscorecards.dev/viewer/?uri=github.com/Ouranosinc/peach
         :alt: OpenSSF Scorecard
 
-.. |pre-commit| image:: https://results.pre-commit.ci/badge/github/Ouranosinc/peach/main.svg
+.. |pre-commit-ci| image:: https://results.pre-commit.ci/badge/github/Ouranosinc/peach/main.svg
         :target: https://results.pre-commit.ci/latest/github/Ouranosinc/peach/main
         :alt: pre-commit.ci status
+
+.. |prek| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/j178/prek/master/docs/assets/badge-v0.json
+        :target: https://github.com/j178/prek
+        :alt: prek
 
 .. |pypi| image:: https://img.shields.io/pypi/v/peach.svg
         :target: https://pypi.python.org/pypi/peach
@@ -163,3 +157,7 @@ This package was created with Cookiecutter_ and the `Ouranosinc/cookiecutter-pyp
 .. |versions| image:: https://img.shields.io/pypi/pyversions/peach.svg
         :target: https://pypi.python.org/pypi/peach
         :alt: Supported Python Versions
+
+.. |zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.17187211.svg
+        :target: https://doi.org/10.5281/zenodo.17187211
+        :alt: Zenodo
