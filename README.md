@@ -8,13 +8,13 @@
 | Development Status | [![status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) [![build](https://github.com/Ouranosinc/peach/actions/workflows/main.yml/badge.svg)](https://github.com/Ouranosinc/peach/actions) [![Coverage Status](https://coveralls.io/repos/github/Ouranosinc/peach/badge.svg?branch=main)](https://coveralls.io/github/Ouranosinc/peach?branch=main) |
 
 PEACH is an online calculation service and Python package that offers calculation for climate hazard likelihood.
-It computes climate indicators over hundreds of different Earth System Model (ESM) simulations, then combine the results into a single probability density function, accounting for model performance and the relative likelihood of greenhouse gas (GHG) emission scenarios. 
+It computes climate indicators over hundreds of different Earth System Model (ESM) simulations, then combine the results into a single probability density function, accounting for model performance and the relative likelihood of greenhouse gas (GHG) emission scenarios.
 Peach can be used to deploy calculation services and graphical interface or as a traditional Python package to estimate climate hazard likelihood.
 
 ## Features
 - Relies on more than 500 climate model simulations from CMIP6, bias-adjusted relative to weather station records across Canada;
 - Applies weights to GHG scenarios and ESMs to provide a probabilistic estimate of hazards;
-- Provides a computational backend with an OGCAPI-Processes interface for the calculation of climate indicator time series and the probabilistic analysis; 
+- Provides a computational backend with an OGCAPI-Processes interface for the calculation of climate indicator time series and the probabilistic analysis;
 - Provides a web interface prototype to run the analysis;
 - Peer-reviewed, see [Huard et al. (2026)](https://doi.org/10.1088/2515-7620/ae3a4d)
 
