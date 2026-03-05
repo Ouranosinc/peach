@@ -6,6 +6,8 @@
 - IndicatorRefWL: Same but returns the reference period.
 """
 
+import logging
+
 import numpy as np
 import param
 import xarray as xr
@@ -22,6 +24,9 @@ from peach.frontend.parameters import (
 )
 from peach.risk import bootstrap
 from peach.risk.xmixture import XMixtureDistribution
+
+
+logger = logging.getLogger("frontend-wl-parameters")
 
 """
 # Design considerations
@@ -61,7 +66,8 @@ What we need are:
 
 
 class IndicatorObsWL(IndicatorDA):
-    """Water level parameterized class, customized for Peaks Over Threshold (POT) values.
+    """
+    Water level parameterized class, customized for Peaks Over Threshold (POT) values.
 
     Notes
     -----
@@ -90,7 +96,7 @@ class IndicatorObsWL(IndicatorDA):
         for key in ["stn_thresh", "peaks_per_yr", "sl_mm_yr"]:
             setattr(self, key, self.data.attrs[key])
 
-        setattr(self, "ref_period", tuple(self.data.attrs["ref_period"]))
+        self.ref_period = tuple(self.data.attrs["ref_period"])
 
     @param.depends("data", "ref_period", "sl_mm_yr", watch=True, on_init=True)
     def _update_ts(self):
@@ -111,15 +117,15 @@ class IndicatorObsWL(IndicatorDA):
         thresh = self.data.attrs.get("stn_thresh", self.stn_thresh)
 
         if len(stations) == 1:
-            st = "station " + stations[0]
+            st = f"station {stations[0]}"
         else:
-            st = "stations " + ", ".join(stations)
+            st = f"stations {', '.join(stations)}"
 
         if self.locale == "fr":
             if len(stations) == 1:
-                st = "à la " + st
+                st = f"à la {st}"
             else:
-                st = "aux " + st
+                st = f"aux {st}"
 
             return f"Série observée de `{self.long_name}` {st}, avec un seuil de {thresh} m."
         else:
@@ -135,8 +141,7 @@ class IndicatorObsWL(IndicatorDA):
                 f"observée au cours de la période ({period})."
             )
         return (
-            f"Probability density function of the {dist} distribution, overlaid on the histogram of the observed "
-            f"series during the period ({period})."
+            f"Probability density function of the {dist} distribution, overlaid on the histogram of the observed series during the period ({period})."
         )
 
     def _sample(self, period: tuple) -> xr.DataArray:
@@ -145,22 +150,17 @@ class IndicatorObsWL(IndicatorDA):
             return self.data + wl_norm(self.sl_mm_yr, period)
 
     def _dist_method(self, name, arg: xr.DataArray | float):
-        """Adjust argument or results for the fact that the pareto parameters describe events that may
+        """
+        Adjust argument or results for the fact that the pareto parameters describe events that may
         occur more than once per year on average. If there are 2 event per year, then the return period is halved.
         """
-        func = lambda x: xc.indices.stats.dist_method(
-            function=name, fit_params=self.dparams, arg=x
-        )
+        func = lambda x: xc.indices.stats.dist_method(function=name, fit_params=self.dparams, arg=x)
         return scale_pareto(func, name, arg, self.peaks_per_yr)
 
     def pdf(self, x):
         """Return the probability density function."""
-        pdf = lambda x: xc.indices.stats.dist_method(
-            function="pdf", fit_params=self.dparams, arg=x
-        )
-        sf = lambda x: xc.indices.stats.dist_method(
-            function="sf", fit_params=self.dparams, arg=x
-        )
+        pdf = lambda x: xc.indices.stats.dist_method(function="pdf", fit_params=self.dparams, arg=x)
+        sf = lambda x: xc.indices.stats.dist_method(function="sf", fit_params=self.dparams, arg=x)
         n = self.peaks_per_yr
         out = n * (1 - sf(x)) ** (n - 1) * pdf(x)
         out.name = "pdf"
@@ -179,9 +179,7 @@ class IndicatorObsWL(IndicatorDA):
             if size is None:
                 size = len(sample)
 
-            sample = bootstrap.resample(
-                sample, size=size, iteration=iteration, replace=True
-            )
+            sample = bootstrap.resample(sample, size=size, iteration=iteration, replace=True)
 
         # Fit the parameters
         # TODO: floc or not ?
@@ -196,7 +194,8 @@ class IndicatorObsWL(IndicatorDA):
 
 
 class IndicatorSimWL(IndicatorDA):
-    """Water level parameterized class, custom made for POT values.
+    """
+    Water level parameterized class, custom made for POT values.
 
     Bootstrap used to combine sampling uncertainties with climate change uncertainties.
 
@@ -206,9 +205,7 @@ class IndicatorSimWL(IndicatorDA):
     dist = param.Selector(default="genpareto", objects=["genpareto"], allow_refs=True)
     obs = param.ClassSelector(class_=IndicatorObsWL, doc="Observed indicator.")
     data = param.Parameter(doc="AR6 sea level rise rate DataArray.")
-    model_weights = param.Parameter(
-        doc="Weights for the models. Unused here.", allow_refs=True
-    )
+    model_weights = param.Parameter(doc="Weights for the models. Unused here.", allow_refs=True)
     weights = param.Parameter(doc="Weights for the scenarios")
     num_samples = param.Number(150, doc="Number of samples to draw for the bootstrap.")
     sample_size = param.Number(30, doc="Size of the bootstrap samples.")
@@ -226,20 +223,20 @@ class IndicatorSimWL(IndicatorDA):
 
     @property
     def sample(self):
-        """Return sea level rise at period mid-point across all scenarios and percentiles, scaled by the observation
+        """
+        Return sea level rise at period mid-point across all scenarios and percentiles, scaled by the observation
         threshold.
         """
         with xr.set_options(keep_attrs=True):
             return self._sample(self.period) + self.obs.stn_thresh
 
     def fit(self, dist: str, period: tuple) -> xr.DataArray:
-        """Fit the distribution to the data, creating a bootstrap sample combining parametric uncertainty for the
+        """
+        Fit the distribution to the data, creating a bootstrap sample combining parametric uncertainty for the
         observation data, and scenario uncertainty for the future data.
         """
         # Bootstrapped distribution parameters for the observations, renormalized.
-        dparams = self.obs.fit(
-            dist, self.obs.period, size=self.sample_size, iteration=self.num_samples
-        )
+        dparams = self.obs.fit(dist, self.obs.period, size=self.sample_size, iteration=self.num_samples)
         dp = dparams.expand_dims(experiment_id=self.data.experiment_id)
 
         # Bootstrapped future sea level rise - mid-year
@@ -284,15 +281,14 @@ class IndicatorSimWL(IndicatorDA):
             scen_w = scen_w.fillna(0.25)
 
         # Sample weights
-        sample_w = xr.DataArray(
-            np.ones(self.num_samples) / self.num_samples, dims=("sample")
-        )
+        sample_w = xr.DataArray(np.ones(self.num_samples) / self.num_samples, dims=("sample"))
 
         # Combined weights
         self.weights = scen_w * sample_w
 
     def experiment_percentiles(self, per) -> xr.Dataset:
-        """Return the percentiles computed for each year and experiment.
+        """
+        Return the percentiles computed for each year and experiment.
 
         Useful for visualizing the distribution of the ensemble.
 
@@ -307,11 +303,9 @@ class IndicatorSimWL(IndicatorDA):
         # Harmonize outputs with IndicatorSimDA.experiment_percentiles.
         out = out.to_dataset(dim="quantile")
         for p, perc in out.data_vars.items():
-            perc.attrs["description"] = (
-                perc.attrs.get("description", "") + f" {p}th percentile of ensemble."
-            )
+            perc.attrs["description"] = f"{perc.attrs.get('description', '')} {p}th percentile of ensemble."
             out[p] = perc
-            out = out.rename(name_dict={p: f"{self.data.name}_p{int(p*100):02d}"})
+            out = out.rename(name_dict={p: f"{self.data.name}_p{int(p * 100):02d}"})
 
         return out
 
@@ -331,22 +325,25 @@ class IndicatorSimWL(IndicatorDA):
         thresh = self.obs.stn_thresh
 
         if len(stations) == 1:
-            st = "station " + stations[0]
+            st = f"station {stations[0]}"
         else:
-            st = "stations " + ", ".join(stations)
+            st = f"stations {', '.join(stations)}"
 
         if self.locale == "fr":
             if len(stations) == 1:
-                st = "à la " + st
+                st = f"à la {st}"
             else:
-                st = "aux " + st
+                st = f"aux {st}"
 
             return (
-                f"Série projetée de `{self.long_name}` {st}, avec un seuil de {thresh} m. Cliquer sur les items de la légende "
-                f"permet de contrôler leur visibilité."
+                f"Série projetée de `{self.long_name}` {st}, avec un seuil de {thresh} m. "
+                "Cliquer sur les items de la légende permet de contrôler leur visibilité."
             )
         else:
-            return f"Projected time series for `{self.long_name}` at {st}, with a threshold of {thresh} m. Clicking on legend items allows to control their visibility."
+            return (
+                f"Projected time series for `{self.long_name}` at {st}, with a threshold of {thresh} m. "
+                "Clicking on legend items allows to control their visibility."
+            )
 
     @property
     def hist_caption(self):
@@ -364,9 +361,7 @@ class IndicatorSimWL(IndicatorDA):
 
 
 class IndicatorRefWL(IndicatorSimWL):
-    level = param.Number(
-        0.1, doc="Significance level for the KS test. Unused here.", allow_refs=True
-    )
+    level = param.Number(0.1, doc="Significance level for the KS test. Unused here.", allow_refs=True)
 
     @property
     def period(self):
@@ -378,14 +373,16 @@ class IndicatorRefWL(IndicatorSimWL):
 
     @param.depends("data", watch=True, on_init=True)
     def _update_ks(self):
-        """Return an array of ones to include all models in computation.
+        """
+        Return an array of ones to include all models in computation.
         TODO: Ideally we'd run a KS test against temperature observations over the reference period.
         """
         self._ks = True
 
 
 def add_trend(da: xr.DataArray, slope: float, midpoint: float) -> xr.DataArray:
-    """Add a linear trend to the data array.
+    """
+    Add a linear trend to the data array.
 
     Parameters
     ----------
@@ -408,7 +405,8 @@ def add_trend(da: xr.DataArray, slope: float, midpoint: float) -> xr.DataArray:
 
 
 def scale_pareto(func, name, arg, peaks_per_yr):
-    """Scale statistics of the pareto distribution to correct for the fact that the parameters are fitted to
+    """
+    Scale statistics of the pareto distribution to correct for the fact that the parameters are fitted to
     a sample with not exactly one event per year.
 
     Parameters
@@ -444,7 +442,8 @@ def scale_pareto(func, name, arg, peaks_per_yr):
 
     try:
         out.name = name
-    except AttributeError:
+    except AttributeError as err:
+        logger.error(err)
         pass
     return out
 

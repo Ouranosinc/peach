@@ -1,26 +1,27 @@
+name: peach-backend-full
 channels:
-- conda-forge
-- nodefaults
+  - conda-forge
+  - nodefaults
 dependencies:
-- aiofiles
-- copulae
-- filelock
-- flit >=3.11.0
-- gunicorn
-- lmoments3
-- numpy >=2.0
-- openturns >=1.24
-- pandas
-- param
-- pip >=25.2
-- pyextremes
-- python >=3.12,<3.13
-- s3fs
-- scipy
-- sphinx
-- starlette
-- uvicorn[standard]
-- xarray <2025.3.0
-- xclim
-- yaml
-- zarr <3
+  - aiofiles
+  - copulae
+  - filelock
+  - flit >=3.11.0
+  - gunicorn
+  - lmoments3
+  - numpy >=2.0
+  - openturns >=1.24
+  - pandas
+  - param
+  - pip >=25.2
+  - pyextremes
+  - python >=3.12,<3.13
+  - s3fs
+  - scipy
+  - sphinx
+  - starlette
+  - uvicorn[standard]
+  - xarray <2025.3.0
+  - xclim
+  - yaml
+  - zarr <3

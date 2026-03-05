@@ -1,18 +1,21 @@
+name: peach-docs
 channels:
   - conda-forge
   - nodefaults
 dependencies:
+  - python >=3.12,<3.13
+  # Docs
   - figanos
-  - sphinx
-  - sphinx-codeautolink
-  - sphinx-copybutton
-  - sphinx-intl
-  - sphinx-book-theme
-  - nbsphinx
-  - ipython
   - ipykernel
+  - ipython
   - jupyter_client
   - myst-nb
+  - nbsphinx
+  - sphinx >=8.2
+  - sphinx-book-theme >=1.1.4
+  - sphinx-codeautolink >=0.16.2
+  - sphinx-copybutton >=0.5.2
+  - sphinx-intl
   # For notebooks
   - s3fs
   - h5py

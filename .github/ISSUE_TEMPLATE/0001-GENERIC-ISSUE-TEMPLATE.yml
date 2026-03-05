@@ -1,5 +1,5 @@
 name: Generic issue template
-description: For detailing generic/uncategorized issues
+description: For detailing generic/uncategorized issues in PEACH
 
 body:
   - type: textarea
@@ -8,7 +8,7 @@ body:
       label: Generic Issue
       description: Please fill in the following information fields as needed.
       value: |
-        * Relevant libraries versions:
+        * peach version:
         * Python version:
         * Operating System:
 

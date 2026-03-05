@@ -1,28 +1,29 @@
 {
   "template": "https://github.com/Ouranosinc/cookiecutter-pypackage",
-  "commit": "f391bbd6ee14ab2478c64a1f78b74bd9903cae81",
+  "commit": "b9bacb7ddbbfaa8eff8c3e0182ebf2e8a66d00c7",
   "checkout": null,
   "context": {
     "cookiecutter": {
       "full_name": "David Huard",
       "email": "huard.david@ouranos.ca",
-      "github_username": "huard",
+      "github_username": "Ouranosinc",
+      "orcid_id": "0000-0003-0311-5498",
       "project_name": "PEACH",
       "project_slug": "peach",
-      "project_short_description": "Portail pour le calcul du risque d'aléas en climat futur",
+      "project_short_description": "Portail pour le calcul du risque d'aléas en climat futur.",
       "pypi_username": "huard",
       "version": "0.1.0",
       "use_pytest": "y",
-      "use_black": "y",
       "use_conda": "y",
-      "add_pyup_badge": "n",
       "make_docs": "y",
       "add_translations": "y",
       "command_line_interface": "No command-line interface",
       "create_author_file": "y",
       "open_source_license": "Apache Software License 2.0",
       "generated_with_cruft": "y",
-      "_template": "https://github.com/Ouranosinc/cookiecutter-pypackage"
+      "__gh_slug": "https://github.com/Ouranosinc/PEACH",
+      "_template": "https://github.com/Ouranosinc/cookiecutter-pypackage",
+      "_commit": "b9bacb7ddbbfaa8eff8c3e0182ebf2e8a66d00c7"
     }
   },
   "directory": null

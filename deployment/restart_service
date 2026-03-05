@@ -8,7 +8,7 @@
 
 
 # Restart matching container only if files under "src/" or "run.sh" change or on
-# first clone when GIT_PREVIOUS_COMMIT_HASH is emtpy.
+# first clone when GIT_PREVIOUS_COMMIT_HASH is empty.
 # If depends on other specific files in the repo, update the grep line.
 
 if [ -n "`echo "$GIT_CHANGED_FILES" | grep -e docs/factsheets/ -e src/ -e run.sh`" ] \
@@ -24,7 +24,7 @@ if [ -n "`echo "$GIT_CHANGED_FILES" | grep -e docs/factsheets/ -e src/ -e run.sh
         fi
         docker restart "$CONTAINER_NAME_TO_RESTART"
     fi
-    
+
 fi
 
 # backend does not need docs:
