@@ -1,5 +1,7 @@
 # PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v0.1.0
 
+|    |    |
+| -- | -- |
 | Versions | [![pypi](https://img.shields.io/pypi/v/peach.svg)](https://pypi.python.org/pypi/peach) [![versions](https://img.shields.io/pypi/pyversions/peach.svg)](https://pypi.python.org/pypi/peach) |
 | Documentation and Support | [![docs](https://readthedocs.org/projects/peach/badge/?version=latest)]() |
 | Open Source | [![license](https://img.shields.io/pypi/l/peach)](https://github.com/Ouranosinc/peach/blob/main/LICENSE) [![ossf](https://api.securityscorecards.dev/projects/github.com/Ouranosinc/peach/badge)](https://securityscorecards.dev/viewer/?uri=github.com/Ouranosinc/peach) [![zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.17187211.svg)](https://doi.org/10.5281/zenodo.17187211) |
