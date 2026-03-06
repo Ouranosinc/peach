@@ -2,8 +2,8 @@
 
 ## Servers
 
-- There's a running instance of the backend at <http://pavics.ouranos.ca/portail-ing-backend>
-- The user interface prototype runs on <http://pavics.ouranos.ca/portail-ing-frontend>
+- There's a running instance of the backend at <http://pavics.ouranos.ca/peach-backend>
+- The user interface prototype runs on <http://pavics.ouranos.ca/peach-frontend>
 
 If any of those links return 404 errors, please contact pavics@ouranos.ca
 

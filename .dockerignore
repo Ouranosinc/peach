@@ -73,7 +73,7 @@ instance/
 # Sphinx documentation
 docs/_build/
 docs/apidoc/modules.rst
-docs/apidoc/portail_ing*.rst
+docs/apidoc/peach*.rst
 
 # PyBuilder
 target/
