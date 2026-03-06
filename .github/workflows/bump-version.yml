@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - src/**.py
+      - "src/**/*.py"
+      - "!src/peach/__init__.py"
   workflow_dispatch:
 
 permissions:
