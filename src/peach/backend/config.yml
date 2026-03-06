@@ -91,7 +91,7 @@ metadata:
         name: Ouranos
         url: https://ouranos.ca
     contact:
-        name: Bourdeau-Goulet, Sarah-Claude
+        name: David Huard
         position: Specialist, Climate science and climate services
         address: 550 rue Sherbrooke Ouest
         city: Montréal
@@ -101,9 +101,9 @@ metadata:
         email: pavics@ouranos.ca
         role: pointOfContact
         phone: +1-514-282-6464
-        fax: C'mon
+        fax: C'mon...
         instructions: Please email us
-        url: pavics.ouranos.ca
+        url: pavics.ouranos.ca/peach
         hours: 9-5
 
 
