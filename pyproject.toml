@@ -149,11 +149,6 @@ app = [
 
 [tool]
 
-[tool.black]
-target-version = [
-  "py312"
-]
-
 [tool.bumpversion]
 current_version = "0.1.0"
 commit = true
@@ -177,8 +172,9 @@ replace = "version: \"{new_version}\""
 [[tool.bumpversion.files]]
 filename = "README.md"
 include_bumps = ["release"]
-search = "# PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v{current_version}"
-replace = "# PEACH - Probabilistic Ensemble Analysis of Climate Hazards - v{new_version}"
+search = "v[0-9]+\\.[0-9]+\\.[0-9]"
+regex = true
+replace = "v{new_version}"
 
 [[tool.bumpversion.files]]
 filename = "src/peach/backend/config.yml"
