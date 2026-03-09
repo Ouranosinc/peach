@@ -94,7 +94,7 @@ def idf_sim(tmp_workspace, pytestconfig):
 
     val = pytestconfig.cache.get("minio/idf_sim", None)
 
-    if val is None:
+    if val is None or Path(val).exists() is False:
         # Make IDF sim with temperature delta
         p = ComputeIDFProcessorSIM({"name": "Test-IDF-Sim"})
         p.INPUT_DATASET_PATTERN = "s3://https://minio.ouranos.ca/portail-ing/portail_ing_{var}_CMIP6_stations_AHCCD_concat.zarr"

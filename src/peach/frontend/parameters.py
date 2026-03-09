@@ -1717,7 +1717,8 @@ class IndicatorDA(BaseParameterized):
 
     def _slice(self, period: tuple[int, int]) -> slice:
         """Return the reference period as a slice."""
-        return slice(*map(str, period))
+        return slice(*[str(y) if y is not None else None for y in period])
+        #return slice(*map(str, period))
 
     def _sample(self, period: tuple) -> xr.DataArray:
         """Return the data during the period."""
@@ -1729,7 +1730,10 @@ class IndicatorDA(BaseParameterized):
         return self._sample(self.period)
 
     def fit(self, dist: str, period: tuple, method="PWM", iteration=0) -> xr.DataArray:
-        """Fit the distribution to the data."""
+        """Fit the distribution to the data. 
+        
+        If method is PWM but the distribution is not supported, try again with ML.
+        """
         sample = self._sample(period)
         if method is None or method == "PWM":
             lmom_dist = scipy_to_lmom.get(dist, dist)

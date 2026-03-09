@@ -243,6 +243,16 @@ class TestIndicatorDA:
         np.testing.assert_almost_equal(ida.sf(0.5), 0.5, decimal=1)
         np.testing.assert_almost_equal(ida.isf(0.5), 0.5, decimal=1)
 
+    def test_fit(self, synthetic_dataset):
+        ds = synthetic_dataset
+
+        ida = p.IndicatorObsDA.from_da(da=ds["00"], period=(1970, 2010))
+        m = ida.metrics_da
+        print(m)
+        np.testing.assert_almost_equal(m.values, \
+                                       np.array([19.65102506, 23.20854361, 27.2262672, 22.40446403, 23.17545415,
+        4.83562274, 22.21003045, np.inf]))
+
     def test_obs(self, synthetic_dataset):
         ds = synthetic_dataset
 
@@ -269,7 +279,7 @@ class TestIndicatorDA:
         sim_ds = synthetic_dataset_fut
         obs_ds = synthetic_dataset
 
-        o = p.IndicatorObsDA.from_da(da=obs_ds["00"], period=(1960, 2010), dist="uniform")
+        o = p.IndicatorObsDA.from_da(da=obs_ds["00"], period=(1960, 2010), dist="uniform", locale="en")
         assert o.long_name == "Var en 0"
 
         r = p.IndicatorRefDA(data=sim_ds["00"], dist=o.param.dist, obs=o, level=0.01)

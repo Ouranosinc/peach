@@ -25,10 +25,11 @@ def synthetic_ds():
     """
     ds = xr.Dataset()
     time = xr.date_range(start="1950-01-01", end="2020-12-31", freq="YE", use_cftime=True)
+    rng = np.random.default_rng(0)
 
     for i, uuid in enumerate(["00", "11"]):
         ds[uuid] = xr.DataArray(
-            data=np.random.rand(len(time)),
+            data=rng.random(len(time)),
             coords={"time": time},
             dims=["time"],
             attrs={
