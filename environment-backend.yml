@@ -8,3 +8,4 @@ dependencies:
   - gunicorn
   - uvicorn[standard] # required for starlette
   - filelock
+  - pygeoapi

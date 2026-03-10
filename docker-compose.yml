@@ -24,7 +24,7 @@ services:
         NEW_MAMBA_USER: ${MY_USERNAME:-root}
         NEW_MAMBA_USER_ID: ${MY_UID:-0}
         NEW_MAMBA_USER_GID: ${MY_GID:-0}
-        PYGEOAPI_SOURCE: ${PYGEOAPI_SOURCE:-pip}
+        #PYGEOAPI_SOURCE: ${PYGEOAPI_SOURCE:-pip}
         # Change these to your needs.
         MAMBA_ENV_BACKEND_FILE: environment-backend-full.yml
         MAMBA_ENV_FRONTEND_FILE: environment-frontend-full.yml
@@ -56,10 +56,10 @@ services:
       # approx number of concurrent tasks
       PANEL_THREADS: 5
       # URL to the backend:
-      BACKEND_URL: http://backend/api
+      BACKEND_URL: ${BACKEND_URL:-http://backend/api}
       FRONTEND_DATA_DIR: /app/src/peach/frontend/data
       FRONTEND_CONFIG_DIR: /app/src/peach/frontend/config
-      PANEL_ARGS: " --static-dirs docs=/app/documentation"
+      PANEL_ARGS: ${PANEL_ARGS:- --static-dirs docs=/app/documentation}
     depends_on: ["backend", "build-docs"]
 
   frontend-dev:
@@ -71,9 +71,9 @@ services:
       RELOAD: 1
       # Auto-reload only works for 1 process at a time:
       PANEL_WORKERS: 1
-      PANEL_ARGS: "--log-level debug --static-dirs docs=/app/documentation"
+      PANEL_ARGS: ${PANEL_ARGS:- --log-level debug --static-dirs docs=/app/documentation}
       PANEL_ADMIN_LOG_LEVEL: DEBUG
-      BACKEND_URL: http://backend-dev/api
+      BACKEND_URL: ${BACKEND_URL:-http://backend-dev/api}
     depends_on: ["backend-dev", "build-docs"]
 
   backend: &backend
@@ -93,8 +93,8 @@ services:
       BUCKET_URL: ${BUCKET_URL}
       BUCKET_NAME: ${BUCKET_NAME}
       BUCKET_CREDENTIALS_FILE: /run/secrets/minio_creds
-      PYGEOAPI_BASE_URL: ""
-      PYGEOAPI_PREFIX: api
+      PYGEOAPI_BASE_URL: ${PYGEOAPI_BASE_URL:-}
+      PYGEOAPI_PREFIX: ${PYGEOAPI_PREFIX:-api}
     secrets:
       - minio_creds
     volumes:

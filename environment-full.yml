@@ -8,7 +8,10 @@ dependencies:
   - copulae
   - filelock
   - flit >=3.11.0
+  - geopandas
   - gunicorn
+  - h5netcdf
+  - h5py
   - hvplot
   - ipyleaflet
   - ipywidgets_bokeh
@@ -21,6 +24,7 @@ dependencies:
   - param
   - pip >=25.2
   - pyextremes
+  - pygeoapi
   - python >=3.12,<3.13
   - s3fs
   - scipy
@@ -28,7 +32,7 @@ dependencies:
   - starlette
   - uvicorn[standard]
   - watchfiles
-  - xarray <2025.3.0
-  - xclim
+  - xarray
+  - xclim==0.60
   - yaml
-  - zarr <3
+  - zarr

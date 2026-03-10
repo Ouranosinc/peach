@@ -8,6 +8,7 @@ dependencies:
   - flit >=3.11.0,<4.0
   # data science
   - copulae
+  - geopandas
   - lmoments3
   - numpy >=2.0
   #- numcodecs <=0.15.1
@@ -18,6 +19,8 @@ dependencies:
   - xarray
   - xclim==0.60
   - zarr
+  - h5py
+  - h5netcdf
   # parameters
   - param
   # other:
