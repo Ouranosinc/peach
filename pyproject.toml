@@ -189,6 +189,13 @@ regex = true
 replace = "v{new_version}"
 
 [[tool.bumpversion.files]]
+filename = "README.rst"
+include_bumps = ["release"]
+search = "v[0-9]+\\.[0-9]+\\.[0-9]"
+regex = true
+replace = "v{new_version}"
+
+[[tool.bumpversion.files]]
 filename = "src/peach/backend/config.yml"
 search = "api_version: {current_version}"
 replace = "api_version: {new_version}"
