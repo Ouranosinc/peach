@@ -34,7 +34,7 @@ server:
         port: ${PYGEOAPI_PORT}
     url: ${PYGEOAPI_BASE_URL}
     api_rules:
-        api_version: 0.1.0
+        api_version: 0.1.1-dev.0
         scrict_slashes: false
         version_header: X-API-Version
         url_prefix: ${PYGEOAPI_PREFIX}

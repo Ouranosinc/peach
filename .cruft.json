@@ -12,7 +12,7 @@
       "project_slug": "peach",
       "project_short_description": "Portail pour le calcul du risque d'aléas en climat futur.",
       "pypi_username": "huard",
-      "version": "0.1.0",
+      "version": "0.1.1-dev.0",
       "use_pytest": "y",
       "use_conda": "y",
       "make_docs": "y",
