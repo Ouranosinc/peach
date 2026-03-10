@@ -55,6 +55,7 @@ from peach.risk.priors import (
     scenario_weights_from_iams,
 )
 from peach.risk.xmixture import XMixtureDistribution
+from peach.risk.fit import fit
 
 
 def ddict():
@@ -71,6 +72,7 @@ scipy_to_lmom = {
     "pearson3": "pe3",
     "weibull_min": "wei",
 }
+
 logger = get_logger(__name__)
 
 
@@ -1729,37 +1731,36 @@ class IndicatorDA(BaseParameterized):
         """Return the data during the period."""
         return self._sample(self.period)
 
-    def fit(self, dist: str, period: tuple, method="PWM", iteration=0) -> xr.DataArray:
+    def default_fit_method(self, dist):
+        """Return PWM if an analytical method is available, otherwise MLE."""
+        if dist in ["genextreme", "genpareto", "gumbel_r", "gumbel_l", "expon", "logistic", "kumaraswamy", "wakeby"]:
+            return "PWM"
+        else:
+            return "MLE"
+        
+    def fit(self, dist: str, period: tuple, method: str = None, iteration: int = 0) -> xr.DataArray:
         """Fit the distribution to the data. 
         
         If method is PWM but the distribution is not supported, try again with ML.
         """
         sample = self._sample(period)
-        if method is None or method == "PWM":
-            lmom_dist = scipy_to_lmom.get(dist, dist)
-            if hasattr(lm3.distr, lmom_dist):
-                dist_obj = getattr(lm3.distr, lmom_dist)
-            else:
-                method = "ML"
-                dist_obj = dist
-        else:
-            dist_obj = dist
-
-        logger.info("lmom: %s, %s %s", dist, dist_obj, method)
+        method = method or self.default_fit_method(dist)
+        logger.info("fit: %s using %s", dist, method)
         res = None
+
         try:
-            res = xc.indices.stats.fit(sample, dist=dist_obj, dim="time", method=method)
+            res = fit(sample, dist=dist, method=method)
         except Exception as e:
-            if iteration < 1:
-                logger.warning("fit encountered error: %s. Trying again with method=ML", e)
-                return self.fit(dist, period, method="ML", iteration=(iteration + 1))
+            if iteration < 1 and method=="PWM":
+                logger.warning("fit encountered error: %s. Trying again with method=MLE", e)
+                res = self.fit(dist, period, method="MLE", iteration=(iteration + 1))
             else:
                 raise e
 
         msg = f"fit: {res.data} "
         logger.info(msg)
         return res
-
+        
     def pdf(self, x):
         """Return the probability density function."""
         return self._dist_method("pdf", x)
@@ -2003,11 +2004,12 @@ class IndicatorSimDA(IndicatorDA):
 
         super().__init__(**kwargs)
 
-    def fit(self, dist: str, period: tuple) -> xr.DataArray:
+    def fit(self, dist: str, period: tuple, method: str = None) -> xr.DataArray:
         """Fit the distribution to the data."""
         # Combine time and realizations before statistical fit
         sample = self._sample(period).stack(tr=["time", "variant_label"])
-        return xc.indices.stats.fit(sample, dist=dist, dim="tr", method="ML")
+        method = method or self.default_fit_method(dist)
+        return fit(sample, dist=dist, dim="tr", method=method)
 
     @param.depends("period", watch=True, on_init=True)
     def _update_scenario_weights(self):
