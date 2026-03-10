@@ -1,7 +1,7 @@
 # Changelog
 
 
-## 0.2.0 (unreleased)
+## unreleased
 
 * Clean version following name change and reference paper acceptance.
 * Convert Restructured Text documentation to Markdown format.
