@@ -1378,9 +1378,7 @@ class Analysis(BaseParameterized):
             ref_period = updaters.get("ref_period", self.ref_period)
             new_period = self.check_extend_ref_period(da, ref_period)
             if ref_period[0] != new_period[0] or ref_period[1] != new_period[1]:
-                logger.debug(
-                    f"Extending Reference Period: {ref_period} to {new_period}"
-                )
+                logger.debug("Extending Reference Period: %s to %s", ref_period, new_period)
 
                 updaters["ref_period"] = (
                     min(ref_period[0], new_period[0]),
@@ -1414,10 +1412,7 @@ class Analysis(BaseParameterized):
         if count >= global_config.MIN_OBS_DATA:
             return ref_period
         else:
-
-            new_ref_period = self.extend_range_to_arr(
-                years_with_obs_data.dt.year.data, global_config.MIN_OBS_DATA, ref_period
-            )
+            new_ref_period = self.extend_range_to_arr(years_with_obs_data.dt.year.data, global_config.MIN_OBS_DATA, ref_period)
             return new_ref_period
 
     def extend_range_to_arr(self, arr: np.array, n: int, r: tuple) -> tuple:
@@ -1836,11 +1831,7 @@ class IndicatorObsDA(IndicatorDA):
         m = self.metrics[self.metric]
 
         if m is not None:
-            objs = {
-                f"{k} ({self.metric.upper()}: {v:.2f})": k
-                for k, v in sorted(m.items(), key=lambda x: x[1])
-                if np.isfinite(v)
-            }
+            objs = {f"{k} ({self.metric.upper()}: {v:.2f})": k for k, v in sorted(m.items(), key=lambda x: x[1]) if np.isfinite(v)}
             self.param.dist.objects = objs
 
     def _ll(self, params, sample) -> xr.DataArray:
@@ -1861,7 +1852,7 @@ class IndicatorObsDA(IndicatorDA):
             dparams = self.fit(dist, period)
             ll = self._ll(dparams, sample)
             out = np.log(len(sample)) * len(dparams) - 2 * ll
-        except Exception as e:
+        except Exception:
             return xr.DataArray(np.inf)
         out.attrs = {
             "long_name": "Bayesian Information Criterion",
@@ -1887,7 +1878,7 @@ class IndicatorObsDA(IndicatorDA):
             dparams = self.fit(dist, period)
             ll = self._ll(dparams, sample)
             out = 2 * len(dparams) - 2 * ll
-        except Exception as e:
+        except Exception:
             return xr.DataArray(np.inf)
         out.attrs = {
             "long_name": "Akaike Information Criterion",
