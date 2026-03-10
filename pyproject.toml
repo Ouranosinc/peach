@@ -163,6 +163,18 @@ serialize = [
 ]
 
 [[tool.bumpversion.files]]
+filename = "CHANGES.md"
+include_bumps = ["release"]
+search = """
+## unreleased
+"""
+replace = """
+<!-- ## unreleased -->
+
+## {new_version} ({now:%Y-%m-%d})
+"""
+
+[[tool.bumpversion.files]]
 filename = "CITATION.cff"
 include_bumps = ["release"]
 search = "^version: \"[0-9]+\\.[0-9]+\\.[0-9]\""
@@ -182,12 +194,7 @@ search = "api_version: {current_version}"
 replace = "api_version: {new_version}"
 
 [[tool.bumpversion.files]]
-filename = "peach/__init__.py"
-search = "__version__ = \"{current_version}\""
-replace = "__version__ = \"{new_version}\""
-
-[[tool.bumpversion.files]]
-filename = "tests/test_peach.py"
+filename = "src/peach/__init__.py"
 search = "__version__ = \"{current_version}\""
 replace = "__version__ = \"{new_version}\""
 
