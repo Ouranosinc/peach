@@ -13,7 +13,7 @@ dependencies:
   - ipyleaflet
   - ipywidgets_bokeh
   - jupyter
-  - lmoments3
+  - lmo
   - numpy >=2.0
   - openturns >=1.24
   - pandas

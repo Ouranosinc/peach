@@ -106,7 +106,7 @@ dependencies = [
   "hvplot",
   "ipyleaflet",
   "ipywebrtc",
-  "lmoments3",
+  "lmo",
   "matplotlib",
   "numcodecs <=0.15.1", # Zarr < 3 is not compatible with latest numcodecs
   "numpy >=2.0",

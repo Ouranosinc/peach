@@ -33,7 +33,6 @@ from urllib.parse import urlencode, urlparse
 from uuid import uuid4
 
 import geopandas as gpd
-import lmoments3 as lm3
 import numpy as np
 import pandas as pd
 import param
@@ -2008,8 +2007,9 @@ class IndicatorSimDA(IndicatorDA):
         """Fit the distribution to the data."""
         # Combine time and realizations before statistical fit
         sample = self._sample(period).stack(tr=["time", "variant_label"])
-        method = method or self.default_fit_method(dist)
-        return fit(sample, dist=dist, dim="tr", method=method)
+        # Note that we're not using PWM here, don't remember why.
+        # Using the risk.fit function yields weird result. I assume it's because xclim makes some effort to provide robust initial parameter values.  
+        return xc.indices.stats.fit(sample, dist=dist, dim="tr", method="MLE")
 
     @param.depends("period", watch=True, on_init=True)
     def _update_scenario_weights(self):
