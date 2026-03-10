@@ -12,7 +12,7 @@ import numpy as np
 import param
 import xarray as xr
 import xclim as xc
-from lmoments3.distr import gpa
+#from lmoments3.distr import gpa
 
 from peach.common import config
 from peach.frontend.cbcl_utils import wl_norm
@@ -22,9 +22,10 @@ from peach.frontend.parameters import (
     IndicatorDA,
     scen_weights,
 )
-from peach.risk import bootstrap
+from peach.risk import bootstrap, fit
 from peach.risk.xmixture import XMixtureDistribution
 
+gpa = "genpareto"
 
 logger = logging.getLogger("frontend-wl-parameters")
 
@@ -183,12 +184,10 @@ class IndicatorObsWL(IndicatorDA):
 
         # Fit the parameters
         # TODO: floc or not ?
-        dparams = xc.indices.stats.fit(
-            sample,
-            dist=gpa,
-            dim="time",
-            method="PWM",
-        )
+        #dparams = xc.indices.stats.fit(sample, dist=gpa, dim="time", method="PWM")
+        # Seems to work (tests pass but manual fitting with random data yield different parameter sets compared to lm3)
+        # Also, the test suite runs 30 times slower with lmo. 
+        dparams = fit.fit(sample, dist=gpa, method="PWM")
 
         return dparams
 
