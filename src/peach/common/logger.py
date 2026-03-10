@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 
+
 FORMAT = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
 default_level = os.getenv("PANEL_ADMIN_LOG_LEVEL", "INFO")
 

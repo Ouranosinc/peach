@@ -1,9 +1,12 @@
+"""IDF tools for risk module."""
+
 from __future__ import annotations
 
 import xarray as xr
 from xclim.core.locales import load_locale
 from xclim.core.units import declare_units
 from xclim.indicators.generic._stats import Generic
+
 
 __all__ = ["idf"]
 
@@ -17,10 +20,9 @@ and feed some attributes to the backend.
 
 
 @declare_units(idf="[precipitation]", tas="[temperature]")
-def _lambda(
-    idf: xr.DataArray, tas: xr.DataArray = None, duration: str = "24h"
-) -> xr.DataArray:
-    """Maximum annual precipitation for the given duration.
+def _lambda(idf: xr.DataArray, tas: xr.DataArray = None, duration: str = "24h") -> xr.DataArray:
+    """
+    Maximum annual precipitation for the given duration.
 
     Return the maximum annual precipitation aggregated over a given duration.
 

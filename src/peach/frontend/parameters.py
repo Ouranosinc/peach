@@ -42,7 +42,6 @@ import scipy
 import xarray as xr
 import xclim as xc
 import xclim.ensembles
-import xclim.indices.stats
 from shapely.geometry import Point
 from xclim.core.formatting import update_history
 from xclim.core.units import units as xu
@@ -83,13 +82,13 @@ locales = {"Français": "fr", "English": "en"}
 
 
 # Allowed scipy distributions
-# TODO: Update
-scipy_dists = ["norm", "t", "gamma", "genextreme", "lognorm", "uniform"]
+scipy_dists = ["norm", "t", "gamma", "genextreme", "lognorm", "uniform", "weibull_min", "expon"]
 
 # Load the scenario weights as a function of time
 scen_weights = scenario_weights_from_iams()
 
-logger.info(f"Workspace: {global_config.WORKSPACE}")
+_wspace = f"Workspace: {global_config.WORKSPACE}"
+logger.info(_wspace)
 
 # Mapping from dependent variables to core variables
 VARIABLE_MAPPING = {"tasmax": "tas", "tasmin": "tas", "wl_pot": "wl"}
@@ -102,9 +101,7 @@ class BaseParameterized(param.Parameterized):
     """Base class for parameterized classes that need translation."""
 
     # Language - pass ref from Global.locale
-    locale = param.Selector(
-        objects=locales, default="fr", allow_refs=True, precedence=-1
-    )
+    locale = param.Selector(objects=locales, default="fr", allow_refs=True, precedence=-1)
 
     # Translation metadata for parameters' `label` and `doc` attributes, as well as values themselves
     _label = {}
@@ -150,8 +147,10 @@ class URLParameterized(BaseParameterized):
     _sync_callbacks = []
     _sync_watchers = []
 
-    def __init__(self, sync_url=True, ignored_queries=[], sync_on_params={}, **kwargs):
-        """Initialize URLParameterized
+    # FIXME: Do not use mutable data structures for argument defaults
+    def __init__(self, sync_url=True, ignored_queries=[], sync_on_params={}, **kwargs):  # noqa: B006
+        """
+        Initialize URLParameterized
 
         Args:
             sync_url (param.Bool, optional): Param whether or not to sync all parameters to the URL
@@ -206,7 +205,8 @@ class URLParameterized(BaseParameterized):
         return callback
 
     def init_check_to_sync(self):
-        """Initialized watches for when sync_url should change, given self.sync_on_params
+        """
+        Initialized watches for when sync_url should change, given self.sync_on_params
 
         Raises
         ------
@@ -216,19 +216,14 @@ class URLParameterized(BaseParameterized):
         for parameterized, param_dict in self.sync_on_params.items():
             if not isinstance(parameterized, param.Parameterized):
                 raise ValueError(f"{parameterized} is not of type param.Parameterized")
-            self.logger.info(
-                f"{self.name}: Setting up watchers for {parameterized.name}"
-            )
+            msg = f"{self.name}: Setting up watchers for {parameterized.name}"
+            self.logger.info(msg)
             for parameter, val in param_dict.items():
                 if not isinstance(parameter, str):
                     raise ValueError(f"param {parameter} not a string (for .watch)")
                 callback = self.create_callback_sync_check_value(parameter, val)
                 self._sync_callbacks.append(callback)
-                self._sync_watchers.append(
-                    parameterized.param.watch_values(
-                        callback, parameter, what="value", onlychanged=True, queued=True
-                    )
-                )
+                self._sync_watchers.append(parameterized.param.watch_values(callback, parameter, what="value", onlychanged=True, queued=True))
                 callback(**{parameter: getattr(parameterized, parameter)})
 
     def url_unlisten(self):
@@ -244,9 +239,7 @@ class URLParameterized(BaseParameterized):
 
     def url_listen(self):
         params = self.param.values()
-        valid_params = {
-            key: val for key, val in params.items() if not self.is_ignored(key)
-        }
+        valid_params = {key: val for key, val in params.items() if not self.is_ignored(key)}
         # unnecessary, changing the URL reloads the app in like 99.9 % of browsers...
         # self._sync_url_watcher = (
         #     pn.state.location.param.watch_values(
@@ -261,14 +254,12 @@ class URLParameterized(BaseParameterized):
             "value",
         )
 
-    def set_sync_watchers(self, sync_url=True, is_init=True):
+    def set_sync_watchers(self, sync_url=True, is_init=True):  # noqa: F841
         import panel as pn
 
         self.url_unlisten()
         params = self.param.values()
-        valid_params = {
-            key: val for key, val in params.items() if not self.is_ignored(key)
-        }
+        valid_params = {key: val for key, val in params.items() if not self.is_ignored(key)}
         if sync_url:
             self.sync_params_from_query(search=pn.state.location.search)
             self.sync_query_from_params(**valid_params, only_new=True)
@@ -281,9 +272,8 @@ class URLParameterized(BaseParameterized):
         try:
             self.set_sync_watchers(is_init=True)
         except Exception as err:
-            logger.error(
-                f"URL params sync of {self.__class__.__name__} object did not complete with : {err}"
-            )
+            msg = f"URL params sync of {self.__class__.__name__} object did not complete with : {err}"
+            logger.error(msg)
 
     def sync_query_from_params(self, **kwargs):
         import panel as pn
@@ -309,17 +299,13 @@ class URLParameterized(BaseParameterized):
         self.url_listen()
 
     def sync_params_from_query(self, **kwargs):
-        """
-        Callback function which is invoked when the URL search parameter changes.
-        """
+        """Callback function which is invoked when the URL search parameter changes."""
         import panel as pn
 
         self.url_unlisten()
 
         params = self.param.values()
-        valid_params = {
-            key: val for key, val in params.items() if not self.is_ignored(key)
-        }
+        valid_params = {key: val for key, val in params.items() if not self.is_ignored(key)}
         new_params = {}
         query = pn.state.location.query_params
         update = False
@@ -347,22 +333,18 @@ class URLParameterized(BaseParameterized):
         pn.state.location.search = "?" + urlencode(query) if query else ""
 
     def on_error(self, unsyncable):
-        self.logger.info(f"URL sync failed for {unsyncable}")
+        self.logger.info("URL sync failed for %s", unsyncable)
 
 
 class Global(URLParameterized):
     """Global parameters."""
 
     locale = param.Selector(objects=locales, default="fr", precedence=10)
-    backend = param.String(
-        default=global_config.BACKEND_URL, constant=True, precedence=-1
-    )
+    backend = param.String(default=global_config.BACKEND_URL, constant=True, precedence=-1)
     tab = param.String(default="station_select", precedence=-1)
     sidebar_tab = param.List(default=[0])
 
-    tabs = param.List(
-        default=["station_select", "indicator_select"], constant=True, precedence=-1
-    )
+    tabs = param.List(default=["station_select", "indicator_select"], constant=True, precedence=-1)
     _tab_to_ind = {}
     _ind_to_tab = {}
 
@@ -463,7 +445,8 @@ class Map(URLParameterized):
 
 
 class Station(URLParameterized):
-    """Station selector.
+    """
+    Station selector.
 
     Parameters
     ----------
@@ -491,9 +474,7 @@ class Station(URLParameterized):
         precedence=-1,
         doc="Dict of str: dataframes, of key: variables -> val: stations around Site ",
     )
-    selected_df = param.DataFrame(
-        instantiate=True, precedence=-1, doc="Dataframe of selected stations."
-    )
+    selected_df = param.DataFrame(instantiate=True, precedence=-1, doc="Dataframe of selected stations.")
 
     # Note that the __init__ will create additional class attributes for each variable (tas, pr, etc)
     _label = {
@@ -515,8 +496,10 @@ class Station(URLParameterized):
         "northing": {"en": "Northing", "fr": "Northing"},
     }
 
-    def __init__(self, df: pd.DataFrame, variables: list = [], **params):
-        """Create a station selector for each variable.
+    # FIXME: Do not use mutable data structures for argument defaults
+    def __init__(self, df: pd.DataFrame, variables: list = [], **params):  # noqa: B006
+        """
+        Create a station selector for each variable.
 
         Parameters
         ----------
@@ -539,9 +522,7 @@ class Station(URLParameterized):
                 unique_variables = [x for x in unique_variables if x in variables]
             for var in unique_variables:
                 self.variables[var] = self._df[self._df["variable"] == var]
-                self._kdtree[var] = scipy.spatial.KDTree(
-                    self.variables[var][["easting", "northing"]].values
-                )
+                self._kdtree[var] = scipy.spatial.KDTree(self.variables[var][["easting", "northing"]].values)
         # Create a param.Selector for each variable, with the station names as options
         for var, sub in self.variables.items():
             objs = {"": None}
@@ -578,7 +559,8 @@ class Station(URLParameterized):
 
     # @param.depends("station_id", "site.radius", "site.x", "site.y",  watch=True, on_init=True)
     def update_tables(self, *events, **kwargs):
-        logger.info(f"update_tables called with change in {[e.name for e in events]}")
+        msg = f"update_tables called with change in {[e.name for e in events]}"
+        logger.info(msg)
         # check if any of the stations have changed, or the site has changed:
         easting = self.site.x
         northing = self.site.y
@@ -591,11 +573,7 @@ class Station(URLParameterized):
         for e in events:
             if e.name == "station_id":
                 old_stations = e.old
-                changed_stations = [
-                    k
-                    for k in self.variables.keys()
-                    if station_id.get(k) != old_stations.get(k)
-                ]
+                changed_stations = [k for k in self.variables.keys() if station_id.get(k) != old_stations.get(k)]
             elif e.name in ["x", "y", "radius"] and e.old != e.new:
                 update_pos = True
 
@@ -607,46 +585,25 @@ class Station(URLParameterized):
                 if s_id is None:
                     continue
                 check_replace_old = False
-                if (
-                    self.selected_df is not None and not self.selected_df.empty
-                ) and self.selected_df[
-                    (self.selected_df["station"] == s_id)
-                    & (self.selected_df["variable"] == var)
+                if (self.selected_df is not None and not self.selected_df.empty) and self.selected_df[
+                    (self.selected_df["station"] == s_id) & (self.selected_df["variable"] == var)
                 ].empty:
-
                     check_replace_old = True
                     old_ind = self.selected_df["variable"] == var
                     if old_ind.any():
-                        self.selected_df.drop(
-                            index=old_ind, errors="ignore", inplace=True
-                        )
+                        self.selected_df.drop(index=old_ind, errors="ignore", inplace=True)
 
-                if (
-                    self.selected_df is None
-                    or self.selected_df.empty
-                    or check_replace_old
-                ):
-                    station_dfs[var] = self.variables[var][
-                        (s_id == self.variables[var]["station"])
-                    ]
+                if self.selected_df is None or self.selected_df.empty or check_replace_old:
+                    station_dfs[var] = self.variables[var][(s_id == self.variables[var]["station"])]
                     if easting or northing:
                         station_dfs[var].loc[:, "distance"] = (
-                            np.sqrt(
-                                np.abs(station_dfs[var]["northing"] - northing) ** 2
-                                + np.abs(station_dfs[var]["easting"] - easting) ** 2
-                            )
-                            / 1000
+                            np.sqrt(np.abs(station_dfs[var]["northing"] - northing) ** 2 + np.abs(station_dfs[var]["easting"] - easting) ** 2) / 1000
                         )
 
-                    self.selected_df = pd.concat(
-                        [station_dfs[var], self.selected_df], ignore_index=True
-                    )
+                    self.selected_df = pd.concat([station_dfs[var], self.selected_df], ignore_index=True)
 
             # if station changed or site changed, update site_df
-            if (len(changed_stations) and easting and northing and radius) or (
-                update_pos
-            ):
-
+            if (len(changed_stations) and easting and northing and radius) or (update_pos):
                 # create tables
                 for var in self.variables.keys():
                     sel = self.get_within(
@@ -658,27 +615,14 @@ class Station(URLParameterized):
                     this_station_id = station_id.get(var)
                     if sel[sel.station == this_station_id].empty:
                         station_df = station_dfs.get(var)
-                        if (
-                            station_df is None
-                            and self.selected_df is not None
-                            and not self.selected_df.empty
-                        ):
-                            station_df = self.selected_df[
-                                (self.selected_df.station == this_station_id)
-                                & (self.selected_df.variable == var)
-                            ]
+                        if station_df is None and self.selected_df is not None and not self.selected_df.empty:
+                            station_df = self.selected_df[(self.selected_df.station == this_station_id) & (self.selected_df.variable == var)]
                         if station_df is not None:
                             station_df.loc[:, "distance"] = (
-                                np.sqrt(
-                                    np.abs(station_df["northing"] - northing) ** 2
-                                    + np.abs(station_df["easting"] - easting) ** 2
-                                )
-                                / 1000
+                                np.sqrt(np.abs(station_df["northing"] - northing) ** 2 + np.abs(station_df["easting"] - easting) ** 2) / 1000
                             )
 
-                        self.site_df[var] = pd.concat(
-                            [station_df, sel.reset_index(drop=True)], ignore_index=True
-                        )
+                        self.site_df[var] = pd.concat([station_df, sel.reset_index(drop=True)], ignore_index=True)
                     else:
                         self.site_df[var] = sel.reset_index(drop=True)
 
@@ -737,8 +681,8 @@ class Station(URLParameterized):
         self,
         var,
         distance: float,
-        easting: float = None,
-        northing: float = None,
+        easting: float | None = None,
+        northing: float | None = None,
         p: int = 2,
         return_sorted: bool = True,
         **kwargs,
@@ -754,10 +698,7 @@ class Station(URLParameterized):
         )
         df = self.variables[var].iloc[points]
         if df.size:
-            df.loc[:, "distance"] = (
-                np.abs(df["northing"] - northing) ** p
-                + np.abs(df["easting"] - easting) ** p
-            ) ** (1 / p) / 1000
+            df.loc[:, "distance"] = (np.abs(df["northing"] - northing) ** p + np.abs(df["easting"] - easting) ** p) ** (1 / p) / 1000
         return df
 
     @property
@@ -779,9 +720,7 @@ class Station(URLParameterized):
         """
         return {
             "station_id": self.station_id,
-            "df": (
-                self.selected_df.T.to_dict() if self.selected_df is not None else None
-            ),
+            "df": (self.selected_df.T.to_dict() if self.selected_df is not None else None),
         }
 
     @classmethod
@@ -795,27 +734,22 @@ class Station(URLParameterized):
 
 
 class GenericIndicator(BaseParameterized):
-    """Generic description of an indicator and its availability for the selected stations.
+    """
+    Generic description of an indicator and its availability for the selected stations.
 
     This is used to display the list of available indicators to the user.
     """
 
-    locale = param.Selector(
-        objects=locales, default="fr", precedence=-1, allow_refs=True
-    )
+    locale = param.Selector(objects=locales, default="fr", precedence=-1, allow_refs=True)
 
     # Station ID for each variable - pass ref from Station.station_id
     station_id = param.Dict({}, precedence=-1, allow_refs=True)
 
     # Station metadata for the selected stations
-    station_df = param.DataFrame(
-        precedence=-1, doc="Selected station metadata.", allow_refs=True
-    )
+    station_df = param.DataFrame(precedence=-1, doc="Selected station metadata.", allow_refs=True)
 
     # List of variables required for computation and whether they're in `station_id`
-    variables = param.ListSelector(
-        [], doc="Variables required for computation.", instantiate=True
-    )
+    variables = param.ListSelector([], doc="Variables required for computation.", instantiate=True)
     # Argument config
     args = param.Dict({}, precedence=-1, instantiate=True)
 
@@ -823,20 +757,14 @@ class GenericIndicator(BaseParameterized):
     iid = param.String(default="", precedence=-1, instantiate=True, constant=True)
 
     # xclim indicator identifier
-    identifier = param.String(
-        default="", precedence=-1, instantiate=True, constant=True
-    )
+    identifier = param.String(default="", precedence=-1, instantiate=True, constant=True)
 
     title = param.String(default="", precedence=-1, instantiate=True)
     abstract = param.String(default="", precedence=-1, instantiate=True)
 
     # Backend process name for getting observed and simulated indicators
-    obs_process = param.String(
-        default="compute-indicators-obs", constant=True, precedence=-1
-    )
-    sim_process = param.String(
-        default="compute-indicators-sim", constant=True, precedence=-1
-    )
+    obs_process = param.String(default="compute-indicators-obs", constant=True, precedence=-1)
+    sim_process = param.String(default="compute-indicators-sim", constant=True, precedence=-1)
 
     _label = {
         "title": {"en": "Title", "fr": "Titre"},
@@ -856,19 +784,13 @@ class GenericIndicator(BaseParameterized):
                 setattr(
                     self,
                     key,
-                    xu.formatter.format_unit_babel(
-                        xu(obj.default).units, spec="~", locale=self.locale
-                    ),
+                    xu.formatter.format_unit_babel(xu(obj.default).units, spec="~", locale=self.locale),
                 )
 
     @param.depends("station_id", watch=True, on_init=True)
     def _update_variables(self):
         """Set which variables are available for computation from the data."""
-        vars = [
-            k
-            for (k, v) in self.station_id.items()
-            if v is not None and k in self.param.variables.objects
-        ]
+        vars = [k for (k, v) in self.station_id.items() if v is not None and k in self.param.variables.objects]
         self.variables = vars
 
     @property
@@ -894,10 +816,7 @@ class GenericIndicator(BaseParameterized):
                 kwargs[k] = config[k]
 
         # Translation metadata
-        kwargs["_value"] = {
-            key: {lang: meta[lang].get(key, "") for lang in locales.values()}
-            for key in cls._label.keys()
-        }
+        kwargs["_value"] = {key: {lang: meta[lang].get(key, "") for lang in locales.values()} for key in cls._label.keys()}
 
         # List of variables required for computation and whether they're in `station_id`
         variables = []
@@ -945,27 +864,20 @@ class IndicatorArguments(BaseParameterized):
 
                 # Convert default value from xclim
                 default = xu.Quantity(prm.default).to(du)
-                du_s = xu.formatter.format_unit_babel(
-                    default.units, spec="~", locale="fr"
-                )
+                du_s = xu.formatter.format_unit_babel(default.units, spec="~", locale="fr")
 
                 # The indicator parameter
                 p = param.Number(
                     default=default.magnitude,
                     softbounds=(conf.get("vmin"), conf.get("vmax")),
-                    doc=(
-                        f"{prm.description} (vmin: "
-                        f'{conf.get("vmin")} {du_s}, vmax: {conf.get("vmax")} {du_s})'
-                    ),
+                    doc=(f"{prm.description} (vmin: {conf.get('vmin')} {du_s}, vmax: {conf.get('vmax')} {du_s})"),
                     precedence=10,
                     instantiate=True,
                     label=f"{name.replace('_', ' ').capitalize()} ({du_s})",
                 )
 
                 # Its unit
-                unit = param.String(
-                    default=conf["default_units"], label="Unit", precedence=-1
-                )
+                unit = param.String(default=conf["default_units"], label="Unit", precedence=-1)
 
                 # Add parameter to compute indicator arguments
                 params[name] = p
@@ -1024,18 +936,15 @@ class IndicatorArguments(BaseParameterized):
 
 
 class IndexingIndicatorArguments(IndicatorArguments):
-    """Frequency and indexer indicator parameters.
+    """
+    Frequency and indexer indicator parameters.
 
     We assume that freq is always annual, but we can tweak the indexer.
     """
 
     # Freq options
-    start_m = param.Selector(
-        objects={}, default=1, label="Start month", precedence=20, instantiate=True
-    )
-    end_m = param.Selector(
-        objects={}, default=12, label="End month", precedence=21, instantiate=True
-    )
+    start_m = param.Selector(objects={}, default=1, label="Start month", precedence=20, instantiate=True)
+    end_m = param.Selector(objects={}, default=12, label="End month", precedence=21, instantiate=True)
 
     # Months abbreviations hardcoded to avoid locale installation issues
     _label = {
@@ -1104,20 +1013,17 @@ class IndexingIndicatorArguments(IndicatorArguments):
             return {"month": mi.tolist()}
 
     def set_values(self, params):
-        """Set the parameter values from a dict.
+        """
+        Set the parameter values from a dict.
 
         Understands the indexer argument, but only for months.
         """
         if "indexer" in params and params["indexer"]:
             if "month" not in params["indexer"] or len(params["indexer"]) != 1:
-                raise ValueError(
-                    f"The indexer argument only supports a month list. Got : {params['indexer'].keys()}"
-                )
+                raise ValueError(f"The indexer argument only supports a month list. Got : {params['indexer'].keys()}")
             self.start_m = params["indexer"]["month"][0]
             self.end_m = params["indexer"]["month"][-1]
-        super().set_values(
-            {k: v for k, v in params.items() if k not in ["indexer", "freq"]}
-        )
+        super().set_values({k: v for k, v in params.items() if k not in ["indexer", "freq"]})
 
 
 class IndicatorComputation(BaseParameterized):
@@ -1141,9 +1047,7 @@ class IndicatorComputation(BaseParameterized):
     @classmethod
     def from_generic(cls, base, no_cache=global_config.NO_CACHE_DEFAULT):
         """Create an Indicator instance from a GenericIndicator."""
-        args = IndicatorArguments.from_xclim(
-            base.iid, base.args, locale=base.param.locale, no_cache=no_cache
-        )
+        args = IndicatorArguments.from_xclim(base.iid, base.args, locale=base.param.locale, no_cache=no_cache)
 
         return cls(
             args=args,
@@ -1178,10 +1082,11 @@ class IndicatorComputation(BaseParameterized):
     def hash(self) -> str:
         """Return a hash of the indicator and its parameters."""
         s = json.dumps(self.to_dict()).encode()
-        return hashlib.md5(s).hexdigest()
+        return hashlib.md5(s).hexdigest()  # noqa: S324
 
     def post_request(self, backend, repost=False):
-        """Post the compute request to the given backend.
+        """
+        Post the compute request to the given backend.
 
         If repost is False, only post if job state is unsent, submit failed or failed
         If True, post no matter what.
@@ -1190,11 +1095,7 @@ class IndicatorComputation(BaseParameterized):
             raise ValueError("Missing station data for some variables.")
 
         # Add the station information to the input data.
-        data = self.to_dict() | {
-            "stations": {
-                var: str(self.base.station_id[var]) for var in self.base.variables
-            }
-        }
+        data = self.to_dict() | {"stations": {var: str(self.base.station_id[var]) for var in self.base.variables}}
 
         if repost or self.obs_job.state <= JobState.failed:
             self.obs_job.post(backend, self.base.obs_process, data={"inputs": data})
@@ -1215,9 +1116,7 @@ class IndicatorList(BaseParameterized):
     allcomputed = param.Boolean(False, precedence=-1)
 
     # The station ID for each variable - pass ref from Station.station_id
-    station_id = param.Dict(
-        default={}, precedence=-1, allow_refs=True, instantiate=True
-    )
+    station_id = param.Dict(default={}, precedence=-1, allow_refs=True, instantiate=True)
 
     # The configuration for each indicator
     config = param.Dict(default={}, precedence=-1, instantiate=True)
@@ -1249,7 +1148,8 @@ class IndicatorList(BaseParameterized):
     }
 
     def __init__(self, **kwargs):
-        """Create a new Indicators object.
+        """
+        Create a new Indicators object.
 
         Combine information from the configuration and from the xclim indicator metadata.
         """
@@ -1267,13 +1167,9 @@ class IndicatorList(BaseParameterized):
     def add(self, iid: str):
         """Add an indicator to the selected indicators."""
         if len(self.selected) == global_config.MAX_INDICATORS:
-            raise OverflowError(
-                f"Maximal number of indicators reached : {global_config.MAX_INDICATORS}."
-            )
+            raise OverflowError(f"Maximal number of indicators reached : {global_config.MAX_INDICATORS}.")
 
-        ind = IndicatorComputation.from_generic(
-            self.indicators[iid], no_cache=self.param.no_cache
-        )
+        ind = IndicatorComputation.from_generic(self.indicators[iid], no_cache=self.param.no_cache)
         self.selected[ind.uuid] = ind
         self.param.trigger("selected")
         return ind.uuid
@@ -1287,13 +1183,14 @@ class IndicatorList(BaseParameterized):
         """Check that the backend server is running."""
         return check_backend(self.backend)
 
-    def post_all_requests(self, repost=False, wait=True):
+    def post_all_requests(self, repost=False, wait=True):  # noqa: F841
         for ind in self.selected.values():
             if not ind.computed:
                 ind.post_request(self.backend, repost)
 
     def monitor_jobs(self, event=None):
-        """Get the progress of the computationss if completed, get the result link and load results.
+        """
+        Get the progress of the computationss if completed, get the result link and load results.
 
         If the computation failed, try it again until the maximum number of retries is reached.
         """
@@ -1317,11 +1214,7 @@ class IndicatorList(BaseParameterized):
                 self.result_links["sim"][ind.uuid] = ind.sim_job.result
                 links_update = True
 
-            if (
-                not ind.computed
-                and oj is JobState.successful
-                and sj is JobState.successful
-            ):
+            if not ind.computed and oj is JobState.successful and sj is JobState.successful:
                 ind.computed = True
 
         is_done = False
@@ -1329,7 +1222,7 @@ class IndicatorList(BaseParameterized):
             logger.debug("No active jobs left. Stopping monitoring.")
             is_done = True
         else:
-            logger.info(f"Number of active jobs remaining: {n_active}")
+            logger.info("Number of active jobs remaining: %s", n_active)
 
         if links_update:
             self.param.trigger("result_links")
@@ -1337,14 +1230,13 @@ class IndicatorList(BaseParameterized):
 
     @param.depends("selected", "result_links", watch=True, on_init=True)
     def check_all_computed(self, event=None):
-        allcomp = all([ind.computed for ind in self.selected.values()]) and (
-            len(self.selected) > 0
-        )
+        allcomp = all([ind.computed for ind in self.selected.values()]) and (len(self.selected) > 0)
         if allcomp != self.allcomputed:
             self.allcomputed = allcomp
 
     def select_from_list(self, data):
-        """Selects indicators from a list of dicts.
+        """
+        Selects indicators from a list of dicts.
 
         Dicts can have 2 entries:
             - name : the indicator xclim id (required)
@@ -1359,7 +1251,8 @@ class IndicatorList(BaseParameterized):
         return uuids
 
     def to_dict(self, mode="results"):
-        """Return selected indicators and results links.
+        """
+        Return selected indicators and results links.
 
         If mode is 'request', this returns a list, without UUIDs.
         """
@@ -1374,21 +1267,13 @@ class IndicatorList(BaseParameterized):
 class Analysis(BaseParameterized):
     """Class for indicators analysis."""
 
-    indicators = param.ClassSelector(
-        class_=IndicatorList, precedence=1, instantiate=True
-    )
+    indicators = param.ClassSelector(class_=IndicatorList, precedence=1, instantiate=True)
 
     # Indicator dataset - DataArrays are keyed by UUID
-    ds = param.Parameter(
-        default={"obs": {}, "sim": {}}, doc="Indicator datasets", instantiate=True
-    )
+    ds = param.Parameter(default={"obs": {}, "sim": {}}, doc="Indicator datasets", instantiate=True)
 
-    ref_period = param.Range(
-        (1990, 2020), bounds=(1900, 2100), precedence=10, instantiate=True
-    )
-    fut_period = param.Range(
-        (2030, 2060), bounds=(2025, 2100), precedence=10, instantiate=True
-    )
+    ref_period = param.Range((1990, 2020), bounds=(1900, 2100), precedence=10, instantiate=True)
+    fut_period = param.Range((2030, 2060), bounds=(2025, 2100), precedence=10, instantiate=True)
 
     # Individual indicators, keyed by indicator
     obs = param.Dict({})
@@ -1413,7 +1298,8 @@ class Analysis(BaseParameterized):
     }
 
     def load_da(self, link):
-        """Load DataArray from disk.
+        """
+        Load DataArray from disk.
 
         Converts data from dims (realization, time) to (variant_label, source_id, experiment_id, time).
         """
@@ -1429,15 +1315,14 @@ class Analysis(BaseParameterized):
             store = s3r.get_mapper(link, check=False)
             return xr.open_dataarray(store, decode_timedelta=False, engine="zarr")
         # else
-        out = xr.open_dataarray(
-            global_config.WORKSPACE / link, decode_timedelta=False, engine="zarr"
-        )
+        out = xr.open_dataarray(global_config.WORKSPACE / link, decode_timedelta=False, engine="zarr")
         return out
 
     @param.depends("ref_period", watch=True)
     def watch_ref_period(self):
-        logger.info(f"watch_ref_period: Triggered with {self.ref_period}")
-        
+        msg = "watch_ref_period: Triggered with {self.ref_period}"
+        logger.info(msg)
+
         update_checks = {}
         for kind in self.ds.keys():
             for uuid in self.ds[kind]:
@@ -1464,12 +1349,14 @@ class Analysis(BaseParameterized):
                     self.ds[kind][uuid] = da
                     updated = True
             if updated:
-                logger.debug(f"Loading results: {kind}")
+                logger.debug("Loading results: %s", kind)
                 self.param.update(**update_checks)
                 self.param.trigger("ds")
 
-    def perform_checks(self, uuid, kind, da, updaters: dict = {}, force=False):
-        """Performs data checks to data array to ensure params are valid
+    # FIXME: Do not use mutable data structures for argument default
+    def perform_checks(self, uuid, kind, da, updaters: dict = {}, force=False):  # noqa: B006
+        """
+        Performs data checks to data array to ensure params are valid
 
         Parameters
         ----------
@@ -1505,7 +1392,8 @@ class Analysis(BaseParameterized):
         return updaters
 
     def check_extend_ref_period(self, da, ref_period: tuple) -> tuple:
-        """Checks if ref_period is valid for the data array, and if not returns a new ref_period which is extended to ensure it is valid.
+        """
+        Checks if ref_period is valid for the data array, and if not returns a new ref_period which is extended to ensure it is valid.
 
         Parameters
         ----------
@@ -1533,7 +1421,8 @@ class Analysis(BaseParameterized):
             return new_ref_period
 
     def extend_range_to_arr(self, arr: np.array, n: int, r: tuple) -> tuple:
-        """Finds the closest range with `n` valid elements in an array `arr`, for the tuple range `r`
+        """
+        Finds the closest range with `n` valid elements in an array `arr`, for the tuple range `r`
 
         Parameters
         ----------
@@ -1553,7 +1442,6 @@ class Analysis(BaseParameterized):
         -----
         Runs in O(arr.size) time, in the worst case.
         """
-
         low = r[0]
         high = r[1]
         # can't get more than arr.size...
@@ -1577,7 +1465,7 @@ class Analysis(BaseParameterized):
     def _set_ref_period_bounds(self):
         """Set the reference period bounds from the dataset."""
         # TODO: move to perform_checks
-        for uuid, da in self.ds["obs"].items():
+        for da in self.ds["obs"].values():
             years = da.time.dt.year
             start = int(years.isel(time=0).values)
             end = int(years.isel(time=-1).values)
@@ -1589,7 +1477,7 @@ class Analysis(BaseParameterized):
     def _set_fut_period_bounds(self):
         """Set the reference period bounds from the dataset."""
         # TODO: move to perform_checks
-        for uuid, da in self.ds["sim"].items():
+        for da in self.ds["sim"].values():
             years = da.time.dt.year
             start = int(years.isel(time=0).values)
             end = int(years.isel(time=-1).values)
@@ -1609,10 +1497,7 @@ class Analysis(BaseParameterized):
 
             # Set the station metadata if provided
             if self.station_df is not None:
-                core_vars = [
-                    VARIABLE_MAPPING.get(key, key)
-                    for key in da.attrs["stations"].keys()
-                ]
+                core_vars = [VARIABLE_MAPPING.get(key, key) for key in da.attrs["stations"].keys()]
                 station_df = self.station_df.set_index("variable").loc[core_vars]
             else:
                 station_df = None
@@ -1641,9 +1526,7 @@ class Analysis(BaseParameterized):
         try:
             # Cast generator to list to avoid "dictionary changed size during iteration" errors
             for uuid, da in list(self.ds["sim"].items()):
-                kls_ref, kls_fut = TYPE_MAP["sim"].get(
-                    da.name, (IndicatorRefDA, IndicatorSimDA)
-                )
+                kls_ref, kls_fut = TYPE_MAP["sim"].get(da.name, (IndicatorRefDA, IndicatorSimDA))
 
                 if uuid not in self.ref and uuid in self.obs:
                     self.ref[uuid] = kls_ref.from_da(
@@ -1670,16 +1553,16 @@ class Analysis(BaseParameterized):
                 self.param.trigger("ref")
                 self.param.trigger("fut")
         except Exception as err:
-            logger.error(f"update_sim - Got error {err}.")
+            logger.error("update_sim - Got error %s.", err)
             print(traceback.format_exc())
             raise
 
     @param.depends("indicators.selected", watch=True)
     def maybe_remove_indicators(self, event=None):
-        #!FIXME This only removes the indicators from the views, the computations are still triggered somehow.
+        # !FIXME This only removes the indicators from the views, the computations are still triggered somehow.
         extras = set(self.obs.keys()) - set(self.indicators.selected.keys())
         if extras:
-            logger.info(f"Removing indicators {extras}")
+            logger.info("Removing indicators %s", extras)
         for extra in extras:
             del self.ds["obs"][extra]
             del self.ds["sim"][extra]
@@ -1692,7 +1575,8 @@ class Analysis(BaseParameterized):
             self.param.trigger("fut")
 
     def update_params(self, ref_period=None, fut_period=None, metric=None, dist=None):
-        """Update the periods, distributions and metrics.
+        """
+        Update the periods, distributions and metrics.
 
         Distributions and metrics are mappings from indicator uuid to value.
         """
@@ -1715,7 +1599,8 @@ class Analysis(BaseParameterized):
             self.param.update(**updates)
 
     def to_dict(self, mode="results"):
-        """Return a dict representation of the class.
+        """
+        Return a dict representation of the class.
 
         If full is True, all data needed to reconstruct the object is included in the output.
         If it is False, only information directly relevant (periods, names, chosen distributions and metrics) to the results is included.
@@ -1747,7 +1632,8 @@ class Analysis(BaseParameterized):
 
 
 class IndicatorDA(BaseParameterized):
-    """Indicator DataArray analysis parameters.
+    """
+    Indicator DataArray analysis parameters.
 
     Notes
     -----
@@ -1789,9 +1675,7 @@ class IndicatorDA(BaseParameterized):
         constant=True,
         instantiate=True,
     )
-    ts = param.Parameter(
-        doc="DataArray time series for public display", constant=False, instantiate=True
-    )
+    ts = param.Parameter(doc="DataArray time series for public display", constant=False, instantiate=True)
 
     dparams = param.Parameter(doc="Distribution parameters", instantiate=True)
 
@@ -1833,13 +1717,11 @@ class IndicatorDA(BaseParameterized):
         #     # The dimension must match that used by XMixtureDistribution
         #     arg = xr.DataArray(data=arg, dims="point")
         with xr.set_options(keep_attrs=True):
-            out = xc.indices.stats.dist_method(
-                function=name, fit_params=self.dparams, arg=arg
-            )
+            out = xc.indices.stats.dist_method(function=name, fit_params=self.dparams, arg=arg)
         out.name = name
         return out
 
-    def _slice(self, period: (int, int)) -> slice:
+    def _slice(self, period: tuple[int, int]) -> slice:
         """Return the reference period as a slice."""
         return slice(*map(str, period))
 
@@ -1865,20 +1747,19 @@ class IndicatorDA(BaseParameterized):
         else:
             dist_obj = dist
 
-        logger.info(f"lmom: {dist}, {dist_obj} {method}")
+        logger.info("lmom: %s, %s %s", dist, dist_obj, method)
         res = None
         try:
             res = xc.indices.stats.fit(sample, dist=dist_obj, dim="time", method=method)
         except Exception as e:
             if iteration < 1:
-                logger.warning(
-                    f"fit encountered error: {e}. Trying again with method=ML"
-                )
+                logger.warning("fit encountered error: %s. Trying again with method=ML", e)
                 return self.fit(dist, period, method="ML", iteration=(iteration + 1))
             else:
                 raise e
 
-        logger.info(f"fit: {res.data} ")
+        msg = f"fit: {res.data} "
+        logger.info(msg)
         return res
 
     def pdf(self, x):
@@ -1927,15 +1808,14 @@ class IndicatorDA(BaseParameterized):
 
 
 class IndicatorObsDA(IndicatorDA):
-    """Observed indicator DataArray analysis parameters.
+    """
+    Observed indicator DataArray analysis parameters.
 
     Includes logic to pick the best distribution.
     """
 
     # Information criteria metrics
-    metric = param.Selector(
-        objects=["aic", "bic"], default="bic", doc="Information criterion"
-    )
+    metric = param.Selector(objects=["aic", "bic"], default="bic", doc="Information criterion")
 
     # Metric values for all distributions - DataArrays
     metrics = param.Dict({"aic": None, "bic": None})
@@ -1971,7 +1851,8 @@ class IndicatorObsDA(IndicatorDA):
         return logpdf(params, v=sample).sum(dim="logpdf")
 
     def _bic(self, dist: str, period: tuple) -> xr.DataArray:
-        """Return the Bayesian Information Criterion.
+        """
+        Return the Bayesian Information Criterion.
 
         BIC = log(n) k - 2 log(L)
         """
@@ -1985,9 +1866,7 @@ class IndicatorObsDA(IndicatorDA):
         out.attrs = {
             "long_name": "Bayesian Information Criterion",
             "description": "BIC = log(n) k - 2 log(L)",
-            "history": update_history(
-                "BIC", new_name="bic", parameters=dparams, sample=sample
-            ),
+            "history": update_history("BIC", new_name="bic", parameters=dparams, sample=sample),
             "scipy_dist": dist,
             "period": period,
         }
@@ -1995,11 +1874,12 @@ class IndicatorObsDA(IndicatorDA):
 
     @property
     def bic(self) -> xr.DataArray:
-        """Return the Bayesian Information Criterion.
+        """
+        Return the Bayesian Information Criterion.
 
         BIC = log(n) k - 2 log(L)
         """
-        return self._bic(self.dist, self.period)
+        return self._bic(self.dist, (None, None))
 
     def _aic(self, dist, period) -> xr.DataArray:
         sample = self._sample(period)
@@ -2012,9 +1892,7 @@ class IndicatorObsDA(IndicatorDA):
         out.attrs = {
             "long_name": "Akaike Information Criterion",
             "description": "AIC = 2 k - 2 log(L)",
-            "history": update_history(
-                "AIC", new_name="aic", parameters=dparams, sample=sample
-            ),
+            "history": update_history("AIC", new_name="aic", parameters=dparams, sample=sample),
             "scipy_dist": dist,
             "period": period,
         }
@@ -2022,15 +1900,17 @@ class IndicatorObsDA(IndicatorDA):
 
     @property
     def aic(self) -> xr.DataArray:
-        """Return the Akaike Information Criterion.
+        """
+        Return the Akaike Information Criterion.
 
         AIC = 2 k - 2 log(L)
         """
-        return self._aic(self.dist, self.period)
+        return self._aic(self.dist, (None, None))
 
     @param.depends("period", "metric", watch=True)
     def _update_metrics(self) -> xr.DataArray:
-        """Return the metric values for all distributions.
+        """
+        Return the metric values for all distributions.
 
         Parameters
         ----------
@@ -2044,26 +1924,21 @@ class IndicatorObsDA(IndicatorDA):
         self.metrics = {"aic": None, "bic": None}
 
         # Update metrics values for given metric
-        self.metrics[self.metric] = {
-            dist: getattr(self, f"_{self.metric}")(dist, self.period)
-            for dist in scipy_dists
-        }
+        self.metrics[self.metric] = {dist: getattr(self, f"_{self.metric}")(dist, self.period) for dist in scipy_dists}
         self.param.trigger("metrics")
 
     @property
     def metrics_da(self) -> xr.DataArray:
         """Return metrics DataArray."""
         if self.metrics[self.metric] is not None:
-            vals = [
-                val.expand_dims(scipy_dist=[dist])
-                for dist, val in self.metrics[self.metric].items()
-            ]
+            vals = [val.expand_dims(scipy_dist=[dist]) for dist, val in self.metrics[self.metric].items()]
             out = xr.concat(vals, dim="scipy_dist")
             out.attrs.pop("scipy_dist")
             return out
 
     def best_dist(self) -> str:
-        """Return the distribution with the best metric value.
+        """
+        Return the distribution with the best metric value.
 
         Parameters
         ----------
@@ -2122,8 +1997,7 @@ class IndicatorObsDA(IndicatorDA):
                 f"observée au cours de la période ({period})."
             )
         return (
-            f"Probability density function of the {dist} distribution, overlaid on the histogram of the observed "
-            f"series during the period ({period})."
+            f"Probability density function of the {dist} distribution, overlaid on the histogram of the observed series during the period ({period})."
         )
 
 
@@ -2137,11 +2011,7 @@ class IndicatorSimDA(IndicatorDA):
 
     def __init__(self, **kwargs):
         # Unstack the data
-        kwargs["data"] = (
-            kwargs["data"]
-            .set_index(realization=("variant_label", "source_id", "experiment_id"))
-            .unstack("realization")
-        )
+        kwargs["data"] = kwargs["data"].set_index(realization=("variant_label", "source_id", "experiment_id")).unstack("realization")
 
         super().__init__(**kwargs)
 
@@ -2163,9 +2033,7 @@ class IndicatorSimDA(IndicatorDA):
             w = w.fillna(0.25)
         self.scenario_weights = w
 
-    @param.depends(
-        "model_weights", "_update_scenario_weights", watch=True, on_init=True
-    )
+    @param.depends("model_weights", "_update_scenario_weights", watch=True, on_init=True)
     def _update_weights(self):
         if self.model_weights is not None:
             self.weights = self.model_weights * self.scenario_weights
@@ -2175,7 +2043,8 @@ class IndicatorSimDA(IndicatorDA):
         return getattr(mix, name)(arg)
 
     def experiment_percentiles(self, per) -> xr.Dataset:
-        """Return the percentiles computed for each year and experiment.
+        """
+        Return the percentiles computed for each year and experiment.
 
         Useful for visualizing the distribution of the ensemble.
 
@@ -2193,9 +2062,7 @@ class IndicatorSimDA(IndicatorDA):
         # Apply weights on the ensemble percentile calculations
         # Here we need to apply weights related to the number of members, as well as model weights
         w = self.model_weights * members(self.ts)
-        w = w.expand_dims(variant_label=self.ts.variant_label).stack(
-            realization=["source_id", "variant_label"]
-        )
+        w = w.expand_dims(variant_label=self.ts.variant_label).stack(realization=["source_id", "variant_label"])
         w = w.fillna(0)
         return xclim.ensembles.ensemble_percentiles(da, per, split=True, weights=w)
 
@@ -2234,20 +2101,17 @@ class IndicatorSimDA(IndicatorDA):
                 f"permet de contrôler leur visibilité."
             )
         else:
-            return f"Projected time series for `{self.long_name}` at {st}. {self.description} Clicking on legend items allows to control their visibility."
+            return (
+                f"Projected time series for `{self.long_name}` at {st}. {self.description} "
+                "Clicking on legend items allows to control their visibility."
+            )
 
     @property
     def hist_caption(self):
         period = "–".join(map(str, self.period))
         if self.locale == "fr":
-            return (
-                f"Densité de probabilité combinant les différentes sources d'incertitudes climatiques sur la "
-                f"période ({period})."
-            )
-        return (
-            f"Probability density function combining different sources of climate uncertainties over the period "
-            f"({period})."
-        )
+            return f"Densité de probabilité combinant les différentes sources d'incertitudes climatiques sur la période ({period})."
+        return f"Probability density function combining different sources of climate uncertainties over the period ({period})."
 
 
 class IndicatorRefDA(IndicatorSimDA):
@@ -2260,10 +2124,10 @@ class IndicatorRefDA(IndicatorSimDA):
     def period(self):
         return self.obs.period
 
-
     @staticmethod
     def ks(obs, ref, level=0.05, rdim="tr") -> xr.DataArray:
-        """Kolmogorov-Smirnov test between the observed and simulated data.
+        """
+        Kolmogorov-Smirnov test between the observed and simulated data.
 
         The null hypothesis is that the two distributions are identical.
         If the p-value < 0.05, we reject this hypothesis and return a weight of 0. otherwise we consider the
@@ -2289,7 +2153,7 @@ class IndicatorRefDA(IndicatorSimDA):
                 input_core_dims=[[rdim]],
                 vectorize=True,
                 dask="parallelized",
-        )
+            )
 
         # We assume that over the reference period, the values are the same for all the experiments.
         def func(r):
@@ -2326,9 +2190,7 @@ class IndicatorRefDA(IndicatorSimDA):
         #     #raise ValueError("Reference and observed periods must match.")
         # logger.error(f"Reference and observed periods do match.")
         # We can select the first experiment because all experiments have the same values over the historical period.
-        ref = self.sample.stack(tr=["time", "variant_label"]).isel(
-            experiment_id=0, drop=True
-        )
+        ref = self.sample.stack(tr=["time", "variant_label"]).isel(experiment_id=0, drop=True)
         obs = self.obs.sample
 
         self._ks = self.ks(obs, ref, self.level, rdim="tr")
@@ -2338,7 +2200,8 @@ class IndicatorRefDA(IndicatorSimDA):
         """Compute the weights for the dataset."""
         test = self._ks
         if test is None:
-            logger.error(f"{self.xid}: KS is None.")
+            msg = f"{self.xid}: KS is None."
+            logger.error(msg)
             return
 
         # Drop the models that don't match
@@ -2347,15 +2210,15 @@ class IndicatorRefDA(IndicatorSimDA):
             raise ValueError("Not enough models to compute weights.")
 
         # Compute the weights for valid models
-        self.model_weights = model_weights_from_sherwood(
-            ok.source_id.values, method="L2Var", lambda_=0.5
-        ).sel(source_id=test.source_id)
+        self.model_weights = model_weights_from_sherwood(ok.source_id.values, method="L2Var", lambda_=0.5).sel(source_id=test.source_id)
 
-        logger.info(f"{self.xid}: Model weights computed")
+        msg = f"{self.xid}: Model weights computed"
+        logger.info(msg)
 
 
 def pievc(sf):
-    """Return category from 1 to 7 based on return period.
+    """
+    Return category from 1 to 7 based on return period.
 
     Parameters
     ----------
@@ -2370,9 +2233,7 @@ def pievc(sf):
 
 class HazardMatrix(BaseParameterized):
     analysis = param.ClassSelector(class_=Analysis, precedence=-1, instantiate=True)
-    kind = param.Selector(
-        objects={"Probabilities": lambda x: x * 100, "PIEVC": pievc}, instantiate=True
-    )
+    kind = param.Selector(objects={"Probabilities": lambda x: x * 100, "PIEVC": pievc}, instantiate=True)
 
     matrix = param.Dict({}, instantiate=True)
 
@@ -2435,9 +2296,7 @@ class HazardMatrix(BaseParameterized):
         },
     }
 
-    @param.depends(
-        "analysis.obs", "analysis.ref", "analysis.fut", watch=True, on_init=True
-    )
+    @param.depends("analysis.obs", "analysis.ref", "analysis.fut", watch=True, on_init=True)
     def _update(self):
         """Fill matrix with the indicators from the analysis."""
         if self.analysis is None:
@@ -2471,9 +2330,7 @@ class HazardMatrix(BaseParameterized):
         r = self.analysis.ref[key]
         f = self.analysis.fut[key]
 
-        self.matrix[key].insert(
-            index + 1, HazardThreshold(obs=o, ref=r, fut=f, locale=self.param.locale)
-        )
+        self.matrix[key].insert(index + 1, HazardThreshold(obs=o, ref=r, fut=f, locale=self.param.locale))
         self.param.trigger("matrix")
 
     def remove(self, key: str, index: int):
@@ -2486,9 +2343,9 @@ class HazardMatrix(BaseParameterized):
         # Get values
         out = []
         if len(self.matrix) > 0:
-            for key, hts in self.matrix.items():
+            for hts in self.matrix.values():
                 for ht in hts:
-                    out.append(ht.values)
+                    out.append(ht.values)  # noqa: PERF401
 
             df = pd.concat(out, axis=1).T  # .set_index(["long_name", "descr"])
             # df = df.set_axis(ht.index.to_flat_index(), axis=1)
@@ -2516,7 +2373,7 @@ class HazardMatrix(BaseParameterized):
     def get_ht(self, index):
         """Get HazardThreshold instance from index."""
         i = 0
-        for key, hts in self.matrix.items():
+        for hts in self.matrix.values():
             for ht in hts:
                 if i == index:
                     return ht
@@ -2524,39 +2381,37 @@ class HazardMatrix(BaseParameterized):
 
     def on_click(self, event):
         logger.info(str(event))
-        if event.column in ["add", "remove"]:
-            i = 0
-            for key, hts in self.matrix.items():
-                for index, ht in enumerate(hts):
-                    if i == event.row:
-                        break
-                    i += 1
-                else:  # Finish without break, skip to next iteration
-                    continue
+        # WIP
+        if event.column not in {"add", "remove"}:
+            return False
+
+        row = event.row
+        offset = 0
+        for key, hts in self.matrix.items():  # noqa: B007
+            if row < offset + len(hts):
+                index = row - offset
                 break
+            offset += len(hts)
+        else:
+            return False  # row out of range
 
-            if event.column == "add":
-                self.add(key=key, index=index)
-            elif event.column == "remove":
-                self.remove(key=key, index=index)
-
-            return True
+        if event.column == "add":
+            self.add(key=key, index=index)
+        elif event.column == "remove":  # remove
+            self.remove(key=key, index=index)
+        return True
 
     def to_dict(self, mode="results"):
         if mode == "results":
-            return {
-                key: [ht.to_dict() for ht in hts] for key, hts in self.matrix.items()
-            }
+            return {key: [ht.to_dict() for ht in hts] for key, hts in self.matrix.items()}
         if mode == "request":
             uuids = list(sorted(self.matrix.keys()))
-            return [
-                [ht.to_dict(mode="request") for ht in self.matrix[uuid]]
-                for uuid in uuids
-            ]
+            return [[ht.to_dict(mode="request") for ht in self.matrix[uuid]] for uuid in uuids]
 
     # TODO: Test locale change
     def from_dict(self, data):
-        """Add HazardThresholds from a dict.
+        """
+        Add HazardThresholds from a dict.
 
         `data` is a mapping from keys for each indicators (UUIDs) to lists of
         dicts for HazardThreshold parameters or full definitions.
@@ -2569,18 +2424,13 @@ class HazardMatrix(BaseParameterized):
                 # If the value is None, this means the user hasn't done anything yet
                 # This happens with the dummy entry that is inserted on instantiation of the indicator
                 # We remove it as we are adding something meaningful anyway
-                if (
-                    len(self.matrix[key]) >= (i + 1)
-                    and self.matrix[key][i].value is None
-                ):
+                if len(self.matrix[key]) >= (i + 1) and self.matrix[key][i].value is None:
                     self.matrix[key].remove(self.matrix[key][i])
                 if "X" in ht or "T" in ht:
                     self.add(key, i)
                     hto = self.matrix[key][i]
                     if "X" in ht and "T" in ht:
-                        raise ValueError(
-                            "Invalid hazard parameters entry including both X and T."
-                        )
+                        raise ValueError("Invalid hazard parameters entry including both X and T.")
                     if "X" in ht:
                         hto.input = "X"
                         hto.value = ht["X"]
@@ -2588,9 +2438,7 @@ class HazardMatrix(BaseParameterized):
                         hto.input = "T"
                         hto.obs_t = ht["T"]
                     else:
-                        raise ValueError(
-                            "Invalid hazard parameters entry missing X or T."
-                        )
+                        raise ValueError("Invalid hazard parameters entry missing X or T.")
                     hto.descr = ht.get("description", f"Aléa #{i:d}")
                 else:  # A full definition
                     self.matrix[key].insert(i, HazardThreshold.from_dict(ht))
@@ -2598,7 +2446,8 @@ class HazardMatrix(BaseParameterized):
 
 
 class HazardThreshold(BaseParameterized):
-    """Class for hazards thresholds.
+    """
+    Class for hazards thresholds.
 
     Facilitate going from values to return periods and vice-versa.
 
@@ -2610,9 +2459,7 @@ class HazardThreshold(BaseParameterized):
     ref = param.ClassSelector(class_=IndicatorDA, precedence=-1, instantiate=True)
     fut = param.ClassSelector(class_=IndicatorDA, precedence=-1, instantiate=True)
 
-    long_name = param.String(
-        label="Name", doc="Indicator name", precedence=-1, instantiate=True
-    )
+    long_name = param.String(label="Name", doc="Indicator name", precedence=-1, instantiate=True)
     descr = param.String(label="Élément à risque", doc="Description", instantiate=True)
     xid = param.String(label="ID", doc="xclim indicator call", instantiate=True)
 
@@ -2656,9 +2503,7 @@ class HazardThreshold(BaseParameterized):
         instantiate=True,
     )
 
-    hm = param.ClassSelector(
-        class_=HazardMatrix, precedence=-1, doc="Matrix of thresholds", instantiate=True
-    )
+    hm = param.ClassSelector(class_=HazardMatrix, precedence=-1, doc="Matrix of thresholds", instantiate=True)
 
     _keys = [
         # "long_name",
@@ -2774,15 +2619,16 @@ class HazardThreshold(BaseParameterized):
     @property
     def titles(self) -> dict:
         """Return labels Series."""
-        return {key: getattr(self.param[key], "label") for key in self._keys}
+        return {key: self.param[key].label for key in self._keys}
 
     @property
     def docs(self):
-        return {key: getattr(self.param[key], "doc") for key in self._keys}
+        return {key: self.param[key].doc for key in self._keys}
 
     def on_edit(self, event):
         """Trigger the edit event."""
-        logger.info(f"{event.column}: {event.value}")
+        msg = f"{event.column}: {event.value}"
+        logger.info(msg)
 
         name = event.column
         if name == "value":
@@ -2793,10 +2639,8 @@ class HazardThreshold(BaseParameterized):
         setattr(self, name, event.value)
 
 
-def haversine(lon1: float, lat1: float, lon2: np.array, lat2: np.array):
-    """Calculate the great circle distance between points
-    on the earth (specified in decimal degrees)
-    """
+def haversine(lon1: float, lat1: float, lon2: np.ndarray, lat2: np.ndarray):
+    """Calculate the great circle distance between points on the earth (specified in decimal degrees)."""
     lon1, lat1, lon2, lat2 = map(np.radians, [lon1, lat1, lon2, lat2])
 
     dlon = lon2 - lon1

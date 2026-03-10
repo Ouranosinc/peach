@@ -1,8 +1,8 @@
 # Rendering the factsheets in HTML
 
-Rendering the factsheets into HTML should be done automatically by the top-level `docker-compose`. 
-The Docker container runs Quarto, a documentation engine running off a custom version of Markdown. 
-These factsheets do not appear in the project documentation, only in the graphical user interface. 
+Rendering the factsheets into HTML should be done automatically by the top-level `docker-compose`.
+The Docker container runs Quarto, a documentation engine running off a custom version of Markdown.
+These factsheets do not appear in the project documentation, only in the graphical user interface.
 
 ## Manuel build instructions
 
@@ -30,4 +30,4 @@ To serve them in the Panel app, what I've been able to do so far is hackish...
 
 I'm not able to spin a docker container since it requires MinIO credentials, so I haven't been able to fold that logic into the container. I suspect that the docker logic needs to
 1. install quarto and generate the HTML;
-2. include the static dirs in `run.sh`. 
+2. include the static dirs in `run.sh`.

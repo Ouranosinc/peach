@@ -37,6 +37,6 @@ body:
     id: submit-pr
     attributes:
       label: Contribution
-      description: Do you intend to submit a fix for this bug? 
+      description: Do you intend to submit a fix for this bug?
       options:
         - label: I would be willing/able to open a Pull Request to address this bug.

@@ -6,12 +6,12 @@ import pytest
 import peach.frontend.parameters as p
 import peach.frontend.views as v
 
+
 # For now these tests are just smoke tests
 # TODO: Save the plots and compare them to reference images
 
 
 def test_station_and_indicator_list_viewer(station_data, config):
-
     # Parameters
 
     gl = p.Global(locale="fr")
@@ -20,26 +20,18 @@ def test_station_and_indicator_list_viewer(station_data, config):
     map_param = p.Map(clat=44.5, clon=-65.9, z=7)
 
     s = p.Station(station_data, variables=["pr", "tas"], site=site, locale=gl.param.locale)
-    il = p.IndicatorList(
-        config=config[0], locale=gl.param.locale, station_id=s.param.station_id
-    )
+    il = p.IndicatorList(config=config[0], locale=gl.param.locale, station_id=s.param.station_id)
 
     # Indicator list viewer
     v.IndicatorListViewer(inds=il, config=config[2]).__panel__()
 
     # Station viewer
-    v.StationViewer(
-        station=s, site=site, map_param=map_param, config=config[1]
-    ).__panel__()
+    v.StationViewer(station=s, site=site, map_param=map_param, config=config[1]).__panel__()
 
 
 @pytest.mark.online
-@pytest.mark.skipif(
-    os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
-)
-def test_analysis_viewer(
-    hdd_series, idf_obs, idf_sim, wl_pot_obs, wl_pot_sim, station_data
-):
+@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI")
+def test_analysis_viewer(hdd_series, idf_obs, idf_sim, wl_pot_obs, wl_pot_sim, station_data):
     obs, sim = hdd_series
     links = {
         "obs": {"00": obs, "11": idf_obs, "22": wl_pot_obs},
@@ -88,11 +80,10 @@ def test_analysis_WL_viewer(synthetic_ewl_ds, station_data):
     v.IndicatorSimDAViewer(ind=a.fut["123"]).__panel__()
 
 
-def test_hazard_matrix_viewer(synthetic_dataset, synthetic_dataset_fut, station_data):
-
+def test_hazard_matrix_viewer(synthetic_dataset, synthetic_dataset_fut):
     sim_ds = synthetic_dataset_fut
 
-    for key, val in sim_ds.items():
+    for val in sim_ds.values():
         val.data += 0.01
 
     a = p.Analysis(
@@ -104,10 +95,7 @@ def test_hazard_matrix_viewer(synthetic_dataset, synthetic_dataset_fut, station_
     mv.__panel__()
 
 
-def test_application(
-    station_data, config, synthetic_dataset, synthetic_dataset_fut, tmp_path
-):
-
+def test_application(station_data, config, synthetic_dataset, synthetic_dataset_fut):
     gl = p.Global(locale="fr")
 
     site = p.Site(
@@ -122,9 +110,7 @@ def test_application(
     s = p.Station(station_data, variables=["pr", "tas"], site=site, locale=gl.param.locale)
 
     # Indicator list viewer
-    il = p.IndicatorList(
-        config=config[0], locale=gl.param.locale, station_id=s.param.station_id
-    )
+    il = p.IndicatorList(config=config[0], locale=gl.param.locale, station_id=s.param.station_id)
 
     # Initialization
     s.pr = "7028441"

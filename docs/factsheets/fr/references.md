@@ -9,6 +9,3 @@ sont proposées dans la littérature [@iso2021]. -->
 
 ::: {#refs}
 :::
-
-
-

@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
+
 """
 Parse the IDF_Additional_Additionnel_v3-30/idfm0018.txt file from
 https://collaboration.cmc.ec.gc.ca/cmc/climate/Engineer_Climate/IDF/idf_v3-30_2022_10_31/IDF_Files_Fichiers/
@@ -12,7 +13,7 @@ and extract annual maximum rainfall depths for different durations.
 
 Notes
 -----
-Removed those entries (duplicated station numbers ans years... not sure which ones are valid)
+Removed those entries (duplicated station numbers and years... not sure which ones are valid)
 
 11083802013  4.6  6.4  7.4 13.0 22.2 23.8 29.0 43.0 55.4VANCOUVER SEA ISLAND CCG                    TTTTTTTTT
 11083802014  3.8  5.2  6.0  7.4  9.2 16.0 36.0 50.2 60.2VANCOUVER SEA ISLAND CCG                    TTTTTTTTT
@@ -40,24 +41,22 @@ duration_hr = {
 
 
 def parse(fh):
-    """
-    Generator parsing lines from a file handle.
-    """
+    """Generator parsing lines from a file handle."""
     f = np.float32
 
     # This is not pretty, but it's fast
-    parse_line = lambda l: (
-        l[0:7],
-        int(l[7:11]),
-        f(l[11:16]),
-        f(l[16:21]),
-        f(l[21:26]),
-        f(l[26:31]),
-        f(l[31:36]),
-        f(l[36:41]),
-        f(l[41:46]),
-        f(l[46:51]),
-        f(l[51:56]),
+    parse_line = lambda line: (
+        line[0:7],
+        int(line[7:11]),
+        f(line[11:16]),
+        f(line[16:21]),
+        f(line[21:26]),
+        f(line[26:31]),
+        f(line[31:36]),
+        f(line[36:41]),
+        f(line[41:46]),
+        f(line[46:51]),
+        f(line[51:56]),
     )
 
     for line in fh:
@@ -68,7 +67,7 @@ def parse(fh):
 
 def load_df(path: str | Path) -> pd.DataFrame:
     """Parse the IDF data and return a DataFrame indexed by station_id and year."""
-    with open(path) as fh:
+    with Path(path).open() as fh:
         raw = tuple(parse(fh))
 
     df = pd.DataFrame(
@@ -91,7 +90,8 @@ def load_df(path: str | Path) -> pd.DataFrame:
 
 
 def load(path: str | Path) -> xr.Dataset:
-    """Parse the IDF data and return xarray Dataset.
+    """
+    Parse the IDF data and return xarray Dataset.
 
     Parameters
     ----------
@@ -136,10 +136,8 @@ def load(path: str | Path) -> xr.Dataset:
     # Add global attributes
     out = da.to_dataset()
     out.attrs = {
-        "history": "Parsed from IDF_Additional_Additionnel_v3-30/idfm0018.txt. Masked values of -99.9. "
-        "Converted from mm to m.",
-        "source": "https://collaboration.cmc.ec.gc.ca/cmc/climate/Engineer_Climate/IDF/idf_v3-30_2022_10_31"
-        "/IDF_Files_Fichiers/",
+        "history": "Parsed from IDF_Additional_Additionnel_v3-30/idfm0018.txt. Masked values of -99.9. Converted from mm to m.",
+        "source": "https://collaboration.cmc.ec.gc.ca/cmc/climate/Engineer_Climate/IDF/idf_v3-30_2022_10_31/IDF_Files_Fichiers/",
         "contact": "David Huard <huard.david@ouranos.ca>",
         "comments": "Data from duplicated station ids removed: 11083802013 and 10545032014",
         "description": "Annual precipitation maxima from ECCC",
@@ -193,10 +191,7 @@ def load_meta(path):
 
 
 def save_idf_regions(path):
-    """
-    Load regions from INRS netCDF file, find the region for each IDF station, then save this region to a json file.
-
-    """
+    """Load regions from INRS netCDF file, find the region for each IDF station, then save this region to a json file."""
     import json
 
     from scipy.spatial import KDTree
@@ -205,22 +200,13 @@ def save_idf_regions(path):
 
     # Read region data from Guillaume Talbot
     ds = xr.open_dataset(path)
-    ds = ds.rename_dims(Longitude="lon", Latitude="lat").rename_vars(
-        longitude="lon", latitude="lat"
-    )
+    ds = ds.rename_dims(Longitude="lon", Latitude="lat").rename_vars(longitude="lon", latitude="lat")
 
     # Create KDTree for fast nearest neighbor search
     kd = KDTree(np.vstack([ds.lon.values, ds.lat.values]).T)
 
     # Read station data and pick IDF stations
-    sv_path = (
-        Path(__file__).parent.parent
-        / "src"
-        / "peach"
-        / "frontend"
-        / "data"
-        / "stations_variables.csv"
-    )
+    sv_path = Path(__file__).parent.parent / "src" / "peach" / "frontend" / "data" / "stations_variables.csv"
     df = pd.read_csv(sv_path)
     i = df["variable"] == "idf"
 
@@ -230,7 +216,7 @@ def save_idf_regions(path):
 
     # Save the region data to a json file
     out = dict(zip(df[i].station, map(int, r.values)))
-    with open(Path(frontend.__file__).parent / "data" / "idf_regions.json", "w") as fh:
+    with (Path(frontend.__file__).parent / "data" / "idf_regions.json").open("w") as fh:
         json.dump(out, fh)
 
     # df.loc[i, "constraints"] = r.values.astype(int).astype(str)

@@ -12,11 +12,8 @@ from peach.frontend.parameters import Analysis, HazardMatrix
 
 
 @pytest.mark.online
-@pytest.mark.skipif(
-    os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI"
-)
+@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI")
 def test_IndicatorsIDF(idf_obs, idf_sim):
-
     # Observations
 
     dao = xr.open_dataarray(idf_obs, engine="zarr")
@@ -34,12 +31,8 @@ def test_IndicatorsIDF(idf_obs, idf_sim):
     ref = IndicatorRefIDF.from_da(da=das, obs=o)
     assert ref._ks.all()
 
-    fut = IndicatorSimIDF.from_da(
-        da=das, obs=o, period=(2040, 2070), model_weights=ref.param.model_weights
-    )
-    assert {"t", "time", "variant_label", "source_id", "experiment_id"}.issubset(
-        fut.ts.dims
-    )
+    fut = IndicatorSimIDF.from_da(da=das, obs=o, period=(2040, 2070), model_weights=ref.param.model_weights)
+    assert {"t", "time", "variant_label", "source_id", "experiment_id"}.issubset(fut.ts.dims)
 
     # Test that delta returns a DataArray without time dimension
     d = fut.delta(fut.period)

@@ -53,7 +53,8 @@ steps:
 
            2. Cliquer sur le bouton `Ajouter` pour inclure cet indicateur dans l'analyse de risque. Le bouton `Ajouter` est activé uniquement lorsque toutes les variables d'entrée requises pour son calcul ont une station correspondante sélectionnée.
 
-           3. Pour chaque indicateur sélectionné, définir les valeurs des arguments. Vous pouvez ajouter le même indicateur plusieurs fois pour le calculer avec différents seuils ou saisons, ou le supprimer de la liste en cliquant sur le bouton `Supprimer`.
+           3. Pour chaque indicateur sélectionné, définir les valeurs des arguments. Vous pouvez ajouter le même indicateur plusieurs fois pour le calculer avec différents seuils ou saisons,
+              ou le supprimer de la liste en cliquant sur le bouton `Supprimer`.
 
            4. Une fois que tous les indicateurs ont été paramétrés, cliquer sur le bouton `Calculer` pour lancer les calculs, dont l'avancement est indiqué avec des barres de progression. "
     view_config: "indicator_select.yml"
@@ -100,25 +101,25 @@ steps:
 
            La distribution statistique est celle choisie pour la période de référence."
   hazard_threshold_select:
-     name:
-        en: "Climate thresholds selection"
-        fr: "Choix des seuils climatiques"
-     description:
-        en: "Choose for each indicator the threshold values or the return times from which damage will occur."
-        fr: "Choisir pour chaque indicateur les valeurs seuils ou les temps de retour à partir duquel des dommages seront causés par l'aléa climatique."
-     help:
-       en: "For each indicator:
+    name:
+      en: "Climate thresholds selection"
+      fr: "Choix des seuils climatiques"
+    description:
+      en: "Choose for each indicator the threshold values or the return times from which damage will occur."
+      fr: "Choisir pour chaque indicateur les valeurs seuils ou les temps de retour à partir duquel des dommages seront causés par l'aléa climatique."
+    help:
+      en: "For each indicator:
 
-            1. Select thresholds of interest for the risk analysis. Those thresholds can either be set by their value (X), or by their return period (T) over the reference period.
-
-
-            Click on the `+` button to add another threshold for the same indicator, and conversely click on the `-` button to remove a threshold."
-       fr: "Pour chaque indicateur:
-
-            1. Sélectionner les seuils d'intérêt pour l'analyse de risque. Ces seuils peuvent être définis soit par leur valeur (X), soit par leur temps de retour (T) sur la période de référence.
+          1. Select thresholds of interest for the risk analysis. Those thresholds can either be set by their value (X), or by their return period (T) over the reference period.
 
 
-            Cliquer sur le bouton `+` pour ajouter un autre seuil pour le même indicateur, et inversement cliquer sur le bouton `-` pour supprimer un seuil."
-     header:
-        en: "Climate thresholds"
-        fr: "Seuils climatiques"
+          Click on the `+` button to add another threshold for the same indicator, and conversely click on the `-` button to remove a threshold."
+      fr: "Pour chaque indicateur:
+
+          1. Sélectionner les seuils d'intérêt pour l'analyse de risque. Ces seuils peuvent être définis soit par leur valeur (X), soit par leur temps de retour (T) sur la période de référence.
+
+
+          Cliquer sur le bouton `+` pour ajouter un autre seuil pour le même indicateur, et inversement cliquer sur le bouton `-` pour supprimer un seuil."
+    header:
+      en: "Climate thresholds"
+      fr: "Seuils climatiques"

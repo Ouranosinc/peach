@@ -12,6 +12,7 @@ from peach.common import config
 # TODO move params to common
 from peach.frontend import parameters as params
 
+
 # Load water level and IDF indicators into xclim registry
 
 # Dask config set in docker-compose.yml
@@ -77,8 +78,14 @@ METADATA = {
         "analysis": {
             "title": {"en": "Analysis Parameters", "fr": "Paramètres de l'analyse"},
             "description": {
-                "en": "Can contain: ref_period (int tuple), fut_period (int tuple), dist (list of strings, same length as 'indicators'), metric (pareil que dist).",
-                "fr": "Peut contenir: ref_period (int tuple), fut_period (int tuple), dist (liste de strings de même longueur que 'indicators'), metric (pareil que dist).",
+                "en": (
+                    "Can contain: ref_period (int tuple), fut_period (int tuple), "
+                    "dist (list of strings, same length as 'indicators'), metric (pareil que dist)."
+                ),
+                "fr": (
+                    "Peut contenir: ref_period (int tuple), fut_period (int tuple), "
+                    "dist (liste de strings de même longueur que 'indicators'), metric (pareil que dist)."
+                ),
             },
             "schema": {
                 "type": "object",
@@ -140,7 +147,7 @@ ind_config = config.read_indicator_config()
 class ComputeHazardThreshold(BaseProcessor):
     """ComputeHazardThreshold"""
 
-    def __init__(self, processor_def: dict, process_metadata: dict = None):
+    def __init__(self, processor_def: dict, process_metadata: dict | None = None):
         """
         Initialize the processor
 
@@ -159,7 +166,8 @@ class ComputeHazardThreshold(BaseProcessor):
 
     @classmethod
     def hash_request(cls, indicators: list, sids: dict, hazards: dict):
-        """Generate a hash for the given input parameters.
+        """
+        Generate a hash for the given input parameters.
 
         Parameters
         ----------
@@ -173,8 +181,9 @@ class ComputeHazardThreshold(BaseProcessor):
             A dictionary of variable names and station IDs.
         """
         xcver = xclim.__version__.replace(".", "-")
+        # FIXME: Reduce the complexity here
         inds_str = [
-            f"{ind['name'].replace('_', '-')}_{hashlib.md5(str(sorted(ind.get('params', {}).items())).encode()).hexdigest()}"
+            f"{ind['name'].replace('_', '-')}_{hashlib.md5(str(sorted(ind.get('params', {}).items())).encode()).hexdigest()}"  # noqa: S324
             for ind in indicators
         ]
         ids_str = "-".join([f"{v}{i}" for v, i in sorted(sids.items())])
@@ -183,7 +192,7 @@ class ComputeHazardThreshold(BaseProcessor):
 
     def execute(self, data):
         """Return indicator time series."""
-        logger.info(f"Execution data: {data}")
+        logger.info("Execution data: %s", data)
 
         t0 = time.perf_counter()
         mimetype = "application/json"
@@ -203,19 +212,9 @@ class ComputeHazardThreshold(BaseProcessor):
             time.sleep(2)
 
         # Analysis
-        an_kwargs = {
-            k: tuple(v)
-            for k, v in data["analysis"].items()
-            if k in ["ref_period", "fut_period"]
-        }
+        an_kwargs = {k: tuple(v) for k, v in data["analysis"].items() if k in ["ref_period", "fut_period"]}
         analysis = params.Analysis(indicators=indicators, **an_kwargs)
-        analysis.update_params(
-            **{
-                k: dict(zip(uuids, data["analysis"][k]))
-                for k in ["metric", "dist"]
-                if k in data["analysis"]
-            }
-        )
+        analysis.update_params(**{k: dict(zip(uuids, data["analysis"][k])) for k in ["metric", "dist"] if k in data["analysis"]})
 
         # Hazards
         matrix = params.HazardMatrix(analysis=analysis)
@@ -223,13 +222,12 @@ class ComputeHazardThreshold(BaseProcessor):
         matrix.from_dict(hazard_dict)
 
         t1 = time.perf_counter()
-        logger.info(f"Job completed in {t1 - t0} seconds.")
+        msg = f"Job completed in {t1 - t0} seconds."
+        logger.info(msg)
         anaout = analysis.to_dict("short")
         matout = matrix.to_dict()
-        output = {
-            "value": {"analysis": anaout, "hazards": [matout[uuid] for uuid in uuids]}
-        }
-        logger.info(f"Job done : {output}")
+        output = {"value": {"analysis": anaout, "hazards": [matout[uuid] for uuid in uuids]}}
+        logger.info("Job done : %s", output)
         return mimetype, output
 
     def __repr__(self):

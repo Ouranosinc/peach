@@ -5,16 +5,15 @@ import xarray as xr
 def define_q(parent_array: np.array, child_array: np.array) -> np.array:
     """Computes the quantiles for each value in `child_array` based on its position within `parent_array`."""
     if child_array.min() < parent_array.min() or child_array.max() > parent_array.max():
-        raise ValueError(
-            "All values in child_array must be within the range of parent_array."
-        )
+        raise ValueError("All values in child_array must be within the range of parent_array.")
     sorted_parent = np.sort(parent_array)
     q = np.interp(child_array, sorted_parent, np.linspace(0, 1, len(parent_array)))
     return q
 
 
 def wl_norm(sl_mm_yr: float, ref_period: tuple):
-    """Get the mean water level difference between AR6 and the specified reference period.
+    """
+    Get the mean water level difference between AR6 and the specified reference period.
 
     Difference in mean water level is obtained from the historical rate of sea-level change.
 
@@ -35,7 +34,7 @@ def wl_norm(sl_mm_yr: float, ref_period: tuple):
 
 def matching_events(pot_da: xr.DataArray, timeseries_da: xr.DataArray) -> tuple:
     """Identifies matching extreme events in `timeseries_da` around the timepoints in `pot_da`."""
-    LAG_DAYS = 1
+    LAG_DAYS = 1  # noqa: N806
     max_values, max_times = [], []
     for time in pot_da["time"].values:
         start_time = np.datetime64(time) - np.timedelta64(LAG_DAYS, "D")
@@ -56,16 +55,12 @@ def matching_events(pot_da: xr.DataArray, timeseries_da: xr.DataArray) -> tuple:
         max_values,
         coords={"time": max_times},
         dims="time",
-        name=(
-            "pr_cond"
-            if timeseries_da.name in {"pr_sim_daily", "pr"}
-            else f"{timeseries_da.name}_cond"
-        ),
+        name=("pr_cond" if timeseries_da.name in {"pr_sim_daily", "pr"} else f"{timeseries_da.name}_cond"),
         attrs=timeseries_da.attrs,
     )
 
     da_cond.attrs["ex_type"] = "Conditional extremes"
-    
+
     if timeseries_da.name in {"pr_sim_daily", "pr"}:
         # Remove events where precipitation < 1 mm
         mask = ~np.isnan(pot_da.values) & ~np.isnan(da_cond.values) & (da_cond.values >= 1)

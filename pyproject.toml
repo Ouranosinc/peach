@@ -1,6 +1,65 @@
 [build-system]
-requires = ["flit_core >=3.8,<4"]
+requires = ["flit_core >=3.12.0,<4"]
 build-backend = "flit_core.buildapi"
+
+[dependency-groups]
+data_preparation = [
+  "geopy",
+  "h5py",
+  "netCDF4",
+  "xesmf"
+]
+lint = [
+  # Linting tools
+  "codespell >=2.4.1",
+  "deptry >=0.24.0",
+  "flake8 >=7.3.0",
+  "flake8-rst-docstrings >=0.4.0",
+  "mypy >=1.19.1",
+  "numpydoc >=1.10.0",
+  "pylint >=4.0.4",
+  "ruff >=0.15.0",
+  "vulture >=2.14",
+  "yamllint >=1.38.0"
+]
+test = [
+  # Base testing support
+  "coverage[toml] >=7.13.4",
+  "pytest >=9.0.2",
+  "pytest-cov >=7.0.0"
+]
+docs = [
+  # Documentation and example support
+  "figanos",
+  "h5py",
+  "ipykernel",
+  "ipython >=8.10.0",
+  "ipywidgets",
+  "jupyter_client",
+  "myst_nb",
+  "nbsphinx >=0.9.8",
+  "s3fs",
+  "sphinx >=8.0.0",
+  "sphinx-book-theme >=1.1.4",
+  "sphinx-codeautolink >=0.16.2",
+  "sphinx-copybutton >=0.5.2",
+  "sphinx-intl"
+]
+tox = [
+  "tox >=4.41.0",
+  "tox-gh >=1.6.1"
+]
+dev = [
+  # Development and testing tools
+  "bump-my-version >=1.2.6",
+  "pip >=26.0.1",
+  "prek >=0.3.0",
+  "watchdog >=6.0.0",
+  {include-group = "docs"},
+  {include-group = "lint"},
+  {include-group = "test"},
+  {include-group = "tox"}
+]
 
 [project]
 name = "peach"
@@ -11,113 +70,84 @@ authors = [
   {name = "Sarah Gammon", email = "gammon.sarah@ouranos.ca"}
 ]
 maintainers = [
+  {name = "David Huard", email = "huard.david@ouranos.ca"},
   {name = "Trevor James Smith", email = "smith.trevorj@ouranos.ca"}
 ]
 readme = {file = "README.md", content-type = "text/markdown"}
-requires-python = ">=3.9"
+requires-python = ">=3.10.0"
 keywords = ["peach"]
-license = {file = "LICENSE"}
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 classifiers = [
   "Development Status :: 2 - Pre-Alpha",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: Apache Software License",
   "Natural Language :: English",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: Implementation :: CPython"
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Typing :: Typed"
 ]
 dynamic = ["description", "version"]
 dependencies = [
-  "xarray",
+  "aiofiles",
+  "copulae",
+  "dask",
+  "filelock",
+  "flexparser <0.5",
+  "geopandas",
   "h5netcdf",
   "h5py",
-  "xclim",
-  "pyyaml",
-  "zarr",
-  "dask",
+  "holoviews",
+  "hvplot",
+  "ipyleaflet",
+  "ipywebrtc",
   "lmoments3",
-  "numpy",
-  "numcodecs<=0.15.1", # Zarr < 3 is not compatible with latest numcodecs
-  "scipy",
+  "matplotlib",
+  "numcodecs <=0.15.1", # Zarr < 3 is not compatible with latest numcodecs
+  "numpy >=2.0",
+  "openturns >=1.24",
   "pandas",
-  "geopandas",
+  "param",
   "pyextremes",
   "pygeoapi",
+  "pyyaml",
+  "requests",
+  "shapely",
+  "s3fs",
+  "scipy",
   "statsmodels",
-  "copulae",
-  "openturns>=1.24",
-  "flexparser<0.5",
-  "s3fs"
+  "xarray",
+  "xclim ==0.60.0",
+  "zarr"
 ]
 
 [project.optional-dependencies]
 app = [
   "bokeh",
-  "panel",
   "holoviews",
   "hvplot",
-  "ipywidgets",
+  "ipykernel",
   "ipyleaflet",
-  "param",
-  "ipykernel",
+  "ipywidgets",
+  "ipywidgets_bokeh",
   "jupyter_client",
-  "notebook"
-]
-pre = [
-  "xesmf",
-  "netCDF4",
-  "geopy",
-  "h5py"
-]
-dev = [
-  # Dev tools and testing
-  "pip",
-  "bump-my-version",
-  "watchdog",
-  "flake8",
-  "flake8-alphabetize",
-  "flake8-rst-docstrings",
-  "flit",
-  "tox",
-  "coverage",
-  "coveralls",
-  "pytest",
-  "pytest-cov",
-  "black",
-  "blackdoc",
-  "isort",
-  "ruff",
-  "pre-commit"
-]
-docs = [
-  # Documentation and examples
-  "figanos",
-  "sphinx",
-  "sphinx-codeautolink",
-  "sphinx-copybutton",
-  "sphinx-intl",
-  "sphinx-book-theme",
-  "nbsphinx",
-  "pandoc",
-  "ipython",
-  "ipykernel",
-  "jupyter_client",
-  "myst-nb"
+  "notebook",
+  "panel >=1.5.5"
 ]
 
 [project.urls]
-# "Homepage" = "https://peach.readthedocs.io/"
-# "Changelog" = "https://peach.readthedocs.io/en/stable/history.html"
-# "About Ouranos" = "https://www.ouranos.ca/en/"
+"Homepage" = "https://cs-peach.readthedocs.io/"
+"Changelog" = "https://cs-peach.readthedocs.io/en/stable/changes.html"
+"About Ouranos" = "https://www.ouranos.ca/en/"
 "Source" = "https://github.com/ouranosinc/peach"
 "Issue tracker" = "https://github.com/ouranosinc/peach/issues"
 
 [tool]
-
-[tool.black]
-target-version = [
-  "py312"
-]
 
 [tool.bumpversion]
 current_version = "0.1.0"
@@ -133,17 +163,45 @@ serialize = [
 ]
 
 [[tool.bumpversion.files]]
+filename = "CHANGES.md"
+include_bumps = ["release"]
+search = """
+## unreleased
+"""
+replace = """
+<!-- ## unreleased -->
+
+## {new_version} ({now:%Y-%m-%d})
+"""
+
+[[tool.bumpversion.files]]
+filename = "CITATION.cff"
+include_bumps = ["release"]
+search = "^version: \"[0-9]+\\.[0-9]+\\.[0-9]\""
+regex = true
+replace = "version: \"{new_version}\""
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+include_bumps = ["release"]
+search = "v[0-9]+\\.[0-9]+\\.[0-9]"
+regex = true
+replace = "v{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "README.rst"
+include_bumps = ["release"]
+search = "v[0-9]+\\.[0-9]+\\.[0-9]"
+regex = true
+replace = "v{new_version}"
+
+[[tool.bumpversion.files]]
 filename = "src/peach/backend/config.yml"
 search = "api_version: {current_version}"
 replace = "api_version: {new_version}"
 
 [[tool.bumpversion.files]]
-filename = "peach/__init__.py"
-search = "__version__ = \"{current_version}\""
-replace = "__version__ = \"{new_version}\""
-
-[[tool.bumpversion.files]]
-filename = "tests/test_peach.py"
+filename = "src/peach/__init__.py"
 search = "__version__ = \"{current_version}\""
 replace = "__version__ = \"{new_version}\""
 
@@ -162,10 +220,35 @@ values = [
   "release"
 ]
 
+[tool.codespell]
+ignore-words-list = "ans,astroid,calculs,celle,comparaison,fonction,ges,lien,objets,ot,sn_p,socio-economic,thirdparty"
+skip = "*.bib,*.po,*.ts,docs/_build,docs/factsheets/fr/*.md,docs/factsheets/fr/*.yml,docs/notebooks/introduction.md,docs/notebooks/metho_figures.ipynb,src/peach/frontend/data/stations_variables.csv,src/peach/frontend/views.py"
+
+[tool.coverage.paths]
+source = ["src/peach/", "*/site-packages/peach/"]
+
 [tool.coverage.run]
-relative_files = true
-include = ["peach/*"]
 omit = ["tests/*.py"]
+relative_files = true
+source = ["peach"]
+
+[tool.deptry]
+known_first_party = ["peach"]
+ignore_notebooks = true
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "aiofiles",
+  "flexparser",
+  "h5netcdf",
+  "h5py",
+  "ipykernel",
+  "ipywidgets_bokeh",
+  "jupyter_client",
+  "notebook",
+  "numcodecs",
+  "statsmodels"
+]
 
 [tool.flit.sdist]
 include = [
@@ -221,32 +304,59 @@ exclude = [
   "docs/locales"
 ]
 
-[tool.isort]
-profile = "black"
-py_version = 311
-
 [tool.mypy]
-python_version = 3.11
+files = "."
+python_version = "3.10"
 show_error_codes = true
+strict = true
+warn_no_return = true
 warn_return_any = true
+warn_unreachable = true
 warn_unused_configs = true
 
 [[tool.mypy.overrides]]
-module = []
+module = [
+  # Don't require test functions to include types
+  "tests.*"
+]
+allow_untyped_defs = true
+disable_error_code = "attr-defined"
 ignore_missing_imports = true
 
-[tool.pytest.ini_options]
+[tool.numpydoc_validation]
+checks = [
+  "all", # report on all checks, except the below
+  "EX01",
+  "SA01",
+  "ES01"
+]
+# remember to use single quotes for regex in TOML
+exclude = [
+  # don't report on objects that match any of these regex
+  '\.undocumented_method$',
+  '\.__repr__$'
+]
+override_SS05 = [
+  # override SS05 to allow docstrings starting with these words
+  '^Process ',
+  '^Assess ',
+  '^Access '
+]
+
+[tool.pytest]
+minversion = "9.0"
 addopts = [
-  "--verbose",
-  "--color=yes"
+  "-ra",
+  "--color=yes",
+  "--verbose"
 ]
 filterwarnings = ["ignore::UserWarning"]
-testpaths = "tests"
+testpaths = ["tests"]
 markers = [
   "online: marks tests that require an internet connection",
-  "backend: markes tests that require a local backend server running",
-  ]
-  
+  "backend: marks tests that require a local backend server running"
+]
+
 [tool.ruff]
 src = ["peach"]
 line-length = 150
@@ -260,21 +370,53 @@ exclude = [
 ]
 
 [tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+indent-style = "space"
+quote-style = "double"
+skip-magic-trailing-comma = false
 line-ending = "auto"
 
 [tool.ruff.lint]
+extend-select = [
+  "D213", # multi-line-summary-second-line
+  "RUF022" # unsorted-dunder-all
+]
 ignore = [
-  "E501", # ignore "line too long" as we all have big screens
-  "W505", # same
-  "E731" # ignore "do not assign lambda" as we all love lambdas
+  "BLE001", # blind-except
+  "COM", # commas
+  "D100", # undocumented-public-module
+  "D101", # undocumented-public-class
+  "D102", # undocumented-public-method
+  "D103", # undocumented-public-function
+  "D105", # undocumented-magic-method
+  "D205", # blank-line-after-summary
+  "D400", # ends-in-period
+  "D401", # non-imperative-mood
+  "E731", # lambda-assignment,
+  "S311" # suspicious-non-cryptographic-random-usage
 ]
-# Do not select documentation lint. This ain't a public package.
+preview = true
 select = [
-  "C9",
-  "E",
-  "F",
-  "W"
+  "B", # bugbear
+  "BLE", # blind-except
+  "C90", # mccabe-complexity
+  "D", # docstrings
+  "E", # pycodestyle errors
+  "F", # pyflakes
+  "FLY002", # static-join-to-fstring
+  "G", # logging-format
+  "I", # imports
+  "N", # naming conventions
+  "PERF", # iterator performance
+  "PTH", # pathlib
+  "RUF010", # explicit-f-string-type-conversion
+  "RUF013", # implicit-optional
+  "S", # bandit
+  "UP", # python version conventions
+  "W" # pycodestyle warnings
 ]
+exclude = ["*.ipynb"]
 
 [tool.ruff.lint.flake8-bandit]
 check-typed-exception = true
@@ -283,17 +425,30 @@ check-typed-exception = true
 known-first-party = ["peach"]
 case-sensitive = true
 detect-same-package = false
-lines-after-imports = 1
+lines-after-imports = 2
 no-lines-before = ["future", "standard-library"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 15
 
 [tool.ruff.lint.per-file-ignores]
-"peach/**/__init__.py" = ["F401", "F403"]
+"docs/**/*.py" = ["E402"]
+"src/peach/**/__init__.py" = ["F401", "F403"]
+"src/peach/frontend/**/*.py" = ["D102"]
+"tests/**/*.py" = ["D100", "D101", "D102", "D103", "N802", "N806", "S101"]
+"src/peach/test_utils.py" = ["D103"]
+"src/peach/backend/gunicorn.conf.py" = ["N999", "UP031"]
 
 [tool.ruff.lint.pycodestyle]
 max-doc-length = 180
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
+
+[tool.vulture]
+exclude = []
+ignore_decorators = ["@pytest.fixture"]
+ignore_names = []
+min_confidence = 90
+paths = ["src/peach", "tests"]
+sort_by_size = true

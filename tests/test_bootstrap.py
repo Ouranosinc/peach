@@ -20,9 +20,7 @@ def test_resample():
     )
     assert len(out.sample) == 3
     assert len(out.time) == 6
-    n = xr.apply_ufunc(
-        lambda x: len(np.unique(x)), out, input_core_dims=[["time"]], vectorize=True
-    )
+    n = xr.apply_ufunc(lambda x: len(np.unique(x)), out, input_core_dims=[["time"]], vectorize=True)
     assert (n == 6).all()
 
 

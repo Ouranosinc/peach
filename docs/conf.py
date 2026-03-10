@@ -41,7 +41,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx_codeautolink',
     'sphinx_copybutton',
-    "myst_nb"
+    "myst_nb",
 ]
 myst_enable_extensions = ["colon_fence", "deflist", "fieldlist"]
 
@@ -51,14 +51,14 @@ if os.getenv("READTHEDOCS_VERSION_NAME"):
     nb_execution_mode = "auto"
 else:
     nb_execution_mode = "cache"
-        
+
 nb_execution_timeout = 60 * 5
 
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
-    
+
 # To ensure that underlined fields (e.g. `_field`) are shown in the docs.
 autodoc_default_options = {
     "members": True,
@@ -79,8 +79,7 @@ templates_path = ['_templates']
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-# source_suffix = ['.rst', '.md']
-source_suffix = ['.rst']
+source_suffix = {'.rst': 'restructuredtext'}
 
 # The master toctree document.
 master_doc = 'index'
@@ -176,10 +175,10 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 
+    (master_doc,
      'peach.tex',
      'peach Documentation',
-     'David Huard', 
+     'David Huard',
      'manual'
     ),
 ]
