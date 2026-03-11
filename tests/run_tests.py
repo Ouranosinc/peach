@@ -102,7 +102,7 @@ def make_payload(i, notsync, israndom):
 
 def log_docker_stats(closer, logfile):
     dockerClient = docker.DockerClient()
-    back = dockerClient.containers.get("portail-ing-backend-dev-1")
+    back = dockerClient.containers.get("peach-backend")
     with Path(logfile).with_suffix(".system.csv").open("w") as f:
         f.write("temps,mem,cpu\n")
         print("Logging started.")
