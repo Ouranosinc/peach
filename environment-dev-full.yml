@@ -17,7 +17,7 @@ dependencies:
 - isort >=5.13.2
 - lmoments3
 - numpy >=2.0
-- openturns >=1.24
+- openturns >=1.24,<1.27
 - pandas
 - param
 - pip >=25.2
