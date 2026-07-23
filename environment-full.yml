@@ -19,7 +19,7 @@ dependencies:
   - lmoments3
   - numpy >=2.0
   - openturns >=1.24,<1.27
-  - pandas
+  - pandas >=2.0
   - panel >=1.5.5
   - param
   - pip >=25.2
@@ -27,12 +27,12 @@ dependencies:
   - pygeoapi
   - python >=3.12,<3.13
   - s3fs
-  - scipy
+  - scipy >=1.11.0
   - sphinx
   - starlette
   - uvicorn[standard]
   - watchfiles
-  - xarray
-  - xclim==0.60
+  - xarray >=2023.11.0,!=2024.10.0
+  - xclim ==0.60
   - yaml
   - zarr
