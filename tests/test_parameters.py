@@ -1,7 +1,6 @@
 # ruff: noqa: D103
 """Tests for peach.src.parameters."""
 
-import os
 import time
 
 import numpy as np
@@ -10,7 +9,6 @@ import pytest
 import requests
 import xarray as xr
 
-import peach.frontend as fe
 import peach.frontend.parameters as p
 
 
