@@ -1,0 +1,37 @@
+#resources:
+#    obs:
+#        type: collection
+#        title: AHCCD
+#        description: Adjusted and Homogenized Canadian Climate Data
+#        keywords:
+#            - observations
+#            - weather
+#        links:
+#            - type: text/html
+#              rel: canonical
+#              title: information
+#              href: https://www.canada.ca/en/environment-climate-change/services/climate-change/canadian-centre-climate-services/indicators-observations/adjusted-homogenized-canadian-climate-data.html
+#              hreflang: en-US
+#        linked-data:
+#            context:
+#                - datetime: https://schema.org/DateTime
+#                - vocab: https://example.com/vocab#
+#                  stn_id: "vocab:stn_id"
+#                  value: "vocab:value"
+#        extents:
+#            spatial:
+#                bbox: [-141,42,-52,84]
+#                crs: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+#            temporal:
+#                begin: 1900-10-01T00:00:00
+#                end: 2012-12-31T00:00:00
+#        providers:
+#            - type: edr
+#              name: xarray-edr
+#              data: data/AHCCD_1.0/day/pr/pr_day_CAN_GovCan_AHCCD_1.0_1966-2000.zarr
+#              x_field: lon
+#              y_field: lat
+#              time_field: time
+#              format:
+#                name: zarr
+#                mimetype: application/zip
