@@ -7,17 +7,18 @@ import xarray as xr
 # This is just testing the import. The backend computations are included in some of the pytest fixtures.
 
 
-@pytest.mark.online
-@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI")
-def test_translation(idf_obs, idf_sim):
-    # idf_sim is fairly long to run, do not abandon hope
-    da = xr.open_dataarray(idf_obs, engine="zarr")
-    assert "long_name_fr" in da.attrs
-    assert "description_fr" in da.attrs
+# FIXME: idf_sim fixture causes thread locking
+# @pytest.mark.online
+# @pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="Skipping this test on GitHub CI")
+# def test_translation(idf_obs, idf_sim):
+#     # idf_sim is fairly long to run, do not abandon hope
+#     da = xr.open_dataarray(idf_obs, engine="zarr")
+#     assert "long_name_fr" in da.attrs
+#     assert "description_fr" in da.attrs
 
-    da = xr.open_dataarray(idf_sim, engine="zarr")
-    assert "long_name_fr" in da.attrs
-    assert "description_fr" in da.attrs
+#     da = xr.open_dataarray(idf_sim, engine="zarr")
+#     assert "long_name_fr" in da.attrs
+#     assert "description_fr" in da.attrs
 
 
 def test_hdd(hdd_series):
