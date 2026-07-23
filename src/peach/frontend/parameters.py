@@ -795,7 +795,7 @@ class GenericIndicator(BaseParameterized):
 
     @property
     def has_data(self) -> bool:
-        """Return True if all variables required for computation have a station_id."""
+        """If all variables required for computation have a station_id, returns True."""
         return len(self.variables) == len(self.param.variables.objects)
 
     @classmethod
@@ -993,12 +993,12 @@ class IndexingIndicatorArguments(IndicatorArguments):
 
     @property
     def freq(self):
-        """Return the frequency string."""
+        """The frequency string."""
         return f"{self._base}-{calendar.month_abbr[self.start_m].upper()}"
 
     @property
     def indexer(self):
-        """Return the indexer dictionary."""
+        """The indexer dictionary."""
         # Indexes of start and end months
         ii = list(range(1, 13)) + list(range(1, 13))
         i1 = ii.index(self.start_m)
@@ -1080,7 +1080,7 @@ class IndicatorComputation(BaseParameterized):
 
     @property
     def hash(self) -> str:
-        """Return a hash of the indicator and its parameters."""
+        """Generate a hash of the indicator and its parameters."""
         s = json.dumps(self.to_dict()).encode()
         return hashlib.md5(s).hexdigest()  # noqa: S324
 
@@ -1726,7 +1726,7 @@ class IndicatorDA(BaseParameterized):
 
     @property
     def sample(self) -> xr.DataArray:
-        """Return the data during the period."""
+        """Snapshot of the data during the period."""
         return self._sample(self.period)
 
     def fit(self, dist: str, period: tuple, method="PWM", iteration=0) -> xr.DataArray:
@@ -1866,7 +1866,7 @@ class IndicatorObsDA(IndicatorDA):
     @property
     def bic(self) -> xr.DataArray:
         """
-        Return the Bayesian Information Criterion.
+        The Bayesian Information Criterion (BIC).
 
         BIC = log(n) k - 2 log(L)
         """
@@ -1892,7 +1892,7 @@ class IndicatorObsDA(IndicatorDA):
     @property
     def aic(self) -> xr.DataArray:
         """
-        Return the Akaike Information Criterion.
+        The Akaike Information Criterion (AIC).
 
         AIC = 2 k - 2 log(L)
         """
@@ -1920,7 +1920,7 @@ class IndicatorObsDA(IndicatorDA):
 
     @property
     def metrics_da(self) -> xr.DataArray:
-        """Return metrics DataArray."""
+        """Metrics DataArray."""
         if self.metrics[self.metric] is not None:
             vals = [val.expand_dims(scipy_dist=[dist]) for dist, val in self.metrics[self.metric].items()]
             out = xr.concat(vals, dim="scipy_dist")
@@ -2345,14 +2345,14 @@ class HazardMatrix(BaseParameterized):
 
     @property
     def titles(self):
-        """Return the labels for the matrix columns."""
+        """The labels for the matrix columns."""
         h = {key: self._label[key][self.locale] for key in self._levels.keys()}
         t = list(self.matrix.values())[0][0].titles
         return {**h, **t}
 
     @property
     def docs(self):
-        """Return the description of the matrix columns."""
+        """The description of the matrix columns."""
         h = {key: self._doc[key][self.locale] for key in self._levels.keys()}
         t = list(self.matrix.values())[0][0].docs
         return {**h, **t}
@@ -2590,7 +2590,7 @@ class HazardThreshold(BaseParameterized):
 
     @property
     def values(self) -> pd.Series:
-        """Return values Series."""
+        """The values Series."""
         values = [getattr(self, key, None) for key in self._keys]
         return pd.Series(values, index=self._keys)
 
@@ -2609,7 +2609,7 @@ class HazardThreshold(BaseParameterized):
 
     @property
     def titles(self) -> dict:
-        """Return labels Series."""
+        """Labels Series."""
         return {key: self.param[key].label for key in self._keys}
 
     @property

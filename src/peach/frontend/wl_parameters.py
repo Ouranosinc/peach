@@ -224,8 +224,8 @@ class IndicatorSimWL(IndicatorDA):
     @property
     def sample(self):
         """
-        Return sea level rise at period mid-point across all scenarios and percentiles, scaled by the observation
-        threshold.
+        Sea level rise at period mid-point across all scenarios and percentiles,
+        scaled by the observation threshold.
         """
         with xr.set_options(keep_attrs=True):
             return self._sample(self.period) + self.obs.stn_thresh
