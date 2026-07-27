@@ -6,6 +6,9 @@ channels:
 dependencies:
   - copulae
   - flit >=3.11.0
+  - geopandas
+  - h5netcdf
+  - h5py
   - hvplot
   - ipyleaflet
   - ipywidgets_bokeh
@@ -16,14 +19,14 @@ dependencies:
   - pandas
   - panel >=1.5.5
   - param
-  - pip>=25.0
+  - pip >=25.2
   - pyextremes
   - python >=3.12,<3.13
   - s3fs
   - scipy
   - sphinx
   - watchfiles
-  - xarray <2025.3.0
-  - xclim
+  - xarray
+  - xclim==0.60
   - yaml
-  - zarr <3
+  - zarr
