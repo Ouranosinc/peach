@@ -67,8 +67,8 @@ logging:
 metadata:
     identification:
         title:
-            en: Engineering portal computational backend
-            fr: Services de calcul du portail d'ingénierie
+            en: PEACH Engineering portal computational backend
+            fr: Services de calcul du portail d'ingénierie PEACH
         description:
             en: Climate indicator computations
             fr: Calculs d'indicateurs climatiques

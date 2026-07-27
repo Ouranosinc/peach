@@ -71,7 +71,7 @@ USER $MAMBA_USER
 # The environment variable ensures that the python output is set straight
 # to the terminal without buffering it first
 ENV PYTHONUNBUFFERED 1
-ENV PORTAIL_ING_DIR /app/
+ENV PEACH_DIR /app/
 
 WORKDIR /app
 

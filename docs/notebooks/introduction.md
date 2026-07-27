@@ -43,7 +43,7 @@ import json
 
 process = "compute-indicators-obs"
 headers = {"Content-Type": "application/json", "Prefer": "respond-sync"}
-url = f"https://pavics.ouranos.ca/portail-ing-backend/processes/{process}/execution"
+url = f"https://pavics.ouranos.ca/peach-backend/processes/{process}/execution"
 data = {"inputs":{
     "name": "HEATING_DEGREE_DAYS",
     "params": {"thresh": "10 degC"},
@@ -99,7 +99,7 @@ import requests
 
 process = "compute-hazard-thresholds"
 headers = {"Content-Type": "application/json", "Prefer": "respond-sync"}
-url = f"https://pavics.ouranos.ca/portail-ing-backend/processes/{process}/execution"
+url = f"https://pavics.ouranos.ca/peach-backend/processes/{process}/execution"
 data = {"inputs": {
   "indicators": [
     {
