@@ -22,7 +22,7 @@ from peach.frontend.wl_parameters import (  # noqa: E402
 from peach.risk.xmixture import XMixtureDistribution  # noqa: E402
 
 
-@pytest.mark.xfail(reason="Selector parameter 'IndicatorSimPRCOND.dist' does not accept 'weibull_min'")
+@pytest.mark.xfail(raises=ValueError, reason="Selector parameter 'IndicatorSimPRCOND.dist' does not accept 'weibull_min'")
 @pytest.mark.parametrize("synthetic_jp_ds", ["pr_wlcond"], indirect=True)
 def test_IndicatorObsWLCOND(synthetic_jp_ds):
     _, wl_cond_backend = synthetic_jp_ds
@@ -300,6 +300,7 @@ def test_IndicatorSimPRPOT(synthetic_jp_ds, synthetic_ds_daily):
     assert np.isclose(out1.item(), out2.item())
 
 
+@pytest.mark.xfail(raises=ValueError, reason="Selector parameter 'IndicatorSimPRCOND.dist' does not accept 'weibull_min'")
 @pytest.mark.parametrize("synthetic_jp_ds", ["wl_prcond"], indirect=True)
 def test_IndicatorSimPRCOND(synthetic_jp_ds, synthetic_ds_daily):
     fut_period = (2070, 2100)
