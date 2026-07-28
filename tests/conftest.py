@@ -88,27 +88,27 @@ def idf_obs(tmp_workspace):
 
 
 # FIXME: This fixture is causing a threading lock locally
-@pytest.fixture(scope="session")
-def idf_sim(tmp_workspace, pytestconfig):
-    from peach.backend.compute_indicators import ComputeIDFProcessorSIM
+# @pytest.fixture(scope="session")
+# def idf_sim(tmp_workspace, pytestconfig):
+#     from peach.backend.compute_indicators import ComputeIDFProcessorSIM
 
-    val = pytestconfig.cache.get("minio/idf_sim", None)
+#     val = pytestconfig.cache.get("minio/idf_sim", None)
 
-    if val is None:
-        # Make IDF sim with temperature delta
-        p = ComputeIDFProcessorSIM({"name": "Test-IDF-Sim"})
-        p.INPUT_DATASET_PATTERN = "s3://https://minio.ouranos.ca/portail-ing/portail_ing_{var}_CMIP6_stations_AHCCD_concat.zarr"
+#     if val is None:
+#         # Make IDF sim with temperature delta
+#         p = ComputeIDFProcessorSIM({"name": "Test-IDF-Sim"})
+#         p.INPUT_DATASET_PATTERN = "s3://https://minio.ouranos.ca/portail-ing/portail_ing_{var}_CMIP6_stations_AHCCD_concat.zarr"
 
-        data = {
-            "name": "IDF",
-            "params": {"duration": "1h"},
-            "stations": {"tas": "7033650"},
-        }
-        _mimetype, output = p.execute(data)
+#         data = {
+#             "name": "IDF",
+#             "params": {"duration": "1h"},
+#             "stations": {"tas": "7033650"},
+#         }
+#         _mimetype, output = p.execute(data)
 
-        pytestconfig.cache.set("minio/idf_sim", str(tmp_workspace / output["value"]))
+#         pytestconfig.cache.set("minio/idf_sim", str(tmp_workspace / output["value"]))
 
-    return val
+#     return val
 
 
 @pytest.fixture(scope="session")

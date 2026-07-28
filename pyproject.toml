@@ -110,8 +110,8 @@ dependencies = [
   "matplotlib",
   "numcodecs <=0.15.1", # Zarr < 3 is not compatible with latest numcodecs
   "numpy >=2.0",
-  "openturns >=1.24",
-  "pandas",
+  "openturns >=1.24,<1.27",
+  "pandas >=2.0",
   "param",
   "pyextremes",
   "pygeoapi",
@@ -119,9 +119,9 @@ dependencies = [
   "requests",
   "shapely",
   "s3fs",
-  "scipy",
+  "scipy >=1.11.0",
   "statsmodels",
-  "xarray",
+  "xarray >=2023.11.0,!=2024.10.0",
   "xclim ==0.60.0",
   "zarr"
 ]
