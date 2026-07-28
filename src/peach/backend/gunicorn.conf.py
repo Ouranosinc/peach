@@ -3,7 +3,7 @@ Gunicorn config file.
 
 See: https://docs.gunicorn.org/en/stable/settings.html
 
-Specific changes in Portail Ingénieurs:
+Specific changes in PEACH:
 - Callbacks are added for importing xclim on server start and worker creation
 - When workers have completed a request, garbage collection is triggered.
 
