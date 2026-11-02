@@ -32,7 +32,7 @@ allowlist_externals = ["make"]
 
 [env_run_base]
 description = "Run tests with pytest under {basepython}"
-setenv = {PYTEST_ADDOPTS = "--color=yes --cov=peach --cov-report=lcov", PYTHONPATH = "{toxinidir}"}
+setenv = { PYTEST_ADDOPTS = "--color=yes --cov=peach --cov-report=lcov", PYTHONPATH = "{toxinidir}" }
 passenv = ["COVERALLS_*", "GITHUB_*"]
 download = true
 dependency_groups = ["test"]
