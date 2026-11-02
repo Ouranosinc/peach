@@ -55,25 +55,25 @@ dev = [
   "pip >=26.0.1",
   "prek >=0.3.0",
   "watchdog >=6.0.0",
-  {include-group = "docs"},
-  {include-group = "lint"},
-  {include-group = "test"},
-  {include-group = "tox"}
+  { include-group = "docs" },
+  { include-group = "lint" },
+  { include-group = "test" },
+  { include-group = "tox" }
 ]
 
 [project]
 name = "peach"
 authors = [
-  {name = "Sarah-Claude Bourdeau-Goulet", email = "bourdeau-goulet.sarah-claude@ouranos.ca"},
-  {name = "David Huard", email = "huard.david@ouranos.ca"},
-  {name = "Gabriel Rondeau-Genesse", email = "rondeau-Genesse.Gabriel@ouranos.ca"},
-  {name = "Sarah Gammon", email = "gammon.sarah@ouranos.ca"}
+  { name = "Sarah-Claude Bourdeau-Goulet", email = "bourdeau-goulet.sarah-claude@ouranos.ca" },
+  { name = "David Huard", email = "huard.david@ouranos.ca" },
+  { name = "Gabriel Rondeau-Genesse", email = "rondeau-Genesse.Gabriel@ouranos.ca" },
+  { name = "Sarah Gammon", email = "gammon.sarah@ouranos.ca" }
 ]
 maintainers = [
-  {name = "David Huard", email = "huard.david@ouranos.ca"},
-  {name = "Trevor James Smith", email = "smith.trevorj@ouranos.ca"}
+  { name = "David Huard", email = "huard.david@ouranos.ca" },
+  { name = "Trevor James Smith", email = "smith.trevorj@ouranos.ca" }
 ]
-readme = {file = "README.md", content-type = "text/markdown"}
+readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.10.0"
 keywords = ["peach"]
 license = "Apache-2.0"

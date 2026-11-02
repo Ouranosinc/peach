@@ -1369,7 +1369,7 @@ class HazardMatrixViewer(Viewer):
         # So I wasted a lot of time trying to make a multi-column dataframe, but a lot of things were broken or
         # shaky, such as the titles and the callbacks. So the solution for now is to two have two separate flat tables,
         # one serving as a header for the categories, and one for the actual data.
-        header_df = pd.DataFrame(columns=[v for v in self.hm._label.keys()])
+        header_df = pd.DataFrame(columns=[*self.hm._label.keys()])
         # Header width
         hw = {cat: sum([tw[k] for k in keys]) for cat, keys in self.hm._levels.items()}
 
