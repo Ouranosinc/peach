@@ -598,7 +598,7 @@ class StationViewer(Viewer):
         # Basemap
         center, zoom = self.init_map_loc()
         self.map = Map(
-            basemap=basemaps.CartoDB.Positron,
+            basemap=basemaps.Esri.WorldGrayCanvas,
             zoom=zoom,
             center=center,
             layout=Layout(**self._conf["map_layout"]),
